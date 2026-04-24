@@ -50,15 +50,29 @@ async function runSystemCheck() {
     await page.goto('http://localhost:3000/');
     await page.waitForTimeout(2000); // Splash screen
 
+    // Устранение помехи: Принимаем Cookie
+    console.log('   Waiting for cookie banner...');
+    try {
+      const cookieBtn = page.locator('button:has-text("Принять все")');
+      await cookieBtn.waitFor({ state: 'visible', timeout: 5000 });
+      await cookieBtn.click();
+      console.log('   Cookie banner dismissed.');
+      await page.waitForTimeout(1000); // Ждем завершения анимации исчезновения
+    } catch (e) {
+      console.log('   Cookie banner not found or already dismissed.');
+    }
+
     // Скролл к форме
     await page.evaluate(() => {
       const el = document.getElementById('contact');
       if (el) el.scrollIntoView();
     });
-
-    // Попытка отправить пустую форму
-    await page.click('button[type="submit"]');
     await page.waitForTimeout(500);
+
+    // Попытка отправить форму (используем force: true на случай перекрытий)
+    await page.click('button[type="submit"]', { force: true });
+    console.log('   Submit button clicked.');
+    await page.waitForTimeout(1000);
 
     const nameError = await page.isVisible('text=ERROR: MISSING_NAME');
     if (!nameError) logError('Contact Form: Name validation error not displayed for empty field');

@@ -35,7 +35,7 @@ export const Logo = ({ light, variant = "large", customScale, tagline = "LOGISTI
           <span className={`${isSmall ? 'text-sm md:text-base' : 'text-lg md:text-2xl'} font-black tracking-tighter ${light ? 'text-slate-900' : 'text-white'}`}>ВЕКТОР</span>
           <div className={`${isSmall ? 'w-0.5 h-0.5' : 'w-1 h-1 md:w-1.5 md:h-1.5'} rounded-full bg-blue-500 shadow-lg shadow-blue-500/20`}></div>
         </div>
-        <span className={`${isSmall ? 'text-[8px] md:text-[10px]' : 'text-[9px] md:text-[11px]'} font-bold tracking-[0.35em] opacity-40 uppercase ${light ? 'text-slate-600' : 'text-blue-400'}`}>{tagline}</span>
+        <span className={`${isSmall ? 'text-[8px] md:text-[10px]' : 'text-[9px] md:text-[11px]'} font-bold tracking-[0.35em] opacity-60 uppercase ${light ? 'text-slate-600' : 'text-blue-400'}`}>{tagline}</span>
       </div>
     </div>
   );
@@ -83,7 +83,7 @@ export const SectionWrapper = ({ children, className = "", id, pattern = "" }) =
 
   return (
     <section id={id} ref={ref} className={`reveal py-16 md:py-24 px-6 relative overflow-hidden ${className}`}>
-      {patternClass && <div className={`absolute inset-0 opacity-[0.03] pointer-events-none ${patternClass}`}></div>}
+      {patternClass && <div className={`absolute inset-0 opacity-[0.05] md:opacity-[0.08] pointer-events-none ${patternClass}`}></div>}
       <div className="relative z-10">
         {children}
       </div>

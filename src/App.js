@@ -77,12 +77,12 @@ const INITIAL_CONTENT = {
       blur: '12px'
     },
     light: {
-      primary: '#f8fafc',
-      secondary: '#f1f5f9',
+      primary: '#ffffff',
+      secondary: '#f8fafc',
       accentFrom: '#2563eb',
       accentTo: '#0891b2',
-      textMain: '#0f172a',
-      textMuted: '#475569',
+      textMain: '#020617',
+      textMuted: '#334155',
       blur: '20px'
     }
   },
@@ -416,9 +416,9 @@ export default function App() {
               <Landing content={content} theme={theme} setTheme={setTheme} />
             )
           } />
-          <Route path="/privacy" element={<PrivacyPolicy content={content} />} />
-          <Route path="/requisites" element={<Requisites content={content} />} />
-          <Route path="/oferta" element={<Oferta content={content} />} />
+          <Route path="/privacy" element={<PrivacyPolicy content={content} theme={theme} />} />
+          <Route path="/requisites" element={<Requisites content={content} theme={theme} />} />
+          <Route path="/oferta" element={<Oferta content={content} theme={theme} />} />
           <Route path="*" element={<NotFound content={content} />} />
         </Routes>
       </Router>

@@ -10,7 +10,7 @@ export const ServiceArea = ({ data }) => {
         <div className="relative aspect-[4/3] sm:aspect-square max-w-lg mx-auto lg:mx-0 group w-full">
           <div className="absolute inset-0 bg-blue-500/10 rounded-3xl md:rounded-[3rem] blur-2xl group-hover:bg-blue-500/20 transition-all duration-1000"></div>
 
-          <div className="relative h-full w-full bg-slate-900/40 backdrop-blur-xl border border-white/5 rounded-3xl md:rounded-[3rem] p-4 md:p-8 flex items-center justify-center overflow-hidden">
+          <div className="relative h-full w-full bg-slate-900/40 dark:bg-slate-900/40 backdrop-blur-xl border border-[var(--border)] rounded-3xl md:rounded-[3rem] p-4 md:p-8 flex items-center justify-center overflow-hidden">
             {/* Stylized SVG Map Overlay (Abstract representation of region) */}
             <svg viewBox="0 0 400 400" className="w-full h-full opacity-40 group-hover:opacity-60 transition-opacity duration-1000">
               <defs>
@@ -65,26 +65,26 @@ export const ServiceArea = ({ data }) => {
         <div className="space-y-8 md:space-y-10 px-2 md:px-0">
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md border border-blue-500/20 bg-blue-500/5 mb-6">
-              <MapPin size={14} className="text-blue-400" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-300">География работ</span>
+              <MapPin size={14} className="text-blue-600 dark:text-blue-400" />
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-700 dark:text-blue-300">География работ</span>
             </div>
-            <h2 className="text-3xl md:text-5xl font-black mb-4 md:mb-6 tracking-tight leading-tight">
-              {data.title} <span className="text-blue-500">{data.accent}</span>
+            <h2 className="text-3xl md:text-5xl font-black mb-4 md:mb-6 tracking-tight leading-tight text-[var(--text-main)]">
+              {data.title} <span className="text-blue-600 dark:text-blue-500">{data.accent}</span>
             </h2>
-            <p className="opacity-50 text-sm md:text-lg max-w-xl leading-relaxed font-medium">
+            <p className="text-[var(--text-muted)] text-sm md:text-lg max-w-xl leading-relaxed font-medium">
               {data.subtitle}
             </p>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
             {data.locations.map((loc, i) => (
-              <div key={i} className="flex items-start gap-4 p-5 rounded-2xl bg-white/5 border border-white/5 hover:border-blue-500/30 transition-all group">
-                <div className="mt-1 p-2 rounded-lg bg-blue-500/10 text-blue-400 group-hover:scale-110 transition-transform">
+              <div key={i} className="flex items-start gap-4 p-5 rounded-2xl border border-[var(--border)] hover:border-blue-500/30 transition-all group shadow-sm" style={{ background: 'var(--card-bg)' }}>
+                <div className="mt-1 p-2 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform">
                   <CheckCircle2 size={18} />
                 </div>
                 <div>
-                  <h4 className="font-bold text-sm mb-1">{loc.name}</h4>
-                  <p className="text-[10px] opacity-40 font-medium uppercase tracking-widest">{loc.type}</p>
+                  <h4 className="font-bold text-sm mb-1 text-[var(--text-main)]">{loc.name}</h4>
+                  <p className="text-[10px] text-[var(--text-muted)] opacity-70 font-medium uppercase tracking-widest">{loc.type}</p>
                 </div>
               </div>
             ))}
@@ -92,12 +92,12 @@ export const ServiceArea = ({ data }) => {
 
           <div className="p-6 md:p-8 rounded-3xl md:rounded-[2rem] bg-gradient-to-br from-blue-600/10 to-indigo-600/10 border border-blue-500/20 relative overflow-hidden">
              <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6 text-center sm:text-left">
-                <div className="w-12 h-12 rounded-2xl bg-blue-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/20 shrink-0">
+                <div className="w-12 h-12 rounded-2xl bg-blue-600 dark:bg-blue-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/20 shrink-0">
                   <Shield size={24} />
                 </div>
                 <div>
-                  <p className="text-sm font-bold mb-1">Собственная курьерская сеть</p>
-                  <p className="text-xs opacity-50 max-w-xs font-medium leading-relaxed">Прямой контроль сотрудников без посредников. 100% покрытие во всех районах присутствия.</p>
+                  <p className="text-sm font-bold mb-1 text-[var(--text-main)]">Собственная курьерская сеть</p>
+                  <p className="text-xs text-[var(--text-muted)] max-w-xs font-medium leading-relaxed">Прямой контроль сотрудников без посредников. 100% покрытие во всех районах присутствия.</p>
                 </div>
              </div>
              <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-3xl"></div>

@@ -84,7 +84,7 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
             <h2 className="text-3xl md:text-5xl font-black mb-6 tracking-tight">
               {data.title} <span className="text-blue-500">{data.accent}</span>
             </h2>
-            <p className="opacity-50 text-base md:text-lg max-w-md leading-relaxed font-medium">
+            <p className="opacity-70 text-base md:text-lg max-w-md leading-relaxed font-medium">
               {data.subtitle}
             </p>
           </div>
@@ -114,13 +114,13 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
               </div>
               <div>
                 <p className="text-[10px] font-bold uppercase tracking-widest text-blue-500 mb-1">Адрес</p>
-                <p className="text-sm font-medium opacity-70 max-w-xs">{companyInfo.address}</p>
+                <p className="text-sm font-medium opacity-90 max-w-xs">{companyInfo.address}</p>
               </div>
             </div>
           </div>
 
           <div className="pt-8 border-t border-soft max-w-md">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-30 mb-4 text-left ml-1">Юридический блок</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-50 mb-4 text-left ml-1">Юридический блок</p>
             <div className="flex flex-col gap-3">
                <Link to="/privacy" className="text-[10px] font-bold text-slate-500 hover:text-blue-500 flex items-center gap-2 transition-colors uppercase tracking-widest"><ShieldCheck size={14}/> Политика конфиденциальности</Link>
                <Link to="/requisites" className="text-[10px] font-bold text-slate-500 hover:text-blue-500 flex items-center gap-2 transition-colors uppercase tracking-widest"><ShieldCheck size={14}/> Реквизиты организации</Link>
@@ -129,7 +129,7 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
           </div>
 
           <div className="pt-8 border-t border-soft max-w-md">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-30 mb-4 text-left ml-1">Наши соцсети</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-50 mb-4 text-left ml-1">Наши соцсети</p>
             <div className="flex flex-wrap gap-4">
               {socials.telegram && (
                 <a href={socials.telegram} target="_blank" rel="noreferrer" className="px-6 py-2.5 rounded-xl border border-soft hover:bg-blue-500 hover:text-white transition-all font-bold text-[10px] uppercase tracking-widest flex items-center gap-2">
@@ -151,7 +151,7 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
           <form onSubmit={onSubmit} noValidate className="relative bg-slate-900/40 backdrop-blur-xl border border-white/5 p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl space-y-6 text-left">
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2 text-left">
-                <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 ml-1">{data.formName}</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{data.formName}</label>
                 <input
                   type="text"
                   name="fullName"
@@ -161,13 +161,13 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
                     setFormData({ ...formData, name: e.target.value });
                     if (errors.name) setErrors({ ...errors, name: null });
                   }}
-                  className={`w-full bg-white/5 border ${errors.name ? 'border-red-500/50' : 'border-white/10'} rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium`}
+                  className={`w-full bg-white/5 border ${errors.name ? 'border-red-500/50' : 'border-slate-300 dark:border-white/10'} rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium text-[var(--text-main)] shadow-sm`}
                   placeholder="Иван Иванов"
                 />
                 {errors.name && <p className="text-[10px] text-red-400 font-bold ml-1 uppercase tracking-widest">{errors.name}</p>}
               </div>
               <div className="space-y-2 text-left">
-                <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 ml-1">{data.formPhone}</label>
+                <label className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{data.formPhone}</label>
                 <input
                   type="tel"
                   name="phone"
@@ -177,14 +177,14 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
                     setFormData({ ...formData, phone: e.target.value });
                     if (errors.phone) setErrors({ ...errors, phone: null });
                   }}
-                  className={`w-full bg-white/5 border ${errors.phone ? 'border-red-500/50' : 'border-white/10'} rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium`}
+                  className={`w-full bg-white/5 border ${errors.phone ? 'border-red-500/50' : 'border-slate-300 dark:border-white/10'} rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium text-[var(--text-main)] shadow-sm`}
                   placeholder="+7 (999) 000-00-00"
                 />
                 {errors.phone && <p className="text-[10px] text-red-400 font-bold ml-1 uppercase tracking-widest">{errors.phone}</p>}
               </div>
             </div>
             <div className="space-y-2 text-left">
-              <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 ml-1">{data.formEmail}</label>
+              <label className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{data.formEmail}</label>
               <input
                 type="email"
                 name="email"
@@ -194,18 +194,18 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
                   setEmailValue(e.target.value);
                   if (errors.email) setErrors({ ...errors, email: null });
                 }}
-                className={`w-full bg-white/5 border ${errors.email ? 'border-red-500/50' : 'border-white/10'} rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium`}
+                className={`w-full bg-white/5 border ${errors.email ? 'border-red-500/50' : 'border-slate-300 dark:border-white/10'} rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium text-[var(--text-main)] shadow-sm`}
                 placeholder="example@mail.ru"
               />
               {errors.email && <p className="text-[10px] text-red-400 font-bold ml-1 uppercase tracking-widest">{errors.email}</p>}
             </div>
             <div className="space-y-2 text-left">
-              <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 ml-1">{data.formMessage}</label>
+              <label className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{data.formMessage}</label>
               <textarea
                 name="message"
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="w-full bg-white/5 border border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium h-32 resize-none"
+                className="w-full bg-white/5 border border-slate-300 dark:border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium h-32 resize-none text-[var(--text-main)] shadow-sm"
                 placeholder="Расскажите о вашей задаче..."
               ></textarea>
             </div>
@@ -222,8 +222,8 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
                   }}
                   className={`mt-1 w-5 h-5 rounded border-white/10 bg-white/5 text-blue-600 focus:ring-blue-500/50 transition-all cursor-pointer ${errors.consent ? 'ring-2 ring-red-500/50' : ''}`}
                 />
-                <label htmlFor="consent" className="text-[10px] leading-relaxed text-slate-400 font-medium cursor-pointer">
-                  Я даю согласие на обработку персональных данных в соответствии с <Link to="/privacy" className="text-blue-400 font-bold hover:underline" target="_blank">Политикой конфиденциальности</Link> ООО «ВЕКТОР» (152-ФЗ)
+                <label htmlFor="consent" className="text-[10px] leading-relaxed text-slate-500 dark:text-slate-400 font-medium cursor-pointer">
+                  Я даю согласие на обработку персональных данных в соответствии с <Link to="/privacy" className="text-blue-500 dark:text-blue-400 font-bold hover:underline" target="_blank">Политикой конфиденциальности</Link> ООО «ВЕКТОР» (152-ФЗ)
                 </label>
               </div>
               {errors.consent && <p className="text-[9px] text-red-400 font-bold ml-8 uppercase tracking-widest">{errors.consent}</p>}
@@ -238,8 +238,8 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
               {isSending ? <Loader2 className="animate-spin" size={20} aria-hidden="true" /> : <>{data.formButton} <ArrowRight size={20} aria-hidden="true" /></>}
             </button>
 
-            <p className="text-[9px] text-center opacity-30 font-bold uppercase tracking-widest">
-              С <Link to="/privacy" className="underline hover:text-blue-400 transition-colors">Политикой конфиденциальности</Link> ознакомлен(а)
+            <p className="text-[9px] text-center opacity-50 font-bold uppercase tracking-widest">
+              С <Link to="/privacy" className="underline hover:text-blue-500 dark:hover:text-blue-400 transition-colors">Политикой конфиденциальности</Link> ознакомлен(а)
             </p>
             {errors.submit && <p className="text-xs text-red-400 font-bold text-center mt-4">{errors.submit}</p>}
           </form>

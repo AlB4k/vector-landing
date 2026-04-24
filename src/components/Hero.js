@@ -17,14 +17,14 @@ export const Hero = ({ data }) => (
         {/* Left Side: Content */}
         <div className="flex-1 text-center lg:text-left">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md border border-blue-500/20 bg-blue-500/5 mb-6 md:mb-8">
-            <DynamicIcon name="ShieldCheck" size={14} className="text-blue-400" />
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-300">{data.badge}</span>
+            <DynamicIcon name="ShieldCheck" size={14} className="text-blue-600 dark:text-blue-400" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-700 dark:text-blue-300">{data.badge}</span>
           </div>
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-black leading-[1.1] md:leading-[1.05] mb-6 md:mb-8 tracking-tighter">
             {data.title1} <br />
             <span className="gradient-text">{data.titleGradient}</span>
           </h1>
-          <p className="text-base md:text-xl opacity-60 mb-10 md:mb-12 max-w-2xl lg:mx-0 mx-auto leading-relaxed font-medium px-2 sm:px-0">
+          <p className="text-base md:text-xl opacity-80 mb-10 md:mb-12 max-w-2xl lg:mx-0 mx-auto leading-relaxed font-medium px-2 sm:px-0">
             {data.subtitle}
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 md:gap-5 px-4 sm:px-0">

@@ -113,8 +113,8 @@ export default function Landing({ content, theme, setTheme }) {
     '--text-main': themeConfig.textMain,
     '--text-muted': themeConfig.textMuted,
     '--card-bg': isLight ? '#ffffff' : 'rgba(30, 41, 59, 0.4)',
-    '--border': isLight ? 'rgba(15, 23, 42, 0.12)' : 'rgba(255, 255, 255, 0.08)',
-    '--nav-bg': isLight ? 'rgba(255, 255, 255, 0.85)' : 'rgba(10, 10, 15, 0.85)',
+    '--border': isLight ? 'rgba(15, 23, 42, 0.18)' : 'rgba(255, 255, 255, 0.08)',
+    '--nav-bg': isLight ? 'rgba(255, 255, 255, 0.95)' : 'rgba(10, 10, 15, 0.85)',
     '--blur': themeConfig.blur,
   };
 
@@ -182,7 +182,7 @@ export default function Landing({ content, theme, setTheme }) {
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 py-4 ${isScrolled ? 'backdrop-blur-md border-b border-[var(--border)]' : 'bg-transparent'}`} style={{ backgroundColor: isScrolled ? 'var(--nav-bg)' : 'transparent' }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           <Logo light={isLight} customScale={content.logoScaleHeader} tagline={content.companyTagline} />
-          <div className="hidden md:flex items-center gap-8 text-[10px] font-bold uppercase tracking-[0.15em] opacity-70">
+          <div className="hidden md:flex items-center gap-8 text-[10px] font-bold uppercase tracking-[0.15em] opacity-80">
             {content.sections.filter(s => s.enabled && s.id !== 'hero').map((s) => (
               <a key={s.id} href={`#${s.id}`} className="hover:text-blue-500 transition-colors">{s.label}</a>
             ))}
@@ -241,17 +241,17 @@ export default function Landing({ content, theme, setTheme }) {
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 mb-12 md:mb-16">
           <div className="col-span-1 text-center md:text-left flex flex-col items-center md:items-start">
             <Logo light={isLight} variant="small" customScale={content.logoScaleFooter} tagline={content.companyTagline} />
-            <p className="mt-6 md:mt-8 text-[11px] md:text-xs leading-relaxed font-medium opacity-50 max-w-sm">{content.footer.description}</p>
+            <p className="mt-6 md:mt-8 text-[11px] md:text-xs leading-relaxed font-medium opacity-60 max-w-sm">{content.footer.description}</p>
             <div className="flex items-center gap-3 mt-8 md:mt-10">
-              <a href={`mailto:${content.email}`} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-70"><Mail size={18}/></a>
-              {content.socials.telegram && <a href={content.socials.telegram} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-70"><Send size={18}/></a>}
-              {content.socials.whatsapp && <a href={content.socials.whatsapp} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-green-500 hover:text-white transition-all opacity-70"><MessageCircle size={18}/></a>}
+              <a href={`mailto:${content.email}`} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-90"><Mail size={18}/></a>
+              {content.socials.telegram && <a href={content.socials.telegram} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-90"><Send size={18}/></a>}
+              {content.socials.whatsapp && <a href={content.socials.whatsapp} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-green-500 hover:text-white transition-all opacity-90"><MessageCircle size={18}/></a>}
               <button onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { altKey: true, shiftKey: true, key: 'C' }))} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-slate-500/10 transition-all opacity-20 hover:opacity-100"><Lock size={14}/></button>
             </div>
           </div>
           <div className="text-center md:text-left">
             <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">Навигация</h4>
-            <ul className="space-y-3 md:space-y-4 text-[10px] md:text-xs font-bold uppercase tracking-widest opacity-60">
+            <ul className="space-y-3 md:space-y-4 text-[10px] md:text-xs font-bold uppercase tracking-widest opacity-80">
               {content.sections.filter(s => s.enabled && s.id !== 'hero').map(s => (
                 <li key={s.id}><a href={`#${s.id}`} className="hover:text-blue-500 transition-colors">{s.label}</a></li>
               ))}
@@ -259,7 +259,7 @@ export default function Landing({ content, theme, setTheme }) {
           </div>
           <div className="text-center md:text-left">
             <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">Правовая информация</h4>
-            <ul className="space-y-3 md:space-y-4 text-[10px] md:text-xs font-bold uppercase tracking-widest opacity-60">
+            <ul className="space-y-3 md:space-y-4 text-[10px] md:text-xs font-bold uppercase tracking-widest opacity-80">
               <li><Link to="/privacy" className="hover:text-blue-500 transition-colors">Политика конфиденциальности</Link></li>
               <li><Link to="/requisites" className="hover:text-blue-500 transition-colors">Реквизиты организации</Link></li>
               <li><Link to="/oferta" className="hover:text-blue-500 transition-colors">Оферта / Условия</Link></li>
@@ -267,14 +267,14 @@ export default function Landing({ content, theme, setTheme }) {
           </div>
           <div className="text-center md:text-left">
             <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">Контакты</h4>
-            <ul className="space-y-4 md:space-y-5 text-xs md:text-sm font-medium opacity-70">
+            <ul className="space-y-4 md:space-y-5 text-xs md:text-sm font-medium opacity-90">
               <li className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3"><MapPin size={16} className="text-blue-500 shrink-0" /><span className="max-w-[200px] md:max-w-none">{content.address}</span></li>
               <li className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3"><Phone size={16} className="text-blue-500 shrink-0" /><span>{content.phone}</span></li>
               <li className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3"><Mail size={16} className="text-blue-500 shrink-0" /><span>{content.email}</span></li>
             </ul>
           </div>
         </div>
-        <div className="max-w-6xl mx-auto pt-8 md:pt-12 border-t border-soft flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8 text-[8px] md:text-[9px] font-bold uppercase tracking-[0.2em] opacity-30 text-center md:text-left">
+        <div className="max-w-6xl mx-auto pt-8 md:pt-12 border-t border-soft flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8 text-[8px] md:text-[9px] font-bold uppercase tracking-[0.2em] opacity-60 text-center md:text-left">
           <p>© 2026 {content.companyName} • v{content.legal.version}</p>
           <div className="flex flex-col md:flex-row gap-4 md:gap-12"><p>Рег. {content.pdnReg}</p><p>Приказ {content.pdnOrder}</p></div>
         </div>
