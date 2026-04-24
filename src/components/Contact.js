@@ -151,7 +151,7 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
         {/* Right: Form */}
         <div className="relative">
           <div className="absolute -inset-4 bg-blue-500/5 rounded-[2.5rem] blur-2xl"></div>
-          <form onSubmit={onSubmit} className="relative bg-slate-900/40 backdrop-blur-xl border border-white/5 p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl space-y-6 text-left">
+          <form onSubmit={onSubmit} noValidate className="relative bg-slate-900/40 backdrop-blur-xl border border-white/5 p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl space-y-6 text-left">
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2 text-left">
                 <label className="text-[10px] font-bold uppercase tracking-widest opacity-40 ml-1">{data.formName}</label>
@@ -166,7 +166,6 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
                   }}
                   className={`w-full bg-white/5 border ${errors.name ? 'border-red-500/50' : 'border-white/10'} rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium`}
                   placeholder="Иван Иванов"
-                  required
                 />
                 {errors.name && <p className="text-[10px] text-red-400 font-bold ml-1 uppercase tracking-widest">{errors.name}</p>}
               </div>
@@ -225,7 +224,6 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
                     if (errors.consent) setErrors({ ...errors, consent: null });
                   }}
                   className={`mt-1 w-5 h-5 rounded border-white/10 bg-white/5 text-blue-600 focus:ring-blue-500/50 transition-all cursor-pointer ${errors.consent ? 'ring-2 ring-red-500/50' : ''}`}
-                  required
                 />
                 <label htmlFor="consent" className="text-[10px] leading-relaxed text-slate-400 font-medium cursor-pointer">
                   Я даю согласие на обработку персональных данных в соответствии с <Link to="/privacy" className="text-blue-400 font-bold hover:underline" target="_blank">Политикой конфиденциальности</Link> ООО «ВЕКТОР» (152-ФЗ)
