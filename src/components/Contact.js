@@ -33,13 +33,10 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
 
   const onSubmit = async (e) => {
     e.preventDefault();
-    if (!consent) {
-      setErrors({ ...errors, consent: 'ACTION_REJECTED: ACCEPT_TERMS_TO_PROCEED' });
-      return;
-    }
 
     const newErrors = validate();
     if (Object.keys(newErrors).length > 0) {
+      if (!consent) newErrors.consent = 'ACTION_REJECTED: ACCEPT_TERMS_TO_PROCEED';
       setErrors(newErrors);
       return;
     }
