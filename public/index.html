@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#08080f" />
+    <meta name="description" content="Высокопроизводительная печать по технологии Pressure Seal и гарантированная адресная дистрибуция квитанций ЖКХ в Воронеже и области. Сертифицированный оператор ПДн." />
+    <meta name="keywords" content="логистика квитанций, печать ЖКХ, дистрибуция документов, Вектор Воронеж, Pressure Seal, оператор ПДн" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://vektor-vrn.ru/" />
+    <meta property="og:title" content="ВЕКТОР | Индустриальные стандарты логистики квитанций ЖКХ" />
+    <meta property="og:description" content="Профессиональная печать и доставка платежных документов. Обеспечиваем собираемость платежей для крупнейших УК и расчетных центров." />
+    <meta property="og:image" content="/logo_full.png" />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:title" content="ВЕКТОР | Индустриальные стандарты логистики квитанций ЖКХ" />
+    <meta property="twitter:description" content="Профессиональная печать и доставка платежных документов в Воронежской области." />
+    <meta property="twitter:image" content="/logo_full.png" />
+
+    <title>ВЕКТОР | Индустриальные стандарты логистики квитанций ЖКХ</title>
+
+    <style>
+      #loader-wrapper {
+        position: fixed;
+        inset: 0;
+        background: #050508;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        z-index: 10000;
+        transition: opacity 0.5s ease, visibility 0.5s ease;
+      }
+      .loader-logo {
+        width: 180px;
+        height: 180px;
+        border: 2px solid #1e40af;
+        border-radius: 32px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        margin-bottom: 48px;
+        animation: pulse 2s infinite ease-in-out;
+      }
+      .loader-logo::before {
+        content: "";
+        position: absolute;
+        inset: -16px;
+        border: 1px solid rgba(30, 64, 175, 0.2);
+        border-radius: 40px;
+        animation: rotate 4s linear infinite;
+      }
+      .loader-bar {
+        width: 240px;
+        height: 3px;
+        background: rgba(255,255,255,0.05);
+        position: relative;
+        overflow: hidden;
+      }
+      .loader-progress {
+        position: absolute;
+        top: 0;
+        left: 0;
+        height: 100%;
+        width: 40%;
+        background: #3b82f6;
+        animation: shift 1.5s infinite linear;
+      }
+      .loader-text {
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 9px;
+        color: #3b82f6;
+        text-transform: uppercase;
+        letter-spacing: 0.5em;
+        margin-top: 20px;
+        opacity: 0.6;
+      }
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); border-color: #1e40af; }
+        50% { transform: scale(1.05); border-color: #3b82f6; }
+      }
+      @keyframes rotate {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+      @keyframes shift {
+        from { transform: translateX(-100%); }
+        to { transform: translateX(300%); }
+      }
+      body.loaded #loader-wrapper {
+        opacity: 0;
+        visibility: hidden;
+      }
+    </style>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@700&display=swap" rel="stylesheet">
+    <link rel="icon" href="/logo_icon.png" />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/logo_icon.png" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="ВЕКТОР" />
+
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "LocalBusiness",
+      "name": "ООО ВЕКТОР",
+      "image": "https://vektor-vrn.ru/logo_full.png",
+      "@id": "https://vektor-vrn.ru/",
+      "url": "https://vektor-vrn.ru/",
+      "telephone": "+7 (930) 409-27-00",
+      "email": "Vektor0949@yandex.ru",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "ул. Лебедева, д. 4",
+        "addressLocality": "Воронеж",
+        "postalCode": "394000",
+        "addressCountry": "RU"
+      },
+      "geo": {
+        "@type": "GeoCoordinates",
+        "latitude": 51.637,
+        "longitude": 39.243
+      },
+      "openingHoursSpecification": {
+        "@type": "OpeningHoursSpecification",
+        "dayOfWeek": [
+          "Monday",
+          "Tuesday",
+          "Wednesday",
+          "Thursday",
+          "Friday"
+        ],
+        "opens": "09:00",
+        "closes": "18:00"
+      },
+      "sameAs": [
+        "https://t.me/vektor_logistics"
+      ]
+    }
+    </script>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="loader-wrapper">
+      <div class="loader-logo">
+        <svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#3b82f6" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      </div>
+      <div class="loader-bar">
+        <div class="loader-progress"></div>
+      </div>
+      <div class="loader-text">Initializing System</div>
+    </div>
+    <div id="root"></div>
+  </body>
+</html>

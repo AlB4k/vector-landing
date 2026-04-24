@@ -1,0 +1,284 @@
+import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import {
+  Mail,
+  Phone,
+  MapPin,
+  Menu,
+  X,
+  Sun,
+  Moon,
+  Send,
+  Lock,
+  Check,
+  MessageCircle,
+  ShieldCheck,
+  ChevronUp
+} from 'lucide-react';
+import { Logo } from './components/Shared';
+import { Hero } from './components/Hero';
+import { Features } from './components/Features';
+import { Stats } from './components/Stats';
+import { Process } from './components/Process';
+import { Services } from './components/Services';
+import { FAQ } from './components/FAQ';
+import { ServiceArea } from './components/ServiceArea';
+import { Contact } from './components/Contact';
+import { CookieBanner } from './components/CookieBanner';
+
+// --- STYLES ---
+const animations = `
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes slow-fade {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes blob {
+    0% { transform: translate(0px, 0px) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+    100% { transform: translate(0px, 0px) scale(1); }
+  }
+  .animate-blob {
+    animation: blob 7s infinite;
+  }
+  .animation-delay-2000 {
+    animation-delay: 2s;
+  }
+  .animation-delay-4000 {
+    animation-delay: 4s;
+  }
+  .reveal {
+    opacity: 0;
+    transform: translateY(15px);
+    transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  .gradient-text {
+    background: linear-gradient(90deg, var(--accent-from), var(--accent-to));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  .gradient-bg {
+    background: linear-gradient(135deg, var(--accent-from), var(--accent-to));
+  }
+  .border-soft {
+    border: 1px solid var(--border);
+  }
+  .card-hover {
+    transition: all 0.3s ease;
+  }
+  .card-hover:hover {
+    border-color: var(--accent-from);
+    transform: translateY(-2px);
+    background: var(--bg-secondary);
+    opacity: 0.9;
+  }
+`;
+
+// --- MAIN COMPONENT ---
+
+export default function Landing({ content, theme, setTheme }) {
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollProgress, setScrollProgress] = useState(0);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const isLight = theme === 'light';
+  const [activeModal, setActiveModal] = useState(null);
+  const [emailValue, setEmailValue] = useState('');
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+      const totalHeight = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = (window.scrollY / totalHeight) * 100;
+      setScrollProgress(progress);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const themeConfig = content.theme[theme];
+
+  const themeStyles = {
+    '--bg-primary': themeConfig.primary,
+    '--bg-secondary': themeConfig.secondary,
+    '--accent-from': themeConfig.accentFrom,
+    '--accent-to': themeConfig.accentTo,
+    '--text-main': themeConfig.textMain,
+    '--text-muted': themeConfig.textMuted,
+    '--card-bg': isLight ? '#ffffff' : 'rgba(30, 41, 59, 0.4)',
+    '--border': isLight ? 'rgba(15, 23, 42, 0.12)' : 'rgba(255, 255, 255, 0.08)',
+    '--nav-bg': isLight ? 'rgba(255, 255, 255, 0.85)' : 'rgba(10, 10, 15, 0.85)',
+    '--blur': themeConfig.blur,
+  };
+
+  const handleFormSubmit = (e) => {
+    e.preventDefault();
+    if (emailValue) { setActiveModal('success'); setEmailValue(''); }
+  };
+
+  const renderSection = (section) => {
+    if (!section.enabled) return null;
+    switch (section.id) {
+      case 'hero': return <Hero key={section.id} data={content.hero} />;
+      case 'features': return <Features key={section.id} data={content.features} />;
+      case 'stats': return <Stats key={section.id} data={content.stats} />;
+      case 'process': return <Process key={section.id} data={content.process} />;
+      case 'services': return <Services key={section.id} data={content.services} />;
+      case 'serviceArea': return <ServiceArea key={section.id} data={content.serviceArea} />;
+      case 'faq': return <FAQ key={section.id} data={content.faq} />;
+      case 'contact': return <Contact key={section.id} data={content.contact} companyInfo={{ phone: content.phone, email: content.email, address: content.address }} socials={content.socials} integrations={content.integrations} handleFormSubmit={handleFormSubmit} emailValue={emailValue} setEmailValue={setEmailValue} />;
+      default: return null;
+    }
+  };
+
+  return (
+    <div style={{ ...themeStyles, backgroundColor: 'var(--bg-primary)', color: 'var(--text-main)', minHeight: '100vh' }} className="font-sans transition-colors duration-500 overflow-x-hidden text-left">
+      <style>{animations}</style>
+
+      <CookieBanner data={content.cookieBanner} />
+
+      {/* Scroll Progress Bar */}
+      <div className="fixed top-0 left-0 w-full h-[3px] z-[100] pointer-events-none">
+        <div
+          className="h-full gradient-bg shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-150 ease-out"
+          style={{ width: `${scrollProgress}%` }}
+        ></div>
+      </div>
+
+      {/* Back to Top */}
+      <button
+        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+        className={`fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50 p-3 md:p-4 rounded-xl md:rounded-2xl bg-slate-900/80 backdrop-blur-xl border border-white/10 text-blue-500 shadow-2xl transition-all duration-500 hover:scale-110 active:scale-95 ${isScrolled ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
+        style={{ marginBottom: 'env(safe-area-inset-bottom)' }}
+      >
+        <ChevronUp size={24} />
+      </button>
+
+      {/* Modals */}
+      {activeModal && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-slow-fade">
+          <div className={`w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-2xl border border-white/10 p-8 md:p-12 shadow-2xl relative ${isLight ? 'bg-white text-slate-900' : 'bg-slate-900 text-white'}`}>
+            <button onClick={() => setActiveModal(null)} className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors"><X size={24} /></button>
+            {activeModal === 'success' && (
+              <div className="text-center py-8">
+                <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-8 text-white shadow-lg"><Check size={40} /></div>
+                <h3 className="text-3xl font-bold mb-4">{content.modals.success.title}</h3>
+                <p className="opacity-60 mb-8">{content.modals.success.subtitle}</p>
+                <button onClick={() => setActiveModal(null)} className="px-10 py-3 rounded-xl gradient-bg text-white font-bold">{content.modals.success.button}</button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Navbar */}
+      <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 py-4 ${isScrolled ? 'backdrop-blur-md border-b border-[var(--border)]' : 'bg-transparent'}`} style={{ backgroundColor: isScrolled ? 'var(--nav-bg)' : 'transparent' }}>
+        <div className="max-w-7xl mx-auto flex items-center justify-between">
+          <Logo light={isLight} customScale={content.logoScaleHeader} tagline={content.companyTagline} />
+          <div className="hidden md:flex items-center gap-8 text-[10px] font-bold uppercase tracking-[0.15em] opacity-70">
+            {content.sections.filter(s => s.enabled && s.id !== 'hero').map((s) => (
+              <a key={s.id} href={`#${s.id}`} className="hover:text-blue-500 transition-colors">{s.label}</a>
+            ))}
+          </div>
+          <div className="flex items-center gap-4">
+            <button onClick={() => setTheme(isLight ? 'dark' : 'light')} className="p-2 rounded-lg border border-[var(--border)] hover:bg-slate-500/10 transition-all" aria-label={isLight ? "Переключить на темную тему" : "Переключить на светлую тему"}>
+              {isLight ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}
+            </button>
+            <a href={`tel:${content.phone}`} className="hidden lg:flex items-center gap-2 gradient-bg text-white px-6 py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest shadow-xl shadow-blue-900/10 hover:brightness-110 transition-all">
+              <Phone size={14} aria-hidden="true" /> Связаться
+            </a>
+            <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(true)} aria-label="Открыть мобильное меню"><Menu size={24} aria-hidden="true" /></button>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Menu */}
+      <div className={`fixed inset-0 z-[60] bg-[#08080f]/98 backdrop-blur-2xl transition-all duration-500 ${mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
+        <div className="p-8 flex flex-col h-full">
+          <div className="flex justify-between items-center mb-16">
+            <Logo light={false} variant="small" customScale={content.logoScaleFooter} tagline={content.companyTagline} />
+            <button onClick={() => setMobileMenuOpen(false)} className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white border border-white/10 active:scale-90 transition-all" aria-label="Закрыть мобильное меню">
+              <X size={24} aria-hidden="true" />
+            </button>
+          </div>
+
+          <div className="flex flex-col gap-5 md:gap-6 text-2xl sm:text-3xl font-black uppercase tracking-tighter">
+            {content.sections.filter(s => s.enabled).map((s, i) => (
+              <a
+                key={s.id}
+                href={`#${s.id}`}
+                onClick={() => setMobileMenuOpen(false)}
+                className={`transition-all duration-500 transform ${mobileMenuOpen ? 'translate-x-0 opacity-100' : '-translate-x-8 opacity-0'} active:text-blue-500`}
+                style={{ transitionDelay: `${i * 70}ms` }}
+              >
+                <span className="text-blue-500 mr-3 md:mr-4 text-xs md:text-sm font-mono opacity-40">0{i+1}</span>
+                {s.label}
+              </a>
+            ))}
+          </div>
+
+          <div className="mt-auto pt-12 border-t border-white/5">
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-blue-500 mb-6 text-center">Прямая линия связи</p>
+            <a href={`tel:${content.phone}`} className="w-full flex justify-center items-center gap-4 gradient-bg py-5 rounded-2xl text-2xl font-black shadow-2xl shadow-blue-500/20 active:scale-95 transition-all text-white">
+              <Phone size={24} /> {content.phone}
+            </a>
+          </div>
+        </div>
+      </div>
+
+      {/* Dynamic Sections */}
+      {content.sections.map(section => renderSection(section))}
+
+      {/* Footer */}
+      <footer className="px-4 md:px-6 py-12 md:py-16 border-t border-[var(--border)]" style={{ backgroundColor: 'var(--bg-primary)' }}>
+        <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 mb-12 md:mb-16">
+          <div className="col-span-1 text-center md:text-left flex flex-col items-center md:items-start">
+            <Logo light={isLight} variant="small" customScale={content.logoScaleFooter} tagline={content.companyTagline} />
+            <p className="mt-6 md:mt-8 text-[11px] md:text-xs leading-relaxed font-medium opacity-50 max-w-sm">{content.footer.description}</p>
+            <div className="flex items-center gap-3 mt-8 md:mt-10">
+              <a href={`mailto:${content.email}`} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-70"><Mail size={18}/></a>
+              {content.socials.telegram && <a href={content.socials.telegram} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-70"><Send size={18}/></a>}
+              {content.socials.whatsapp && <a href={content.socials.whatsapp} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-green-500 hover:text-white transition-all opacity-70"><MessageCircle size={18}/></a>}
+              <button onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { altKey: true, shiftKey: true, key: 'C' }))} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-slate-500/10 transition-all opacity-20 hover:opacity-100"><Lock size={14}/></button>
+            </div>
+          </div>
+          <div className="text-center md:text-left">
+            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">Навигация</h4>
+            <ul className="space-y-3 md:space-y-4 text-[10px] md:text-xs font-bold uppercase tracking-widest opacity-60">
+              {content.sections.filter(s => s.enabled && s.id !== 'hero').map(s => (
+                <li key={s.id}><a href={`#${s.id}`} className="hover:text-blue-500 transition-colors">{s.label}</a></li>
+              ))}
+            </ul>
+          </div>
+          <div className="text-center md:text-left">
+            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">Правовая информация</h4>
+            <ul className="space-y-3 md:space-y-4 text-[10px] md:text-xs font-bold uppercase tracking-widest opacity-60">
+              <li><Link to="/privacy" className="hover:text-blue-500 transition-colors">Политика конфиденциальности</Link></li>
+              <li><Link to="/requisites" className="hover:text-blue-500 transition-colors">Реквизиты организации</Link></li>
+              <li><Link to="/oferta" className="hover:text-blue-500 transition-colors">Оферта / Условия</Link></li>
+            </ul>
+          </div>
+          <div className="text-center md:text-left">
+            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">Контакты</h4>
+            <ul className="space-y-4 md:space-y-5 text-xs md:text-sm font-medium opacity-70">
+              <li className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3"><MapPin size={16} className="text-blue-500 shrink-0" /><span className="max-w-[200px] md:max-w-none">{content.address}</span></li>
+              <li className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3"><Phone size={16} className="text-blue-500 shrink-0" /><span>{content.phone}</span></li>
+              <li className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3"><Mail size={16} className="text-blue-500 shrink-0" /><span>{content.email}</span></li>
+            </ul>
+          </div>
+        </div>
+        <div className="max-w-6xl mx-auto pt-8 md:pt-12 border-t border-soft flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8 text-[8px] md:text-[9px] font-bold uppercase tracking-[0.2em] opacity-30 text-center md:text-left">
+          <p>© 2026 {content.companyName} • v{content.legal.version}</p>
+          <div className="flex flex-col md:flex-row gap-4 md:gap-12"><p>Рег. {content.pdnReg}</p><p>Приказ {content.pdnOrder}</p></div>
+        </div>
+      </footer>
+    </div>
+  );
+}
