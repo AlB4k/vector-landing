@@ -155,7 +155,7 @@ export default function Landing({ content, theme, setTheme }) {
       {/* Back to Top */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className={`fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50 p-3 md:p-4 rounded-xl md:rounded-2xl bg-slate-900/80 backdrop-blur-xl border border-white/10 text-blue-500 shadow-2xl transition-all duration-500 hover:scale-110 active:scale-95 ${isScrolled ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
+        className={`fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50 p-3 md:p-4 rounded-xl md:rounded-2xl ${isLight ? 'bg-white/80 border-slate-200 text-blue-600' : 'bg-slate-900/80 border-white/10 text-blue-500'} backdrop-blur-xl border shadow-2xl transition-all duration-500 hover:scale-110 active:scale-95 ${isScrolled ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
         style={{ marginBottom: 'env(safe-area-inset-bottom)' }}
       >
         <ChevronUp size={24} />
