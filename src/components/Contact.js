@@ -236,9 +236,9 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
 
             <button
               type="submit"
-              disabled={isSending || !consent}
+              disabled={isSending}
               aria-label={data.formButton}
-              className="w-full py-5 rounded-2xl gradient-bg text-white font-black text-sm uppercase tracking-[0.2em] shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 mt-4 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed"
+              className={`w-full py-5 rounded-2xl gradient-bg text-white font-black text-sm uppercase tracking-[0.2em] shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 mt-4 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed ${!consent ? 'brightness-75' : ''}`}
             >
               {isSending ? <Loader2 className="animate-spin" size={20} aria-hidden="true" /> : <>{data.formButton} <ArrowRight size={20} aria-hidden="true" /></>}
             </button>
