@@ -1,8 +1,10 @@
 import React from 'react';
 import { SectionWrapper } from './Shared';
 
-export const Process = ({ data }) => (
-  <SectionWrapper id="process" className="max-w-6xl mx-auto" pattern="grid">
+export const Process = ({ data }) => {
+  if (!data || !data.steps) return null;
+  return (
+    <SectionWrapper id="process" className="max-w-6xl mx-auto" pattern="grid">
     <div className="mb-20">
       <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight text-[var(--text-main)]">{data.title} <span className="text-blue-600 dark:text-blue-500">{data.accent}</span></h2>
       <p className="text-[var(--text-muted)] text-sm max-w-xl">{data.subtitle}</p>
@@ -17,4 +19,5 @@ export const Process = ({ data }) => (
       ))}
     </div>
   </SectionWrapper>
-);
+  );
+};

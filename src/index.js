@@ -14,7 +14,7 @@ root.render(
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js')
-      .then(reg => console.log('SW registered:', reg))
-      .catch(err => console.log('SW error:', err));
+      .then(() => {}) // SW registered silently in production
+      .catch(() => {}); // SW error handled silently in production
   });
 }

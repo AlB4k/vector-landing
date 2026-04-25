@@ -2,8 +2,10 @@ import React from 'react';
 import { ChevronDown } from 'lucide-react';
 import { SectionWrapper } from './Shared';
 
-export const FAQ = ({ data }) => (
-  <SectionWrapper id="faq" className="max-w-4xl mx-auto px-4 md:px-6">
+export const FAQ = ({ data }) => {
+  if (!data || !data.items) return null;
+  return (
+    <SectionWrapper id="faq" className="max-w-4xl mx-auto px-4 md:px-6">
     <div className="text-center mb-10 md:mb-16">
       <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight leading-tight text-[var(--text-main)]">{data.title} <span className="text-blue-600 dark:text-blue-500">{data.accent}</span></h2>
     </div>
@@ -19,4 +21,5 @@ export const FAQ = ({ data }) => (
       ))}
     </div>
   </SectionWrapper>
-);
+  );
+};

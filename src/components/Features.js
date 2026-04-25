@@ -1,8 +1,10 @@
 import React from 'react';
 import { SectionWrapper, DynamicIcon } from './Shared';
 
-export const Features = ({ data }) => (
-  <SectionWrapper id="features" className="max-w-6xl mx-auto" pattern="dots">
+export const Features = ({ data }) => {
+  if (!data || !data.items) return null;
+  return (
+    <SectionWrapper id="features" className="max-w-6xl mx-auto" pattern="dots">
     <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
       <div className="max-w-2xl">
         <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight text-[var(--text-main)]">{data.title} <span className="text-blue-600 dark:text-blue-500">{data.accent}</span></h2>
@@ -22,4 +24,5 @@ export const Features = ({ data }) => (
       ))}
     </div>
   </SectionWrapper>
-);
+  );
+};

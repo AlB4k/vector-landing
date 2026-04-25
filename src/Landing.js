@@ -22,8 +22,10 @@ import { Stats } from './components/Stats';
 import { Process } from './components/Process';
 import { Services } from './components/Services';
 import { FAQ } from './components/FAQ';
+import { News } from './components/News';
 import { ServiceArea } from './components/ServiceArea';
 import { Contact } from './components/Contact';
+import { BPO } from './components/BPO';
 import { CookieBanner } from './components/CookieBanner';
 
 // --- STYLES ---
@@ -126,14 +128,16 @@ export default function Landing({ content, theme, setTheme }) {
   const renderSection = (section) => {
     if (!section.enabled) return null;
     switch (section.id) {
-      case 'hero': return <Hero key={section.id} data={content.hero} />;
+      case 'hero': return <Hero key={section.id} data={content.hero} config={content.hotlineConfig} />;
       case 'features': return <Features key={section.id} data={content.features} />;
       case 'stats': return <Stats key={section.id} data={content.stats} />;
       case 'process': return <Process key={section.id} data={content.process} />;
       case 'services': return <Services key={section.id} data={content.services} />;
-      case 'serviceArea': return <ServiceArea key={section.id} data={content.serviceArea} />;
+      case 'bpo': return <BPO key={section.id} data={content.bpo} />;
+      case 'serviceArea': return <ServiceArea key={section.id} data={content.serviceArea} isLight={isLight} />;
       case 'faq': return <FAQ key={section.id} data={content.faq} />;
-      case 'contact': return <Contact key={section.id} data={content.contact} companyInfo={{ phone: content.phone, email: content.email, address: content.address }} socials={content.socials} integrations={content.integrations} handleFormSubmit={handleFormSubmit} emailValue={emailValue} setEmailValue={setEmailValue} />;
+      case 'news': return <News key={section.id} data={content.news} />;
+      case 'contact': return <Contact key={section.id} data={content.contact} companyInfo={{ phone: content.phone, email: content.email, address: content.address }} socials={content.socials} integrations={content.integrations} handleFormSubmit={handleFormSubmit} emailValue={emailValue} setEmailValue={setEmailValue} isLight={isLight} />;
       default: return null;
     }
   };

@@ -95,3 +95,12 @@ body::after {
 ::-webkit-scrollbar-thumb:hover {
   background: #334155;
 }
+
+.will-change-transform {
+  will-change: transform;
+  transform: translateZ(0);
+}
+
+.will-change-opacity {
+  will-change: opacity;
+}

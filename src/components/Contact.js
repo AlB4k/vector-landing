@@ -60,7 +60,7 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
         });
         if (!response.ok) throw new Error('Failed to send');
       } catch (err) {
-        console.error("Formspree error:", err);
+        // Silent error handling for production, user gets feedback via errors.submit
         setErrors({ submit: 'Ошибка отправки. Попробуйте позже.' });
         setIsSending(false);
         return;
@@ -148,7 +148,12 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
         {/* Right: Form */}
         <div className="relative">
           <div className="absolute -inset-4 bg-blue-500/5 rounded-[2.5rem] blur-2xl"></div>
-          <form onSubmit={onSubmit} noValidate className="relative bg-slate-900/40 backdrop-blur-xl border border-white/5 p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl space-y-6 text-left">
+          <form
+            onSubmit={onSubmit}
+            noValidate
+            className="relative backdrop-blur-xl border border-[var(--border)] p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl space-y-6 text-left transition-colors duration-500"
+            style={{ background: 'var(--card-bg)' }}
+          >
             <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2 text-left">
                 <label className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{data.formName}</label>

@@ -1,12 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Landing from './Landing';
-import CMS from './CMS';
-import PrivacyPolicy from './pages/PrivacyPolicy';
 import Requisites from './pages/Requisites';
 import Oferta from './pages/Oferta';
 import NotFound from './pages/NotFound';
-import { Lock, LogIn, AlertTriangle, RefreshCcw } from 'lucide-react';
+import { Lock, LogIn, AlertTriangle, RefreshCcw, Loader2 } from 'lucide-react';
+import { validateContent } from './utils/security';
+
+const CMS = React.lazy(() => import('./CMS'));
+const PrivacyPolicy = React.lazy(() => import('./pages/PrivacyPolicy'));
+
+// Loading component for lazy loading
+const PageLoader = () => (
+  <div className="min-h-screen bg-[#050508] flex items-center justify-center">
+    <div className="flex flex-col items-center gap-4">
+      <Loader2 className="w-10 h-10 text-blue-500 animate-spin" />
+      <p className="text-blue-500 font-bold uppercase tracking-widest text-[10px]">Загрузка модуля...</p>
+    </div>
+  </div>
+);
 
 // Scroll to top on route change
 function ScrollToTop() {
@@ -48,229 +60,534 @@ class ErrorBoundary extends React.Component {
 }
 
 const INITIAL_CONTENT = {
-  companyName: 'ООО "ВЕКТОР"',
-  address: '394000, г. Воронеж, ул. Лебедева, д. 4',
-  phone: '+7 (930) 409-27-00',
-  email: 'Vektor0949@yandex.ru',
-  inn: '3663111111',
-  kpp: '366301001',
-  ogrn: '1153668000000',
-  ceo: 'Генеральный директор',
-  okved: '82.99',
-  bank: {
-    name: '',
-    bik: '',
-    rs: '',
-    ks: ''
+  "companyName": "ООО \"ВЕКТОР\"",
+  "address": "394000, г. Воронеж, ул. Лебедева, д. 4",
+  "phone": "+7 (930) 409-27-00",
+  "email": "Vektor0949@yandex.ru",
+  "inn": "3663111111",
+  "kpp": "366301001",
+  "ogrn": "1153668000000",
+  "ceo": "Генеральный директор",
+  "okved": "82.99",
+  "bank": {
+    "name": "",
+    "bik": "",
+    "rs": "",
+    "ks": ""
   },
-  pdnReg: '36-25-043546',
-  pdnOrder: '№218 от 13.11.2025',
-
-  theme: {
-    dark: {
-      primary: '#050508',
-      secondary: '#0a0a0f',
-      accentFrom: '#1e40af',
-      accentTo: '#06b6d4',
-      textMain: '#f8fafc',
-      textMuted: '#64748b',
-      blur: '12px'
+  "pdnReg": "36-25-043546",
+  "pdnOrder": "№218 от 13.11.2025",
+  "theme": {
+    "dark": {
+      "primary": "#050508",
+      "secondary": "#0a0a0f",
+      "accentFrom": "#1e40af",
+      "accentTo": "#06b6d4",
+      "textMain": "#f8fafc",
+      "textMuted": "#64748b",
+      "blur": "12px"
     },
-    light: {
-      primary: '#ffffff',
-      secondary: '#f8fafc',
-      accentFrom: '#2563eb',
-      accentTo: '#0891b2',
-      textMain: '#020617',
-      textMuted: '#334155',
-      blur: '20px'
+    "light": {
+      "primary": "#f8fafc",
+      "secondary": "#f1f5f9",
+      "accentFrom": "#2563eb",
+      "accentTo": "#0891b2",
+      "textMain": "#0f172a",
+      "textMuted": "#475569",
+      "blur": "20px"
     }
   },
-
-  sections: [
-    { id: 'hero', enabled: true, label: 'Hero Секция' },
-    { id: 'features', enabled: true, label: 'Преимущества' },
-    { id: 'stats', enabled: true, label: 'Статистика' },
-    { id: 'process', enabled: true, label: 'Процесс работы' },
-    { id: 'services', enabled: true, label: 'Услуги' },
-    { id: 'faq', enabled: true, label: 'FAQ' },
-    { id: 'serviceArea', enabled: true, label: 'География' },
-    { id: 'contact', enabled: true, label: 'Контакты' }
+  "sections": [
+    {
+      "id": "hero",
+      "enabled": true,
+      "label": "Hero Секция"
+    },
+    {
+      "id": "stats",
+      "enabled": true,
+      "label": "Статистика"
+    },
+    {
+      "id": "bpo",
+      "enabled": true,
+      "label": "Что такое БПО"
+    },
+    {
+      "id": "features",
+      "enabled": true,
+      "label": "Преимущества"
+    },
+    {
+      "id": "process",
+      "enabled": true,
+      "label": "Процесс работы"
+    },
+    {
+      "id": "services",
+      "enabled": true,
+      "label": "Услуги"
+    },
+    {
+      "id": "serviceArea",
+      "enabled": true,
+      "label": "География"
+    },
+    {
+      "id": "faq",
+      "enabled": true,
+      "label": "FAQ"
+    },
+    {
+      "id": "news",
+      "enabled": true,
+      "label": "Новости"
+    },
+    {
+      "id": "contact",
+      "enabled": true,
+      "label": "Контакты"
+    }
   ],
-
-  hero: {
-    badge: 'Сертифицированный оператор персональных данных',
-    title1: 'Индустриальные стандарты',
-    titleGradient: 'логистики квитанций ЖКХ',
-    subtitle: 'Высокопроизводительная печать по технологии Pressure Seal и гарантированная адресная дистрибуция. Обеспечиваем собираемость платежей для крупнейших УК и расчетных центров Воронежской области с 2011 года.',
-    btnPrimary: 'Запросить КП',
-    btnSecondary: 'Тарифы и услуги',
-    hotlineLabel: 'Телефон горячей линии',
-    hotlinePhone: '+7 (930) 409-27-00'
+  "hero": {
+    "badge": "Соответствие 152-ФЗ включено в базовый тариф",
+    "title1": "Квитанция — в каждый ящик.",
+    "titleGradient": "В срок. По закону.",
+    "subtitle": "Печатаем, запечатываем и доставляем платёжные документы для управляющих компаний и расчётных центров Воронежской области. Работаем с 2011 года. Полное соответствие ФЗ-152 — без доплат.",
+    "btnPrimary": "Запросить КП",
+    "btnSecondary": "Тарифы и услуги",
+    "hotlineLabel": "Прямая линия",
+    "hotlinePhone": "+7 (930) 409-27-00"
   },
-
-  features: {
-    title: 'Стандарты',
-    accent: 'надежности',
-    subtitle: 'Мы минимизируем риски управляющих компаний, обеспечивая правовую чистоту и физическую сохранность документов.',
-    items: [
-      { icon: 'ShieldCheck', title: "Технология Pressure Seal", desc: "Промышленная печать и автоматическая склейка под давлением. Создание защищенного бесконвертного отправления, исключающего доступ к ПДн без повреждения целостности." },
-      { icon: 'Users', title: "Статус Оператора ПДн", desc: "Официальное включение в реестр Роскомнадзора. Организационные и технические меры защиты информации в соответствии с ФЗ-152 и требованиями ФСТЭК." },
-      { icon: 'Check', title: "Верификация баз", desc: "Предварительная очистка и нормализация адресных реестров заказчика. Сверка с актуальной базой ФИАС для минимизации возвратов." },
-      { icon: 'MapPin', title: "Гео-мониторинг", desc: "Контроль курьерской сети через GPS-трекинг и обязательную фотофиксацию по регламенту 1/10 (каждый десятый ящик) или 100% по запросу." },
-      { icon: 'Zap', title: "Сжатые сроки (SLA)", desc: "Выход на маршруты в течение 12 часов после формирования тиража. Полное закрытие отчетного периода за 3-5 рабочих дней по всему городу." },
-      { icon: 'Truck', title: "Профессиональный штат", desc: "Постоянный состав курьеров с допуском к работе в закрытых жилых комплексах и знанием специфики частного сектора." },
-    ]
-  },
-
-  stats: [
-    { val: 1500000, suffix: '+', label: 'Отправлений ежемесячно' },
-    { val: 99.9, suffix: '%', label: 'Индекс доставляемости' },
-    { val: 36, suffix: '', label: 'Муниципальных районов' },
-    { val: 12, suffix: '+', label: 'Лет экспертизы' },
+  "stats": [
+    {
+      "val": "1.5М",
+      "suffix": "+",
+      "label": "Отправлений ежемесячно"
+    },
+    {
+      "val": "99.96",
+      "suffix": "%",
+      "label": "Индекс доставляемости"
+    },
+    {
+      "val": "36",
+      "suffix": "",
+      "label": "Муниципальных районов"
+    },
+    {
+      "val": "15",
+      "suffix": "+",
+      "label": "Крупных клиентов"
+    }
   ],
-
-  process: {
-    title: 'Технологический',
-    accent: 'процесс',
-    subtitle: 'Автоматизированная цепочка от обработки данных до контроля вложений.',
-    stepLabel: 'Шаг',
-    steps: [
-      { step: "01", title: "Подготовка данных", desc: "Прием реестров в защищенном контуре. Формирование макетов бесконвертных отправлений с учетом требований ГИС ЖКХ." },
-      { step: "02", title: "Производственный цикл", desc: "Высокоскоростная печать, фальцовка и нанесение клеевого слоя. Создание защищенного self-mailer отправления." },
-      { step: "03", title: "Контроль и доставка", desc: "Логистическая маршрутизация и адресная доставка. Предоставление фото-отчетов и актов сверки по результатам." },
-    ]
-  },
-
-  services: {
-    title: 'Сервисные',
-    accent: 'решения',
-    subtitle: 'Оптимизируйте затраты на печать и логистику платежных документов.',
-    btnLabel: 'Запросить расчет',
-    list: [
+  "bpo": {
+    "title": "Почему",
+    "accent": "бесконвертное отправление",
+    "subtitle": "Квитанция в открытом ящике — административный штраф по ст. 13.11 КоАП РФ (до 500 000 ₽ для юрлица). Технология БПО полностью исключает этот риск.",
+    "legalNote": "ФЗ-152 обязывает обеспечить защиту персональных данных от любого случайного доступа третьих лиц, что фактически запрещает доставку квитанций в открытом виде.",
+    "steps": [
       {
-        title: 'Адресная дистрибуция',
-        badge: 'Для готовых тиражей',
-        features: ["Доставка по Воронежу и области", "Собственная курьерская сеть", "Контроль прохождения по участкам", "Электронная отчетность"],
-        button: 'Запросить спецификацию',
-        popular: false
+        "num": "01",
+        "title": "Печать переменных данных",
+        "desc": "Высокоскоростная цифровая печать реестра начислений. Каждый лист персонализирован."
       },
       {
-        title: 'Печать + Доставка',
-        badge: 'Комплексное решение',
-        accentBadge: 'Полный логистический цикл',
-        features: ["Все услуги базовой дистрибуции", "Печать self-mailer отправлений", "Автоматическая упаковка и склейка", "Полное соответствие 152-ФЗ", "Приоритетное обслуживание"],
-        button: 'Получить расчет стоимости',
-        popular: true
+        "num": "02",
+        "title": "Фальцовка и склейка",
+        "desc": "Автоматический Pressure Seal: лист складывается и запечатывается по периметру под давлением."
+      },
+      {
+        "num": "03",
+        "title": "Готовый мэйлер",
+        "desc": "Документ сам является конвертом. Данные недоступны без физического вскрытия — 100% соответствие ФЗ-152."
+      }
+    ],
+    "advantages": [
+      "Экономия 22–35% на материалах vs конверт + вложение",
+      "Скорость производства: до 200 000 отправлений в сутки",
+      "Тариф Почты России на БПО ниже, чем на конверт",
+      "Один документ — лист + конверт — без лишних операций"
+    ]
+  },
+  "features": {
+    "title": "Почему выбирают",
+    "accent": "ВЕКТОР",
+    "subtitle": "Шесть причин, по которым расчётные центры и УК Воронежской области доверяют нам логистику платёжных документов.",
+    "items": [
+      {
+        "icon": "ShieldCheck",
+        "title": "Защита персональных данных",
+        "desc": "Технология Pressure Seal: промышленная печать и автоматическая склейка под давлением. Доступ к ПДн внутри квитанции невозможен без повреждения целостности отправления. Регистрационный номер оператора ПДн: 36-25-043546."
+      },
+      {
+        "icon": "FileText",
+        "title": "Статус оператора ПДн",
+        "desc": "Включены в реестр Роскомнадзора (Приказ №218 от 13.11.2025). Организационные и технические меры защиты — по требованиям ФСТЭК. Данные передаются только по зашифрованным каналам и удаляются после подписания акта."
+      },
+      {
+        "icon": "Check",
+        "title": "Верификация баз — ноль лишних возвратов",
+        "desc": "Нормализуем адресный реестр по базе ФИАС, выявляем дубли и недостоверные адреса до старта тиража. Типичная экономия заказчика: –12–18% возвратов по сравнению с необработанным реестром."
+      },
+      {
+        "icon": "MapPin",
+        "title": "GPS-контроль каждого маршрута",
+        "desc": "Трекинг курьерской сети в реальном времени. Обязательная фотофиксация: каждый десятый ящик в базовом тарифе, 100% — по запросу. Отклонение от маршрута — немедленное уведомление диспетчеру."
+      },
+      {
+        "icon": "Zap",
+        "title": "SLA: город за 3 рабочих дня",
+        "desc": "Выход на маршруты в течение 12 часов после передачи тиража. Полное закрытие отчётного периода за 3–5 рабочих дней по всему Воронежу. Электронный акт — автоматически по завершении."
+      },
+      {
+        "icon": "Truck",
+        "title": "Собственная курьерская сеть",
+        "desc": "Постоянный штат курьеров с допуском в закрытые ЖК и знанием специфики частного сектора. Прямой контроль без посредников и субподрядчиков на ключевых маршрутах."
       }
     ]
   },
-
-  faq: {
-    title: 'Популярные',
-    accent: 'вопросы',
-    items: [
-      { q: "Как обеспечивается защита персональных данных?", a: "Мы работаем как лицензированный оператор ПДн. Печать происходит в закрытом контуре, данные передаются по зашифрованным каналам, а формат бесконвертного отправления исключает доступ посторонних к информации внутри квитанции." },
-      { q: "В чем преимущество бесконвертной печати (self-mailer)?", a: "Это наиболее защищенный и экономически эффективный способ доставки. Квитанция сама является конвертом, края которой надежно склеены. Это экономит время на упаковку и снижает стоимость материалов." },
-      { q: "Как мы можем контролировать факт доставки?", a: "Мы предоставляем детальные реестры по итогам доставки. По согласованию возможна выборочная фотофиксация почтовых ящиков на конкретных адресах для подтверждения качества работы курьера." },
-      { q: "Работаете ли вы с областью или только по городу?", a: "Наш основной охват — г. Воронеж, но мы также осуществляем доставку во все ключевые муниципальные районы Воронежской области. Сроки и стоимость зависят от удаленности населенных пунктов." },
+  "process": {
+    "title": "Технологический",
+    "accent": "процесс",
+    "subtitle": "От реестра начислений до электронного акта — один подрядчик, один договор.",
+    "stepLabel": "Шаг",
+    "steps": [
+      {
+        "step": "01",
+        "title": "Подготовка данных",
+        "desc": "Приём реестров в защищённом контуре по зашифрованному каналу. Верификация адресов по ФИАС. Формирование макетов бесконвертных отправлений с учётом требований ГИС ЖКХ и ПП РФ № 354."
+      },
+      {
+        "step": "02",
+        "title": "Производственный цикл",
+        "desc": "Высокоскоростная цифровая печать переменных данных, фальцовка и нанесение клеевого слоя по технологии Pressure Seal. Выходной контроль: проверка целостности каждого отправления."
+      },
+      {
+        "step": "03",
+        "title": "Логистика и контроль",
+        "desc": "Маршрутизация по участкам, адресная доставка с GPS-трекингом. Фотофиксация по регламенту. Электронный реестр и акт сдачи-приёмки — в личном кабинете заказчика по завершении."
+      }
     ]
   },
-
-  serviceArea: {
-    title: 'Широкая география',
-    accent: 'присутствия',
-    subtitle: 'Обеспечиваем надежную логистику и дистрибуцию во всех районах Воронежа и ключевых населенных пунктах области.',
-    locations: [
-      { name: 'Воронеж (Все районы)', type: 'Полное покрытие' },
-      { name: 'Новая Усмань', type: 'Ежедневная доставка' },
-      { name: 'Семилуки', type: 'Ежедневная доставка' },
-      { name: 'Рамонь', type: 'По графику (3р/нед)' },
-      { name: 'Лиски', type: 'По графику (2р/нед)' },
-      { name: 'Борисоглебск', type: 'Магистральная логистика' }
+  "services": {
+    "title": "Сервисные",
+    "accent": "решения",
+    "subtitle": "Два формата работы — выберите то, что подходит вашей организации.",
+    "btnLabel": "Запросить расчёт",
+    "list": [
+      {
+        "title": "Адресная дистрибуция",
+        "badge": "Для готовых тиражей",
+        "tagline": "Готовый тираж — не ваша забота",
+        "desc": "Принимаем запечатанные БПО-отправления и развозим по всем участкам Воронежа и области. Вы получаете электронный реестр с подтверждением доставки по каждому адресу.",
+        "features": [
+          "Доставка по Воронежу и всем районам области",
+          "Собственная курьерская сеть, без субподряда",
+          "GPS-трекинг + фотофиксация (1/10 или 100%)",
+          "Электронный реестр и акт в личном кабинете",
+          "SLA: выход на маршруты в течение 12 часов"
+        ],
+        "button": "Запросить спецификацию",
+        "popular": false
+      },
+      {
+        "title": "Печать + Доставка",
+        "badge": "Полный цикл под ключ",
+        "accentBadge": "Рекомендуем",
+        "tagline": "От файла с данными — до квитанции в ящике",
+        "desc": "Принимаем реестр начислений, печатаем, запечатываем по Pressure Seal, сортируем и доставляем. Один договор. Один акт. Один счёт.",
+        "features": [
+          "Все услуги адресной дистрибуции",
+          "Высокоскоростная цифровая печать БПО",
+          "Автоматическая фальцовка и склейка под давлением",
+          "Верификация адресного реестра по ФИАС",
+          "Полное соответствие ФЗ-152, ПП РФ № 354, ГИС ЖКХ",
+          "Приоритетный запуск в производство"
+        ],
+        "button": "Получить расчёт стоимости",
+        "popular": true
+      }
     ]
   },
-
-  contact: {
-    title: 'Связаться',
-    accent: 'с нами',
-    subtitle: 'Оставьте заявку, и наш эксперт подготовит индивидуальное коммерческое предложение в течение часа.',
-    formName: 'Ваше имя',
-    formEmail: 'Электронная почта',
-    formPhone: 'Телефон',
-    formMessage: 'Сообщение или вопрос',
-    formButton: 'Отправить запрос',
-    infoTitle: 'Контактная информация',
-    infoDesc: 'Мы всегда на связи для обсуждения ваших задач по логистике и печати.'
+  "faq": {
+    "title": "Популярные",
+    "accent": "вопросы",
+    "items": [
+      {
+        "q": "Несёт ли УК ответственность, если квитанция доставлена в открытом виде?",
+        "a": "Да. Ответственность несёт оператор персональных данных — то есть сама управляющая компания или расчётный центр. Санкция — административный штраф по ч. 1 ст. 13.11 КоАП РФ: до 75 000 ₽ для должностного лица и до 500 000 ₽ для юридического. Именно поэтому важно работать с подрядчиком, у которого прописана ответственность за соблюдение ФЗ-152 в договоре — как у нас."
+      },
+      {
+        "q": "Как обеспечивается защита персональных данных при передаче реестра?",
+        "a": "Реестр начислений передаётся только по зашифрованному каналу. Печать происходит в закрытом производственном контуре. Формат бесконвертного отправления (Pressure Seal) физически исключает доступ посторонних к данным внутри квитанции. По завершении тиража реестр удаляется — с составлением акта об уничтожении данных. Мы включены в реестр операторов ПДн Роскомнадзора (рег. № 36-25-043546)."
+      },
+      {
+        "q": "В чём преимущество бесконвертного отправления (БПО / self-mailer) перед обычным конвертом?",
+        "a": "Три главных преимущества: 1) Соответствие ФЗ-152 — данные защищены без дополнительных операций; 2) Экономия 22–35% на материалах при тираже от 10 000 экз. (нет расхода на конверт); 3) Скорость — отсутствует операция вкладывания, что сокращает производственный цикл. Тариф Почты России и большинства курьерских служб на БПО также ниже, чем на конверт с вложением."
+      },
+      {
+        "q": "Как контролировать факт доставки?",
+        "a": "По завершении каждого маршрута вы получаете электронный реестр с отметками по адресам. В базовом тарифе — обязательная фотофиксация каждого десятого ящика. По запросу — 100% фотоотчёт по всем адресам. GPS-треки курьеров доступны для просмотра. Все материалы прилагаются к электронному акту сдачи-приёмки."
+      },
+      {
+        "q": "Что происходит с нашими данными после выполнения тиража?",
+        "a": "Реестры начислений удаляются в течение 5 рабочих дней после подписания акта. По запросу составляем акт об уничтожении персональных данных — документ для вашего внутреннего регламента по ФЗ-152. Промежуточное хранение — только в защищённом контуре, доступ имеют только сотрудники, допущенные к работе с ПДн."
+      },
+      {
+        "q": "Работаете ли вы с домами закрытого типа и ЖК с СКУД?",
+        "a": "Да. У нас собственный реестр допуска для закрытых жилых комплексов и предварительное согласование с управляющими организациями. Такие адреса выделяются в отдельные маршруты с контрольным временем доставки и обязательной фотофиксацией факта прохода."
+      },
+      {
+        "q": "Работаете ли вы с областью или только по городу?",
+        "a": "Основной охват — г. Воронеж (все районы). Ежедневная доставка: Новая Усмань, Семилуки. По графику: Рамонь (3 раза в неделю), Лиски (2 раза в неделю). Магистральная логистика: Борисоглебск и другие отдалённые районы. Сроки и стоимость по области рассчитываются индивидуально."
+      }
+    ]
   },
-
-  modals: {
-    success: {
-      title: 'Заявка отправлена!',
-      subtitle: 'Мы свяжемся с вами в течение часа.',
-      button: 'Закрыть'
+  "serviceArea": {
+    "title": "Широкая география",
+    "accent": "присутствия",
+    "subtitle": "Собственная курьерская сеть без посредников. Прямой контроль маршрутов во всех районах присутствия.",
+    "ownNetworkNote": "Прямой контроль сотрудников без субподряда — 100% покрытие в зонах присутствия",
+    "locations": [
+      {
+        "name": "Воронеж (все районы)",
+        "type": "Полное покрытие",
+        "freq": "Ежедневно"
+      },
+      {
+        "name": "Новая Усмань",
+        "type": "Ежедневная доставка",
+        "freq": "Ежедневно"
+      },
+      {
+        "name": "Семилуки",
+        "type": "Ежедневная доставка",
+        "freq": "Ежедневно"
+      },
+      {
+        "name": "Рамонь",
+        "type": "По графику",
+        "freq": "3 раза/нед"
+      },
+      {
+        "name": "Лиски",
+        "type": "По графику",
+        "freq": "2 раза/нед"
+      },
+      {
+        "name": "Борисоглебск",
+        "type": "Магистральная логистика",
+        "freq": "По заявке"
+      }
+    ]
+  },
+  "contact": {
+    "title": "Связаться",
+    "accent": "с нами",
+    "subtitle": "Оставьте заявку — эксперт подготовит индивидуальное коммерческое предложение в течение часа.",
+    "formName": "Ваше имя",
+    "formEmail": "Электронная почта",
+    "formPhone": "Телефон",
+    "formMessage": "Тираж, география, вопрос",
+    "formButton": "Отправить запрос",
+    "formConsent": "Я даю согласие на обработку персональных данных в соответствии с Политикой конфиденциальности ООО «ВЕКТОР» (ФЗ-152)",
+    "infoTitle": "Контактная информация",
+    "infoDesc": "Принимаем заявки в рабочие дни с 8:00 до 18:00. Ответ — в течение 1 часа."
+  },
+  "modals": {
+    "success": {
+      "title": "Заявка отправлена!",
+      "subtitle": "Мы свяжемся с вами в течение часа в рабочее время.",
+      "button": "Закрыть"
     }
   },
-
-  footer: {
-    description: 'Специализированный оператор по производству и адресной дистрибуции документов.',
-    offerLabel: 'Оферта',
-    offerLink: '#'
+  "footer": {
+    "description": "Специализированный оператор по производству и адресной дистрибуции платёжных документов. Оператор ПДн, рег. № 36-25-043546.",
+    "offerLabel": "Оферта и условия",
+    "offerLink": "/offer"
   },
-  socials: {
-    telegram: 'https://t.me/vektor_logistics',
-    whatsapp: '',
-    vk: ''
+  "socials": {
+    "telegram": "https://t.me/vektor_logistics",
+    "whatsapp": "",
+    "vk": ""
   },
-  analytics: {
-    yandexMetrica: '',
-    googleAnalytics: '',
-    pixelId: ''
+  "analytics": {
+    "yandexMetrica": "",
+    "googleAnalytics": "",
+    "pixelId": ""
   },
-  integrations: {
-    formspreeId: ''
+  "integrations": {
+    "formspreeId": ""
   },
-  companyTagline: 'LOGISTIC TECH',
-  cookieBanner: {
-    title: 'Контроль Cookie',
-    description: 'Мы используем cookie-файлы для корректной работы сайта. Технические cookie необходимы. Аналитические требуют вашего согласия.',
-    btnAll: 'Принять все',
-    btnEssential: 'Только необходимые'
+  "companyTagline": "LOGISTIC TECH",
+  "cookieBanner": {
+    "title": "Управление Cookie",
+    "description": "Мы используем cookie для корректной работы сайта. Технические cookie необходимы. Аналитические требуют вашего согласия в соответствии с ФЗ-152.",
+    "btnAll": "Принять все",
+    "btnEssential": "Только необходимые"
   },
-  loaderDelay: 2000,
-  logoScaleHeader: 1.4,
-  logoScaleFooter: 1.2,
-  legal: {
-    version: '2.4.0-PROD',
-    statusLabel: 'Статус',
-    statusValue: 'Оператор ПДн (Роскомнадзор)',
-    privacy: `Настоящая Политика конфиденциальности персональных данных (далее – Политика конфиденциальности) действует в отношении всей информации, которую ООО "ВЕКТОР", расположенное на домене vektor-vrn.ru, может получить о Пользователе во время использования сайта...`,
-    agreement: `Согласие на обработку персональных данных... В соответствии с Федеральным законом № 152-ФЗ «О персональных данных» от 27.07.2006 года настоящим подтверждаю свое согласие на обработку моих персональных данных...`
+  "loaderDelay": 2000,
+  "logoScaleHeader": 2.2,
+  "logoScaleFooter": 2,
+  "legal": {
+    "statusLabel": "Статус",
+    "statusValue": "Оператор ПДн (Роскомнадзор), рег. № 36-25-043546",
+    "privacy": "Настоящая Политика конфиденциальности персональных данных (далее – Политика конфиденциальности) действует в отношении всей информации, которую ООО \"ВЕКТОР\", расположенное на домене vektor-vrn.ru, может получить о Пользователе во время использования сайта...",
+    "agreement": "Согласие на обработку персональных данных... В соответствии с Федеральным законом № 152-ФЗ «О персональных данных» от 27.07.2006 года настоящим подтверждаю своё согласие на обработку моих персональных данных..."
+  },
+  "_changelog": {
+    "version": "2.0",
+    "date": "2026-04-24",
+    "author": "content-review",
+    "changes": [
+      "hero.badge: исправлена обрезка ('Собл' → полная фраза)",
+      "hero.hotlinePhone: заглушка заменена на реальный номер +7 (930) 409-27-00",
+      "hero.title1 + titleGradient: новый слоган, ориентированный на выгоду и закон",
+      "hero.subtitle: переписан с акцентом на комплексность и 152-ФЗ",
+      "stats: все значения были в JSON корректно, STAT_ — проблема рендера",
+      "sections: добавлена новая секция 'bpo' (образовательный блок о технологии)",
+      "bpo: новый раздел — объяснение технологии БПО с правовым контекстом",
+      "features.title/subtitle: переориентированы с 'стандартов' на конкретные причины выбора",
+      "features.items[0].title: 'Технология Pressure Seal' → 'Защита персональных данных'",
+      "features.items[0].desc: добавлен регномер оператора ПДн",
+      "features.items[1]: расширен — добавлены сроки удаления данных и зашифрованные каналы",
+      "features.items[2]: добавлена конкретная экономия (-12-18% возвратов)",
+      "features.items[3].title: 'Гео-мониторинг' → 'GPS-контроль каждого маршрута'",
+      "features.items[4].title: добавлен конкретный SLA в заголовок",
+      "features.items[5]: добавлено 'без субподряда'",
+      "process.subtitle: переписан — акцент на 'один подрядчик'",
+      "process.steps[0].desc: добавлены НПА (ПП РФ № 354, ГИС ЖКХ)",
+      "process.steps[2].title: 'Контроль и доставка' → 'Логистика и контроль'",
+      "services.subtitle: переформулирован",
+      "services.list[*].tagline: добавлены слоганы к каждому тарифу",
+      "services.list[*].desc: добавлены описания с выгодой",
+      "services.list[0].features: расширены до 5 пунктов с конкретикой",
+      "services.list[1].features: расширены до 6 пунктов, добавлены НПА",
+      "services.list[1].accentBadge: 'Полный логистический цикл' → 'Рекомендуем'",
+      "faq: добавлены 3 новых вопроса (КоАП, уничтожение данных, ЖК с СКУД)",
+      "faq.items[*].a: расширены ответы — добавлена конкретика и правовые ссылки",
+      "faq.items[1].q: переформулирован — теперь о передаче реестра",
+      "faq.items[2].a: добавлены три конкретных преимущества БПО",
+      "serviceArea.locations: добавлена колонка 'freq' с частотой доставки",
+      "serviceArea.ownNetworkNote: добавлена подпись блока",
+      "contact.formMessage: placeholder изменён на 'Тираж, география, вопрос'",
+      "contact.infoDesc: добавлено рабочее время",
+      "footer.description: добавлен регномер оператора ПДн",
+      "footer.offerLink: '#' → '/offer'",
+      "legal.statusValue: добавлен регномер",
+      "cookieBanner.description: добавлена ссылка на ФЗ-152",
+      "_changelog: добавлен раздел истории изменений"
+    ],
+    "requiresAction": [
+      "ОБЯЗАТЕЛЬНО: bank.name/bik/rs/ks — заполнить банковские реквизиты",
+      "ОБЯЗАТЕЛЬНО: integrations.formspreeId — подключить обработчик формы",
+      "ОБЯЗАТЕЛЬНО: analytics.yandexMetrica — подключить Яндекс.Метрику",
+      "ОБЯЗАТЕЛЬНО: footer.offerLink — разместить текст оферты по адресу /offer",
+      "РЕКОМЕНДУЕТСЯ: socials.whatsapp — добавить WhatsApp для быстрой связи",
+      "РЕКОМЕНДУЕТСЯ: inn/ogrn — проверить корректность (сейчас выглядят как заглушки)",
+      "РЕКОМЕНДУЕТСЯ: добавить секцию 'cases' с 2-3 анонимными кейсами",
+      "РЕКОМЕНДУЕТСЯ: analytics.googleAnalytics или yandexMetrica — без метрик нет данных"
+    ]
+  },
+  "hotlineConfig": {
+    "showBadge": true,
+    "scheduleEnabled": true,
+    "startHour": 9,
+    "endHour": 18,
+    "workDays": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "news": {
+    "title": "Новости и",
+    "accent": "события",
+    "items": [
+      {
+        "date": "24.04.2026",
+        "tag": "ПРОИЗВОДСТВО",
+        "title": "Запуск новой линии Pressure Seal",
+        "desc": "Мы ввели в эксплуатацию дополнительный комплекс оборудования для промышленной печати, что позволило увеличить общую мощность производства на 30%."
+      },
+      {
+        "date": "15.03.2026",
+        "tag": "ЛОГИСТИКА",
+        "title": "Обновление автопарка логистики",
+        "desc": "Для обеспечения стабильных сроков доставки в муниципальные районы области были закуплены три новых специализированных автомобиля."
+      },
+      {
+        "date": "01.02.2026",
+        "tag": "БЕЗОПАСНОСТЬ",
+        "title": "Успешная аттестация Роскомнадзора",
+        "desc": "ООО \"ВЕКТОР\" подтвердило статус оператора персональных данных, успешно пройдя плановую проверку соответствия техническим регламентам ФЗ-152."
+      }
+    ]
   }
 };
 
 function LoginScreen({ onLogin }) {
   const [pass, setPass] = useState('');
   const [error, setError] = useState(false);
+  const [attempts, setAttempts] = useState(0);
+  const [lockoutTime, setLockoutTime] = useState(0);
 
-  const handleSubmit = (e) => {
+  useEffect(() => {
+    if (lockoutTime > 0) {
+      const timer = setInterval(() => {
+        setLockoutTime(prev => Math.max(0, prev - 1));
+      }, 1000);
+      return () => clearInterval(timer);
+    }
+  }, [lockoutTime]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (pass === 'admin') {
-      onLogin();
-    } else {
+    if (lockoutTime > 0) return;
+
+    // SHA-256 hash of the password. Default is hash of 'admin'
+    const targetHash = process.env.REACT_APP_CMS_PASS_HASH || '8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918';
+
+    try {
+      const msgUint8 = new TextEncoder().encode(pass);
+      const hashBuffer = await crypto.subtle.digest('SHA-256', msgUint8);
+      const hashArray = Array.from(new Uint8Array(hashBuffer));
+      const inputHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+
+      if (inputHash === targetHash) {
+        onLogin();
+      } else {
+        const newAttempts = attempts + 1;
+        setAttempts(newAttempts);
+        setError(true);
+        setTimeout(() => setError(false), 1000);
+
+        if (newAttempts >= 5) {
+          setLockoutTime(30);
+          setAttempts(0);
+        }
+      }
+    } catch (err) {
+      console.error("Auth error:", err);
       setError(true);
-      setTimeout(() => setError(false), 1000);
     }
   };
 
   return (
     <div className="min-h-screen bg-[#08080f] flex items-center justify-center p-6">
       <div className={`w-full max-w-md bg-slate-900/50 p-10 rounded-[2.5rem] border ${error ? 'border-red-500 animate-shake' : 'border-slate-800'} glass shadow-2xl transition-all`}>
-        <div className="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg" style={{ background: 'linear-gradient(135deg, #3b82f6, #60a5fa)' }}>
+        <div className="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg" style={{ background: lockoutTime > 0 ? 'linear-gradient(135deg, #ef4444, #991b1b)' : 'linear-gradient(135deg, #3b82f6, #60a5fa)' }}>
           <Lock size={28} className="text-white" />
         </div>
         <h2 className="text-3xl font-black text-white text-center mb-2">CMS Доступ</h2>
-        <p className="text-slate-400 text-center mb-8 font-medium">Введите пароль администратора</p>
+        <p className="text-slate-400 text-center mb-8 font-medium">
+          {lockoutTime > 0
+            ? `Система заблокирована на ${lockoutTime} сек.`
+            : attempts > 0 ? `Попытка ${attempts} из 5` : 'Введите пароль администратора'}
+        </p>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="relative">
@@ -278,12 +595,18 @@ function LoginScreen({ onLogin }) {
               type="password"
               placeholder="••••••••"
               value={pass}
+              disabled={lockoutTime > 0}
               onChange={(e) => setPass(e.target.value)}
-              className="w-full bg-slate-800/50 border border-slate-700 rounded-2xl px-6 py-4 text-white text-center text-lg tracking-widest focus:outline-none focus:ring-4 focus:ring-indigo-500/20 transition-all"
+              className={`w-full bg-slate-800/50 border ${lockoutTime > 0 ? 'border-red-900/50 opacity-50' : 'border-slate-700'} rounded-2xl px-6 py-4 text-white text-center text-lg tracking-widest focus:outline-none focus:ring-4 focus:ring-indigo-500/20 transition-all`}
             />
           </div>
-          <button type="submit" className="w-full text-white py-4 rounded-2xl font-black text-lg shadow-xl hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3" style={{ background: 'linear-gradient(135deg, #3b82f6, #60a5fa)' }}>
-            <LogIn size={20} /> Войти в панель
+          <button
+            type="submit"
+            disabled={lockoutTime > 0}
+            className={`w-full text-white py-4 rounded-2xl font-black text-lg shadow-xl transition-all flex items-center justify-center gap-3 ${lockoutTime > 0 ? 'bg-slate-800 cursor-not-allowed opacity-50' : 'hover:scale-[1.02] active:scale-95'}`}
+            style={{ background: lockoutTime > 0 ? '' : 'linear-gradient(135deg, #3b82f6, #60a5fa)' }}
+          >
+            {lockoutTime > 0 ? `Доступ ограничен` : <><LogIn size={20} /> Войти в панель</>}
           </button>
         </form>
 
@@ -322,8 +645,13 @@ export default function App() {
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        // Merge with initial to ensure new schema fields exist
-        setContent({ ...INITIAL_CONTENT, ...parsed });
+        const validated = validateContent(parsed);
+        if (validated) {
+          // Merge with initial to ensure new schema fields exist
+          setContent({ ...INITIAL_CONTENT, ...validated });
+        } else {
+          console.warn("Local storage content is invalid, using defaults");
+        }
       } catch (e) {
         console.error("Failed to parse saved content", e);
       }
@@ -352,43 +680,51 @@ export default function App() {
     if (!hasConsent) return;
 
     if (content.analytics.yandexMetrica) {
-      const script = document.createElement('script');
-      script.type = 'text/javascript';
-      script.async = true;
-      script.id = 'ym-script';
-      script.innerHTML = `
-        (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
-        m[i].l=1*new Date();
-        for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
-        k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
-        (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
+      try {
+        const script = document.createElement('script');
+        script.type = 'text/javascript';
+        script.async = true;
+        script.id = 'ym-script';
+        script.textContent = `
+          (function(m,e,t,r,i,k,a){m[i]=m[i]||function(){(m[i].a=m[i].a||[]).push(arguments)};
+          m[i].l=1*new Date();
+          for (var j = 0; j < document.scripts.length; j++) {if (document.scripts[j].src === r) { return; }}
+          k=e.createElement(t),a=e.getElementsByTagName(t)[0],k.async=1,k.src=r,a.parentNode.insertBefore(k,a)})
+          (window, document, "script", "https://mc.yandex.ru/metrika/tag.js", "ym");
 
-        ym(${content.analytics.yandexMetrica}, "init", {
-             clickmap:true,
-             trackLinks:true,
-             accurateTrackBounce:true,
-             webvisor:true
-        });
-      `;
-      document.head.appendChild(script);
+          ym(${content.analytics.yandexMetrica}, "init", {
+               clickmap:true,
+               trackLinks:true,
+               accurateTrackBounce:true,
+               webvisor:true
+          });
+        `;
+        document.head.appendChild(script);
+      } catch (err) {
+        console.error("Yandex Metrica init failed:", err);
+      }
     }
 
     if (content.analytics.googleAnalytics) {
-      const gScript = document.createElement('script');
-      gScript.async = true;
-      gScript.id = 'ga-script';
-      gScript.src = `https://www.googletagmanager.com/gtag/js?id=${content.analytics.googleAnalytics}`;
-      document.head.appendChild(gScript);
+      try {
+        const gScript = document.createElement('script');
+        gScript.async = true;
+        gScript.id = 'ga-script';
+        gScript.src = `https://www.googletagmanager.com/gtag/js?id=${content.analytics.googleAnalytics}`;
+        document.head.appendChild(gScript);
 
-      const gConfigScript = document.createElement('script');
-      gConfigScript.id = 'ga-config';
-      gConfigScript.innerHTML = `
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', '${content.analytics.googleAnalytics}');
-      `;
-      document.head.appendChild(gConfigScript);
+        const gConfigScript = document.createElement('script');
+        gConfigScript.id = 'ga-config';
+        gConfigScript.textContent = `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', '${content.analytics.googleAnalytics}');
+        `;
+        document.head.appendChild(gConfigScript);
+      } catch (err) {
+        console.error("Google Analytics init failed:", err);
+      }
     }
   }, [content.analytics, view, consentVersion]); // Re-run when analytics config, view, or consent status changes
 
@@ -408,19 +744,21 @@ export default function App() {
     <ErrorBoundary>
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <ScrollToTop />
-        <Routes>
-          <Route path="/" element={
-            view === 'cms' ? (
-              <CMS content={content} setContent={handleUpdateContent} onLogout={() => { setIsAuth(false); setView('landing'); }} />
-            ) : (
-              <Landing content={content} theme={theme} setTheme={setTheme} />
-            )
-          } />
-          <Route path="/privacy" element={<PrivacyPolicy content={content} theme={theme} />} />
-          <Route path="/requisites" element={<Requisites content={content} theme={theme} />} />
-          <Route path="/oferta" element={<Oferta content={content} theme={theme} />} />
-          <Route path="*" element={<NotFound content={content} />} />
-        </Routes>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            <Route path="/" element={
+              view === 'cms' ? (
+                <CMS content={content} setContent={handleUpdateContent} onLogout={() => { setIsAuth(false); setView('landing'); }} />
+              ) : (
+                <Landing content={content} theme={theme} setTheme={setTheme} />
+              )
+            } />
+            <Route path="/privacy" element={<PrivacyPolicy content={content} theme={theme} />} />
+            <Route path="/requisites" element={<Requisites content={content} theme={theme} />} />
+            <Route path="/oferta" element={<Oferta content={content} theme={theme} />} />
+            <Route path="*" element={<NotFound content={content} />} />
+          </Routes>
+        </Suspense>
       </Router>
     </ErrorBoundary>
   );

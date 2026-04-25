@@ -2,7 +2,8 @@ import React from 'react';
 import { Counter, SectionWrapper } from './Shared';
 
 export const Stats = ({ data }) => {
-  const activeStats = data.filter(stat => stat.val > 0);
+  if (!data || !Array.isArray(data)) return null;
+  const activeStats = data.filter(stat => stat && stat.val > 0);
 
   if (activeStats.length === 0) return null;
 
@@ -15,7 +16,8 @@ export const Stats = ({ data }) => {
           <div className="absolute top-0 left-0 w-1 h-4 bg-blue-500 shadow-[0_0_15px_rgba(59,130,246,0.4)]"></div>
 
           <div className="flex flex-col gap-1">
-            <div className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tighter text-[var(--text-main)] font-mono break-all sm:break-normal">
+            <div className="text-2xl sm:text-3xl md:text-5xl font-black tracking-tighter text-[var(--text-main)] font-mono break-all sm:break-normal flex items-baseline gap-1">
+              {stat.prefix && <span className="text-2xl md:text-3xl opacity-40 font-bold">{stat.prefix}</span>}
               <Counter end={stat.val} suffix={stat.suffix} />
             </div>
             <div className="flex items-center gap-3">

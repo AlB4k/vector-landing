@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { validateContent } from './utils/security';
 import {
   LayoutDashboard,
   Settings,
@@ -92,8 +93,13 @@ export default function CMS({ content, setContent, onLogout }) {
     reader.onload = (event) => {
       try {
         const json = JSON.parse(event.target.result);
-        setLocalContent(json);
-        alert('Контент успешно загружен! Не забудьте нажать "Сохранить", чтобы применить изменения.');
+        const validated = validateContent(json);
+        if (validated) {
+          setLocalContent(validated);
+          alert('Контент успешно проверен и загружен! Не забудьте нажать "Сохранить", чтобы применить изменения.');
+        } else {
+          alert('Ошибка валидации: файл имеет неверную структуру или содержит небезопасные данные.');
+        }
       } catch (err) {
         alert('Ошибка при чтении файла. Убедитесь, что это корректный JSON.');
       }
@@ -136,7 +142,9 @@ export default function CMS({ content, setContent, onLogout }) {
     { id: 'stats', label: 'Цифры', icon: <BarChart3 size={18}/> },
     { id: 'process', label: 'Процесс', icon: <Zap size={18}/> },
     { id: 'services', label: 'Услуги', icon: <Phone size={18}/> },
+    { id: 'bpo', label: 'О БПО', icon: <FileText size={18}/> },
     { id: 'serviceArea', label: 'География', icon: <MapPin size={18}/> },
+    { id: 'news', label: 'Новости', icon: <Send size={18}/> },
     { id: 'faq', label: 'FAQ', icon: <HelpCircle size={18}/> },
     { id: 'contact', label: 'Контакты', icon: <Mail size={18}/> },
     { id: 'modals', label: 'Модалки', icon: <Layers size={18}/> },
@@ -334,29 +342,74 @@ export default function CMS({ content, setContent, onLogout }) {
             )}
 
             {activeTab === 'hero' && (
-              <SectionCard title="Главный экран (Hero)" icon={<LayoutDashboard size={18}/>}>
-                <div className="space-y-2">
-                  <InputField label="Верхний бейдж" value={localContent.hero.badge} onChange={(val) => updateNested('hero.badge', val)} />
-                  <InputField label="Основной заголовок (строка 1)" value={localContent.hero.title1} onChange={(val) => updateNested('hero.title1', val)} />
-                  <InputField label="Градиентный акцент заголовка" value={localContent.hero.titleGradient} onChange={(val) => updateNested('hero.titleGradient', val)} />
-                  <div className="grid grid-cols-2 gap-8">
-                    <InputField label="Метка горячей линии" value={localContent.hero.hotlineLabel} onChange={(val) => updateNested('hero.hotlineLabel', val)} />
-                    <InputField label="Номер горячей линии" value={localContent.hero.hotlinePhone} onChange={(val) => updateNested('hero.hotlinePhone', val)} />
+              <div className="space-y-8">
+                <SectionCard title="Главный экран (Hero)" icon={<LayoutDashboard size={18}/>}>
+                  <div className="space-y-2">
+                    <InputField label="Верхний бейдж" value={localContent.hero.badge} onChange={(val) => updateNested('hero.badge', val)} />
+                    <InputField label="Основной заголовок (строка 1)" value={localContent.hero.title1} onChange={(val) => updateNested('hero.title1', val)} />
+                    <InputField label="Градиентный акцент заголовка" value={localContent.hero.titleGradient} onChange={(val) => updateNested('hero.titleGradient', val)} />
+                    <div className="grid grid-cols-2 gap-8">
+                      <InputField label="Метка горячей линии" value={localContent.hero.hotlineLabel} onChange={(val) => updateNested('hero.hotlineLabel', val)} />
+                      <InputField label="Номер горячей линии" value={localContent.hero.hotlinePhone} onChange={(val) => updateNested('hero.hotlinePhone', val)} />
+                    </div>
+                    <div className="grid grid-cols-2 gap-8">
+                      <InputField label="Текст кнопки 1 (Основная)" value={localContent.hero.btnPrimary} onChange={(val) => updateNested('hero.btnPrimary', val)} />
+                      <InputField label="Текст кнопки 2 (Вторичная)" value={localContent.hero.btnSecondary} onChange={(val) => updateNested('hero.btnSecondary', val)} />
+                    </div>
+                    <div className="mb-6">
+                      <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Описание (Subtitle)</label>
+                      <textarea
+                        value={localContent.hero.subtitle}
+                        onChange={(e) => updateNested('hero.subtitle', e.target.value)}
+                        className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all text-sm font-medium h-40 resize-none shadow-inner"
+                      />
+                    </div>
                   </div>
-                  <div className="grid grid-cols-2 gap-8">
-                    <InputField label="Текст кнопки 1 (Основная)" value={localContent.hero.btnPrimary} onChange={(val) => updateNested('hero.btnPrimary', val)} />
-                    <InputField label="Текст кнопки 2 (Вторичная)" value={localContent.hero.btnSecondary} onChange={(val) => updateNested('hero.btnSecondary', val)} />
-                  </div>
-                  <div className="mb-6">
-                    <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Описание (Subtitle)</label>
-                    <textarea
-                      value={localContent.hero.subtitle}
-                      onChange={(e) => updateNested('hero.subtitle', e.target.value)}
-                      className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all text-sm font-medium h-40 resize-none shadow-inner"
+                </SectionCard>
+
+                <SectionCard title="Настройки горячей линии" icon={<Zap size={18}/>}>
+                  <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50 mb-6">
+                    <input
+                      type="checkbox"
+                      checked={localContent.hotlineConfig.showBadge}
+                      onChange={(e) => updateNested('hotlineConfig.showBadge', e.target.checked)}
+                      className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
                     />
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показывать статус линии (Онлайн/Офлайн)</label>
                   </div>
-                </div>
-              </SectionCard>
+                  <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50 mb-6">
+                    <input
+                      type="checkbox"
+                      checked={localContent.hotlineConfig.scheduleEnabled}
+                      onChange={(e) => updateNested('hotlineConfig.scheduleEnabled', e.target.checked)}
+                      className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
+                    />
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Автоматический график (Прямая линия)</label>
+                  </div>
+                  <div className="grid grid-cols-2 gap-8">
+                    <InputField label="Начало работы (час, 0-23)" type="number" value={localContent.hotlineConfig.startHour} onChange={(val) => updateNested('hotlineConfig.startHour', parseInt(val))} />
+                    <InputField label="Конец работы (час, 0-23)" type="number" value={localContent.hotlineConfig.endHour} onChange={(val) => updateNested('hotlineConfig.endHour', parseInt(val))} />
+                  </div>
+                  <div className="mt-4">
+                    <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Рабочие дни (1=Пн, 0=Вс)</label>
+                    <div className="flex gap-2">
+                      {[1,2,3,4,5,6,0].map(day => (
+                        <button
+                          key={day}
+                          onClick={() => {
+                            const current = localContent.hotlineConfig.workDays;
+                            const next = current.includes(day) ? current.filter(d => d !== day) : [...current, day].sort();
+                            updateNested('hotlineConfig.workDays', next);
+                          }}
+                          className={`w-10 h-10 rounded-xl font-bold text-xs flex items-center justify-center transition-all ${localContent.hotlineConfig.workDays.includes(day) ? 'gradient-bg text-white shadow-lg' : 'bg-slate-900 text-slate-500 border border-slate-800 hover:text-slate-300'}`}
+                        >
+                          {['Вс','Пн','Вт','Ср','Чт','Пт','Сб'][day]}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </SectionCard>
+              </div>
             )}
 
             {activeTab === 'features' && (
@@ -413,13 +466,18 @@ export default function CMS({ content, setContent, onLogout }) {
                       newS.splice(idx, 1);
                       updateNested('stats', newS);
                     }} className="absolute top-4 right-4 p-2 text-slate-700 hover:text-red-500 transition-colors"><Trash2 size={16}/></button>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="grid grid-cols-3 gap-4">
+                      <InputField label="Префикс" value={stat.prefix} onChange={(val) => {
+                        const newS = [...localContent.stats];
+                        newS[idx].prefix = val;
+                        updateNested('stats', newS);
+                      }} />
                       <InputField label="Число" value={stat.val} onChange={(val) => {
                         const newS = [...localContent.stats];
                         newS[idx].val = val;
                         updateNested('stats', newS);
                       }} />
-                      <InputField label="Суффикс (%, +)" value={stat.suffix} onChange={(val) => {
+                      <InputField label="Суффикс" value={stat.suffix} onChange={(val) => {
                         const newS = [...localContent.stats];
                         newS[idx].suffix = val;
                         updateNested('stats', newS);
@@ -432,7 +490,7 @@ export default function CMS({ content, setContent, onLogout }) {
                     }} />
                   </div>
                 ))}
-                <button onClick={() => updateNested('stats', [...localContent.stats, { val: 0, suffix: '', label: 'Новый показатель' }])} className="col-span-2 py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 hover:bg-blue-500/5 font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3"><Plus size={20}/></button>
+                <button onClick={() => updateNested('stats', [...localContent.stats, { val: 0, prefix: '', suffix: '', label: 'Новый показатель' }])} className="col-span-2 py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 hover:bg-blue-500/5 font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3"><Plus size={20}/></button>
               </div>
             )}
 
@@ -508,19 +566,36 @@ export default function CMS({ content, setContent, onLogout }) {
                         updateNested('services.list', newL);
                       }} />
                     </div>
-                    <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50">
-                      <input type="checkbox" checked={srv.popular} onChange={(e) => {
-                        const newL = [...localContent.services.list];
-                        newL[idx].popular = e.target.checked;
-                        updateNested('services.list', newL);
-                      }} className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600 focus:ring-blue-500/20" />
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Популярный / Акцентный тариф</label>
+
+                    <div className="grid grid-cols-2 gap-8">
+                      <div className="space-y-2">
+                        <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Статус / Тип шилдика</label>
+                        <select
+                          value={srv.status || (srv.popular ? 'recommended' : 'none')}
+                          onChange={(e) => {
+                            const newL = [...localContent.services.list];
+                            newL[idx].status = e.target.value;
+                            if (e.target.value === 'recommended') newL[idx].popular = true;
+                            else newL[idx].popular = false;
+                            updateNested('services.list', newL);
+                          }}
+                          className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm font-medium"
+                        >
+                          <option value="none">Без шилдика</option>
+                          <option value="recommended">Рекомендуем / Акцент</option>
+                          <option value="development">В разработке</option>
+                          <option value="default">Обычный шилдик</option>
+                        </select>
+                      </div>
+                      {(srv.status === 'recommended' || srv.popular) && (
+                        <InputField label="Текст акцентного шилдика" value={srv.accentBadge} onChange={(val) => {
+                          const newL = [...localContent.services.list];
+                          newL[idx].accentBadge = val;
+                          updateNested('services.list', newL);
+                        }} />
+                      )}
                     </div>
-                    {srv.popular && <InputField label="Текст на акцентном бейдже" value={srv.accentBadge} onChange={(val) => {
-                        const newL = [...localContent.services.list];
-                        newL[idx].accentBadge = val;
-                        updateNested('services.list', newL);
-                    }} />}
+
                     <InputField label="Текст на кнопке" value={srv.button} onChange={(val) => {
                         const newL = [...localContent.services.list];
                         newL[idx].button = val;
@@ -568,6 +643,37 @@ export default function CMS({ content, setContent, onLogout }) {
                     <InputField label="Акцент заголовка" value={localContent.serviceArea.accent} onChange={(val) => updateNested('serviceArea.accent', val)} />
                   </div>
                   <InputField label="Подзаголовок" value={localContent.serviceArea.subtitle} onChange={(val) => updateNested('serviceArea.subtitle', val)} />
+                  <InputField label="Заметка о собственной сети" value={localContent.serviceArea.ownNetworkNote} onChange={(val) => updateNested('serviceArea.ownNetworkNote', val)} />
+
+                  <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50 mb-6">
+                    <input
+                      type="checkbox"
+                      checked={localContent.serviceArea.randomMapVariant}
+                      onChange={(e) => updateNested('serviceArea.randomMapVariant', e.target.checked)}
+                      className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600 focus:ring-blue-500/20"
+                    />
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Случайный стиль при загрузке страницы</label>
+                  </div>
+
+                  {!localContent.serviceArea.randomMapVariant && (
+                    <div className="mb-4 animate-slow-fade">
+                      <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Вариант карты (Визуализация)</label>
+                      <select
+                        value={localContent.serviceArea.mapVariant || 'default'}
+                        onChange={(e) => updateNested('serviceArea.mapVariant', e.target.value)}
+                        className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm font-medium"
+                      >
+                        <option value="default">Default (Abstract)</option>
+                        <option value="radar">Radar Scan</option>
+                        <option value="mesh">Mesh Grid</option>
+                        <option value="blueprint">Blueprint Design</option>
+                        <option value="isometric">Isometric Nodes</option>
+                        <option value="topology">Topology Curves</option>
+                        <option value="pulse">Network Pulse</option>
+                        <option value="heatmap">Heatmap</option>
+                      </select>
+                    </div>
+                  )}
                 </SectionCard>
 
                 <div className="mb-6 ml-2">
@@ -587,15 +693,142 @@ export default function CMS({ content, setContent, onLogout }) {
                         newL[idx].name = val;
                         updateNested('serviceArea.locations', newL);
                       }} />
-                      <InputField label="Тип покрытия (напр. Ежедневно)" value={loc.type} onChange={(val) => {
+                      <div className="grid grid-cols-2 gap-4">
+                        <InputField label="Статус (напр. 24ч)" value={loc.status} onChange={(val) => {
+                          const newL = [...localContent.serviceArea.locations];
+                          newL[idx].status = val;
+                          updateNested('serviceArea.locations', newL);
+                        }} />
+                        <InputField label="Частота (напр. Ежедневно)" value={loc.freq} onChange={(val) => {
+                          const newL = [...localContent.serviceArea.locations];
+                          newL[idx].freq = val;
+                          updateNested('serviceArea.locations', newL);
+                        }} />
+                      </div>
+                      <InputField label="Тип покрытия (напр. Областной центр)" value={loc.type} onChange={(val) => {
                         const newL = [...localContent.serviceArea.locations];
                         newL[idx].type = val;
                         updateNested('serviceArea.locations', newL);
                       }} />
                     </div>
                   ))}
-                  <button onClick={() => updateNested('serviceArea.locations', [...localContent.serviceArea.locations, { name: 'Новый город', type: 'По графику' }])} className="col-span-2 py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 hover:bg-blue-500/5 font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3"><Plus size={20}/> Добавить локацию</button>
+                  <button onClick={() => updateNested('serviceArea.locations', [...localContent.serviceArea.locations, { name: 'Новый город', type: 'По графику', status: '24ч', freq: 'Ежедневно' }])} className="col-span-2 py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 hover:bg-blue-500/5 font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3"><Plus size={20}/> Добавить локацию</button>
                 </div>
+              </div>
+            )}
+
+            {activeTab === 'bpo' && (
+              <div className="space-y-6">
+                <SectionCard title="Бесконвертное Почтовое Отправление (БПО)" icon={<FileText size={18}/>}>
+                  <div className="grid grid-cols-2 gap-8">
+                    <InputField label="Заголовок" value={localContent.bpo.title} onChange={(val) => updateNested('bpo.title', val)} />
+                    <InputField label="Акцентное слово" value={localContent.bpo.accent} onChange={(val) => updateNested('bpo.accent', val)} />
+                  </div>
+                  <InputField label="Подзаголовок" value={localContent.bpo.subtitle} onChange={(val) => updateNested('bpo.subtitle', val)} />
+                  <InputField label="Юридическая сноска" value={localContent.bpo.legalNote} onChange={(val) => updateNested('bpo.legalNote', val)} />
+                </SectionCard>
+
+                <div className="mb-6 ml-2">
+                  <h4 className="text-lg font-black text-white mb-1 tracking-tight uppercase tracking-widest text-xs">Технологические этапы</h4>
+                </div>
+                {localContent.bpo.steps.map((step, idx) => (
+                  <div key={idx} className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 relative group mb-4">
+                    <button onClick={() => {
+                      const newS = [...localContent.bpo.steps];
+                      newS.splice(idx, 1);
+                      updateNested('bpo.steps', newS);
+                    }} className="absolute top-6 right-6 p-2 text-slate-700 hover:text-red-500 transition-colors"><Trash2 size={18}/></button>
+                    <div className="grid grid-cols-4 gap-8">
+                      <div className="col-span-1">
+                        <InputField label="№" value={step.num} onChange={(val) => {
+                          const newS = [...localContent.bpo.steps];
+                          newS[idx].num = val;
+                          updateNested('bpo.steps', newS);
+                        }} />
+                      </div>
+                      <div className="col-span-3">
+                        <InputField label="Название этапа" value={step.title} onChange={(val) => {
+                          const newS = [...localContent.bpo.steps];
+                          newS[idx].title = val;
+                          updateNested('bpo.steps', newS);
+                        }} />
+                      </div>
+                    </div>
+                    <InputField label="Описание этапа" value={step.desc} onChange={(val) => {
+                      const newS = [...localContent.bpo.steps];
+                      newS[idx].desc = val;
+                      updateNested('bpo.steps', newS);
+                    }} />
+                  </div>
+                ))}
+                <button onClick={() => updateNested('bpo.steps', [...localContent.bpo.steps, { num: '0' + (localContent.bpo.steps.length + 1), title: 'Новый этап', desc: 'Описание этапа БПО...' }])} className="w-full py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 transition-all flex items-center justify-center gap-3 mb-8"><Plus size={20}/> Добавить этап БПО</button>
+
+                <SectionCard title="Преимущества БПО" icon={<Check size={18}/>}>
+                  {localContent.bpo.advantages.map((adv, idx) => (
+                    <div key={idx} className="flex gap-3 mb-3">
+                      <input
+                        value={adv}
+                        onChange={(e) => {
+                          const newA = [...localContent.bpo.advantages];
+                          newA[idx] = e.target.value;
+                          updateNested('bpo.advantages', newA);
+                        }}
+                        className="flex-1 bg-slate-900/50 border border-slate-800 rounded-xl px-4 py-2.5 text-white text-xs font-medium focus:ring-1 focus:ring-blue-500/30 outline-none"
+                      />
+                      <button onClick={() => {
+                        const newA = [...localContent.bpo.advantages];
+                        newA.splice(idx, 1);
+                        updateNested('bpo.advantages', newA);
+                      }} className="text-slate-700 hover:text-red-500 transition-colors"><Trash2 size={16}/></button>
+                    </div>
+                  ))}
+                  <button onClick={() => updateNested('bpo.advantages', [...localContent.bpo.advantages, 'Новое преимущество БПО']) } className="text-[9px] font-black text-blue-500 uppercase tracking-[0.2em] hover:text-blue-400 transition-colors pt-2 flex items-center gap-2"><Plus size={14} /> Добавить преимущество</button>
+                </SectionCard>
+              </div>
+            )}
+
+            {activeTab === 'news' && (
+              <div className="space-y-6">
+                <SectionCard title="Новости и события" icon={<Send size={18}/>}>
+                  <div className="grid grid-cols-2 gap-8">
+                    <InputField label="Заголовок" value={localContent.news.title} onChange={(val) => updateNested('news.title', val)} />
+                    <InputField label="Акцентное слово" value={localContent.news.accent} onChange={(val) => updateNested('news.accent', val)} />
+                  </div>
+                </SectionCard>
+
+                {localContent.news.items.map((item, idx) => (
+                  <div key={idx} className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 relative group mb-4">
+                    <button onClick={() => {
+                      const newI = [...localContent.news.items];
+                      newI.splice(idx, 1);
+                      updateNested('news.items', newI);
+                    }} className="absolute top-6 right-6 p-2 text-slate-700 hover:text-red-500 transition-colors"><Trash2 size={18}/></button>
+                    <div className="grid grid-cols-2 gap-8">
+                      <InputField label="Дата" value={item.date} onChange={(val) => {
+                        const newI = [...localContent.news.items];
+                        newI[idx].date = val;
+                        updateNested('news.items', newI);
+                      }} />
+                      <InputField label="Тег / Категория" value={item.tag} onChange={(val) => {
+                        const newI = [...localContent.news.items];
+                        newI[idx].tag = val;
+                        updateNested('news.items', newI);
+                      }} />
+                    </div>
+                    <InputField label="Заголовок новости" value={item.title} onChange={(val) => {
+                      const newI = [...localContent.news.items];
+                      newI[idx].title = val;
+                      updateNested('news.items', newI);
+                    }} />
+                    <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Содержание</label>
+                    <textarea value={item.desc} onChange={(e) => {
+                      const newI = [...localContent.news.items];
+                      newI[idx].desc = e.target.value;
+                      updateNested('news.items', newI);
+                    }} className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white text-sm font-medium h-24 resize-none" />
+                  </div>
+                ))}
+                <button onClick={() => updateNested('news.items', [{ date: new Date().toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' }), tag: 'СОБЫТИЕ', title: 'Новое событие', desc: 'Описание события...' }, ...localContent.news.items])} className="w-full py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 transition-all flex items-center justify-center gap-3"><Plus size={20}/> Добавить новость</button>
               </div>
             )}
 
