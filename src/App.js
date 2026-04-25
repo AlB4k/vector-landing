@@ -680,8 +680,26 @@ export default function App() {
         const parsed = JSON.parse(saved);
         const validated = validateContent(parsed);
         if (validated) {
-          // Merge with initial to ensure new schema fields exist
-          setContent({ ...INITIAL_CONTENT, ...validated });
+          // Deep merge helper to ensure new schema fields exist
+          const deepMerge = (target, source) => {
+            const output = { ...target };
+            if (source && typeof source === 'object' && !Array.isArray(source)) {
+              Object.keys(source).forEach(key => {
+                if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+                  if (!(key in target)) {
+                    output[key] = source[key];
+                  } else {
+                    output[key] = deepMerge(target[key], source[key]);
+                  }
+                } else {
+                  output[key] = source[key];
+                }
+              });
+            }
+            return output;
+          };
+
+          setContent(deepMerge(INITIAL_CONTENT, validated));
         } else {
           console.warn("Local storage content is invalid, using defaults");
         }

@@ -124,8 +124,8 @@ export default function Requisites({ content, theme }) {
               </h4>
               <div className="space-y-4">
                 <div>
-                  <p className={`text-[9px] font-black uppercase ${isLight ? 'text-slate-400' : 'text-slate-600'} tracking-widest mb-1`}>Реестр операторов ПДн</p>
-                  <p className={`${isLight ? 'text-slate-900' : 'text-white'} font-bold leading-tight`}>{content.pdnReg} (Роскомнадзор)</p>
+                  <p className={`text-[9px] font-black uppercase ${isLight ? 'text-slate-400' : 'text-slate-600'} tracking-widest mb-1`}>{content.legal.statusLabel || 'Реестр операторов ПДн'}</p>
+                  <p className={`${isLight ? 'text-slate-900' : 'text-white'} font-bold leading-tight`}>{content.legal.statusValue || `${content.pdnReg} (Роскомнадзор)`}</p>
                 </div>
                 <div>
                   <p className={`text-[9px] font-black uppercase ${isLight ? 'text-slate-400' : 'text-slate-600'} tracking-widest mb-1`}>Основание</p>

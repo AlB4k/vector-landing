@@ -56,11 +56,14 @@ const SectionCard = ({ title, children, icon }) => (
 export default function CMS({ content, setContent, onLogout }) {
   const [activeTab, setActiveTab] = useState('structure');
   const [localContent, setLocalContent] = useState(content);
-  const hasChanges = JSON.stringify(localContent) !== JSON.stringify(content);
+
+  // Глубокое сравнение для активации кнопки сохранения
+  const hasChanges = React.useMemo(() => {
+    return JSON.stringify(localContent) !== JSON.stringify(content);
+  }, [localContent, content]);
 
   const handleSave = () => {
     setContent(localContent);
-    // No alert needed, visual feedback is enough
   };
 
   const handleDiscard = () => {
@@ -107,6 +110,7 @@ export default function CMS({ content, setContent, onLogout }) {
     reader.readAsText(file);
   };
 
+  // Улучшенная функция обновления без мутаций
   const updateNested = (path, value) => {
     const keys = path.split('.');
     const updated = JSON.parse(JSON.stringify(localContent));
@@ -330,7 +334,7 @@ export default function CMS({ content, setContent, onLogout }) {
                     <div className="grid grid-cols-2 gap-x-8">
                       {Object.keys(localContent.theme[m]).map(key => (
                         <InputField key={key} label={key} value={localContent.theme[m][key]} onChange={(val) => {
-                          const newTheme = { ...localContent.theme };
+                          const newTheme = JSON.parse(JSON.stringify(localContent.theme));
                           newTheme[m][key] = val;
                           updateNested('theme', newTheme);
                         }} />

@@ -46,6 +46,10 @@ export const Counter = ({ end, duration = 2000, suffix = "" }) => {
   const nodeRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
 
+  // Парсим значение, заменяя запятую на точку для корректных вычислений
+  const endValue = typeof end === 'string' ? parseFloat(end.replace(',', '.')) : end;
+  const isFloat = typeof end === 'string' && end.includes(',');
+
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => {
       if (entry.isIntersecting) setIsVisible(true);
@@ -55,18 +59,23 @@ export const Counter = ({ end, duration = 2000, suffix = "" }) => {
   }, []);
 
   useEffect(() => {
-    if (!isVisible) return;
+    if (!isVisible || isNaN(endValue)) return;
     let startTime;
     const animate = (currentTime) => {
       if (!startTime) startTime = currentTime;
       const progress = Math.min((currentTime - startTime) / duration, 1);
-      setCount(Math.floor(progress * end));
+      const currentCount = progress * endValue;
+      setCount(currentCount);
       if (progress < 1) requestAnimationFrame(animate);
     };
     requestAnimationFrame(animate);
-  }, [isVisible, end, duration]);
+  }, [isVisible, endValue, duration]);
 
-  return <span ref={nodeRef}>{count.toLocaleString()}{suffix}</span>;
+  const displayValue = isFloat
+    ? count.toLocaleString('ru-RU', { minimumFractionDigits: 1, maximumFractionDigits: 1 })
+    : Math.floor(count).toLocaleString('ru-RU');
+
+  return <span ref={nodeRef}>{displayValue}{suffix}</span>;
 };
 
 export const SectionWrapper = ({ children, className = "", id, pattern = "" }) => {

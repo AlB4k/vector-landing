@@ -280,7 +280,10 @@ export default function Landing({ content, theme, setTheme }) {
         </div>
         <div className="max-w-6xl mx-auto pt-8 md:pt-12 border-t border-soft flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8 text-[8px] md:text-[9px] font-bold uppercase tracking-[0.2em] opacity-60 text-center md:text-left">
           <p>© 2026 {content.companyName} • v{content.legal.version}</p>
-          <div className="flex flex-col md:flex-row gap-4 md:gap-12"><p>Рег. {content.pdnReg}</p><p>Приказ {content.pdnOrder}</p></div>
+          <div className="flex flex-col md:flex-row gap-4 md:gap-12">
+            <p>{content.legal.statusLabel || 'Рег.'}: {content.pdnReg}</p>
+            <p>{content.legal.statusValue || `Приказ ${content.pdnOrder}`}</p>
+          </div>
         </div>
       </footer>
     </div>

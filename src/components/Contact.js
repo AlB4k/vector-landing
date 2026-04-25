@@ -167,7 +167,7 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
                     if (errors.name) setErrors({ ...errors, name: null });
                   }}
                   className={`w-full bg-white/5 border ${errors.name ? 'border-red-500/50' : 'border-slate-300 dark:border-white/10'} rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium text-[var(--text-main)] shadow-sm`}
-                  placeholder="Иван Иванов"
+                  placeholder={data.formName || "Иван Иванов"}
                 />
                 {errors.name && <p className="text-[10px] text-red-400 font-bold ml-1 uppercase tracking-widest">{errors.name}</p>}
               </div>
@@ -183,7 +183,7 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
                     if (errors.phone) setErrors({ ...errors, phone: null });
                   }}
                   className={`w-full bg-white/5 border ${errors.phone ? 'border-red-500/50' : 'border-slate-300 dark:border-white/10'} rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium text-[var(--text-main)] shadow-sm`}
-                  placeholder="+7 (999) 000-00-00"
+                  placeholder={data.formPhone || "+7 (999) 000-00-00"}
                 />
                 {errors.phone && <p className="text-[10px] text-red-400 font-bold ml-1 uppercase tracking-widest">{errors.phone}</p>}
               </div>
@@ -200,7 +200,7 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
                   if (errors.email) setErrors({ ...errors, email: null });
                 }}
                 className={`w-full bg-white/5 border ${errors.email ? 'border-red-500/50' : 'border-slate-300 dark:border-white/10'} rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium text-[var(--text-main)] shadow-sm`}
-                placeholder="example@mail.ru"
+                placeholder={data.formEmail || "example@mail.ru"}
               />
               {errors.email && <p className="text-[10px] text-red-400 font-bold ml-1 uppercase tracking-widest">{errors.email}</p>}
             </div>
@@ -211,7 +211,7 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 className="w-full bg-white/5 border border-slate-300 dark:border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium h-32 resize-none text-[var(--text-main)] shadow-sm"
-                placeholder="Расскажите о вашей задаче..."
+                placeholder={data.formMessage || "Расскажите о вашей задаче..."}
               ></textarea>
             </div>
 

@@ -3,7 +3,8 @@ import { Counter, SectionWrapper } from './Shared';
 
 export const Stats = ({ data }) => {
   if (!data || !Array.isArray(data)) return null;
-  const activeStats = data.filter(stat => stat && stat.val > 0);
+  // Позволяем отображать любые статы, где есть заголовок и значение (даже строковое)
+  const activeStats = data.filter(stat => stat && stat.label && (stat.val || stat.val === 0));
 
   if (activeStats.length === 0) return null;
 
