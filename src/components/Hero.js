@@ -41,10 +41,10 @@ export const Hero = ({ data, config, fullContent }) => {
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 md:gap-5 px-4 sm:px-0">
               <a href="#contact" className="w-full sm:w-auto px-10 py-4 rounded-xl gradient-bg text-white font-bold text-sm shadow-2xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3">
-                {data.btnPrimary} <ArrowRight size={20} aria-hidden="true" />
+                {interpolate(data.btnPrimary, fullContent)} <ArrowRight size={20} aria-hidden="true" />
               </a>
               <a href="#services" className="w-full sm:w-auto px-10 py-4 rounded-xl border border-slate-700 font-bold text-sm hover:bg-slate-800/50 transition-all flex justify-center items-center">
-                {data.btnSecondary}
+                {interpolate(data.btnSecondary, fullContent)}
               </a>
             </div>
           </div>
@@ -60,15 +60,15 @@ export const Hero = ({ data, config, fullContent }) => {
                 <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-6 group-hover:scale-110 transition-transform duration-500">
                   <DynamicIcon name={data.hotlineIcon || 'Phone'} size={24} />
                 </div>
-                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-blue-600 dark:text-blue-400/80 mb-2">{data.hotlineLabel}</span>
+                <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-blue-600 dark:text-blue-400/80 mb-2">{interpolate(data.hotlineLabel, fullContent)}</span>
                 <a href={`tel:${data.hotlinePhone}`} className="text-2xl sm:text-3xl md:text-4xl font-black text-[var(--text-main)] hover:text-blue-600 dark:hover:text-blue-400 transition-colors tracking-tight">
-                  {data.hotlinePhone}
+                  {interpolate(data.hotlinePhone, fullContent)}
                 </a>
                 {config && config.showBadge && (
                   <div className={`mt-6 flex items-center gap-2 px-3 py-1.5 rounded-lg border ${isOnline ? 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20' : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'}`}>
                     <div className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-green-500 animate-pulse' : 'bg-blue-400'}`}></div>
                     <span className="text-[10px] font-black uppercase tracking-widest">
-                      {isOnline ? (config.statusOnline || 'Линия активна') : (config.statusOffline || 'Офлайн')}
+                      {isOnline ? (interpolate(config.statusOnline, fullContent) || 'Линия активна') : (interpolate(config.statusOffline, fullContent) || 'Офлайн')}
                     </span>
                   </div>
                 )}

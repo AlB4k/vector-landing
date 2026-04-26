@@ -139,8 +139,8 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
 
             {/* Industrial Overlay Labels */}
             <div className="absolute top-6 left-6 md:top-10 md:left-10 p-2.5 md:p-3 bg-black/40 border border-white/10 rounded-lg text-[7px] md:text-[8px] font-mono text-blue-400 uppercase tracking-widest leading-none">
-              <p>Region: Voronezh_36</p>
-              <p className="mt-1 opacity-50">S_Coverage: 98.4%</p>
+              <p>{interpolate(fullContent.ui?.regionLabel, fullContent) || 'Region'}: Voronezh_36</p>
+              <p className="mt-1 opacity-50">{interpolate(fullContent.ui?.coverageLabel, fullContent) || 'S_Coverage'}: 98.4%</p>
               {mapVariant !== 'default' && <p className="mt-1 text-blue-300">Mode: {mapVariant.toUpperCase()}</p>}
             </div>
 
@@ -156,7 +156,7 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md border border-blue-500/20 bg-blue-500/5 mb-6">
               <MapPin size={14} className="text-blue-600 dark:text-blue-400" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-700 dark:text-blue-300">География работ</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-700 dark:text-blue-300">{interpolate(fullContent.ui?.geographyLabel, fullContent) || 'География работ'}</span>
             </div>
             <h2 className="text-3xl md:text-5xl font-black mb-4 md:mb-6 tracking-tight leading-tight text-[var(--text-main)]">
               {interpolate(data.title, fullContent)} <span className="text-blue-600 dark:text-blue-500">{interpolate(data.accent, fullContent)}</span>
@@ -199,7 +199,7 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
                   <Shield size={24} />
                 </div>
                 <div>
-                  <p className="text-sm font-bold mb-1 text-[var(--text-main)]">Собственная курьерская сеть</p>
+                  <p className="text-sm font-bold mb-1 text-[var(--text-main)]">{interpolate(fullContent.ui?.ownNetworkTitle, fullContent) || 'Собственная курьерская сеть'}</p>
                   <p className="text-xs text-[var(--text-muted)] max-w-xs font-medium leading-relaxed">
                     {interpolate(data.ownNetworkNote, fullContent) || 'Прямой контроль сотрудников без посредников. 100% покрытие во всех районах присутствия.'}
                   </p>

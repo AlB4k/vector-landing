@@ -15,7 +15,7 @@ export const BPO = ({ data, fullContent }) => {
             <h2 className="text-3xl md:text-5xl font-black mb-6 tracking-tight leading-tight">
               {interpolate(data.title, fullContent)} <span className="text-blue-500">{interpolate(data.accent, fullContent)}</span>
             </h2>
-            <p className="text-blue-400 font-bold uppercase text-[10px] tracking-[0.2em] mb-4">Технология Pressure Seal</p>
+            <p className="text-blue-400 font-bold uppercase text-[10px] tracking-[0.2em] mb-4">{interpolate(fullContent.ui?.pressureSealTech, fullContent) || 'Технология Pressure Seal'}</p>
             <p className="text-[var(--text-muted)] text-sm md:text-lg max-w-xl leading-relaxed font-medium">
               {interpolate(data.subtitle, fullContent)}
             </p>
@@ -49,7 +49,7 @@ export const BPO = ({ data, fullContent }) => {
               <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white mb-6 shadow-xl shadow-blue-600/20">
                 <ShieldCheck size={24} />
               </div>
-              <p className="text-xs font-black uppercase tracking-widest text-blue-600 dark:text-blue-500 mb-3">Юридическая справка</p>
+              <p className="text-xs font-black uppercase tracking-widest text-blue-600 dark:text-blue-500 mb-3">{interpolate(fullContent.ui?.legalNotice, fullContent) || 'Юридическая справка'}</p>
               <p className="text-xs leading-relaxed text-[var(--text-main)] opacity-80 font-medium italic">
                 {interpolate(data.legalNote, fullContent)}
               </p>
@@ -61,7 +61,7 @@ export const BPO = ({ data, fullContent }) => {
             className="p-8 rounded-[2.5rem] border border-[var(--border)] backdrop-blur-xl transition-colors duration-500 shadow-lg"
             style={{ background: 'var(--card-bg)' }}
           >
-             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--text-main)] mb-6 opacity-60">Эффективность БПО</h4>
+             <h4 className="text-[10px] font-black uppercase tracking-[0.3em] text-[var(--text-main)] mb-6 opacity-60">{interpolate(fullContent.ui?.bpoEfficiency, fullContent) || 'Эффективность БПО'}</h4>
              <ul className="space-y-4">
                 {data.advantages.map((adv, i) => (
                   <li key={i} className="flex items-start gap-3">

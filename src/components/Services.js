@@ -26,7 +26,7 @@ export const Services = ({ data, fullContent }) => {
 
           {showBadge && (
             <div className={`absolute top-6 right-6 px-3 py-1 rounded-md text-[9px] font-bold uppercase tracking-[0.15em] shadow-lg ${isRecommended ? 'gradient-bg text-white shadow-blue-500/20' : 'bg-slate-800 text-slate-400 border border-slate-700'}`}>
-              {isRecommended ? (interpolate(srv.accentBadge, fullContent) || 'РЕКОМЕНДУЕМ') : (isDevelopment ? 'В РАЗРАБОТКЕ' : interpolate(srv.badge, fullContent))}
+              {isRecommended ? (interpolate(srv.accentBadge, fullContent) || 'РЕКОМЕНДУЕМ') : (isDevelopment ? (interpolate(fullContent.ui?.inDevelopment, fullContent) || 'В РАЗРАБОТКЕ') : interpolate(srv.badge, fullContent))}
             </div>
           )}
 
@@ -45,7 +45,7 @@ export const Services = ({ data, fullContent }) => {
             onClick={isDevelopment ? (e) => e.preventDefault() : undefined}
             className={`w-full py-3.5 rounded-lg font-bold text-xs uppercase tracking-widest transition-all flex justify-center items-center ${isDevelopment ? 'bg-slate-800 text-slate-500 cursor-not-allowed' : (isRecommended ? 'gradient-bg text-white shadow-lg' : 'border border-slate-700 hover:bg-slate-800')}`}
           >
-            {isDevelopment ? 'Скоро будет' : interpolate(srv.button, fullContent)}
+            {isDevelopment ? (interpolate(fullContent.ui?.comingSoon, fullContent) || 'Скоро будет') : interpolate(srv.button, fullContent)}
           </a>
         </div>
       );

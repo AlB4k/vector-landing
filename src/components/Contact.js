@@ -97,8 +97,8 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
                 <Phone size={24} />
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-blue-500 mb-1">Телефон</p>
-                <a href={`tel:${companyInfo.phone}`} className="text-xl font-bold hover:text-blue-400 transition-colors">{companyInfo.phone}</a>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-blue-500 mb-1">{interpolate(fullContent.ui?.phoneLabel, fullContent) || 'Телефон'}</p>
+                <a href={`tel:${companyInfo.phone}`} className="text-xl font-bold hover:text-blue-400 transition-colors">{interpolate(companyInfo.phone, fullContent)}</a>
               </div>
             </div>
             <div className="flex items-start gap-5 group text-left">
@@ -106,8 +106,8 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
                 <Mail size={24} />
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-blue-500 mb-1">Email</p>
-                <a href={`mailto:${companyInfo.email}`} className="text-xl font-bold hover:text-blue-400 transition-colors">{companyInfo.email}</a>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-blue-500 mb-1">{interpolate(fullContent.ui?.emailLabel, fullContent) || 'Email'}</p>
+                <a href={`mailto:${companyInfo.email}`} className="text-xl font-bold hover:text-blue-400 transition-colors">{interpolate(companyInfo.email, fullContent)}</a>
               </div>
             </div>
             <div className="flex items-start gap-5 group text-left">
@@ -115,23 +115,23 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
                 <MapPin size={24} />
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-blue-500 mb-1">Адрес</p>
-                <p className="text-sm font-medium opacity-90 max-w-xs">{companyInfo.address}</p>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-blue-500 mb-1">{interpolate(fullContent.ui?.legalAddress, fullContent) || 'Адрес'}</p>
+                <p className="text-sm font-medium opacity-90 max-w-xs">{interpolate(companyInfo.address, fullContent)}</p>
               </div>
             </div>
           </div>
 
           <div className="pt-8 border-t border-soft max-w-md">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-50 mb-4 text-left ml-1">Юридический блок</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-50 mb-4 text-left ml-1">{interpolate(fullContent.ui?.legalBlock, fullContent) || 'Юридический блок'}</p>
             <div className="flex flex-col gap-3">
-               <Link to="/privacy" className="text-[10px] font-bold text-slate-500 hover:text-blue-500 flex items-center gap-2 transition-colors uppercase tracking-widest"><ShieldCheck size={14}/> Политика конфиденциальности</Link>
-               <Link to="/requisites" className="text-[10px] font-bold text-slate-500 hover:text-blue-500 flex items-center gap-2 transition-colors uppercase tracking-widest"><ShieldCheck size={14}/> Реквизиты организации</Link>
-               <Link to="/oferta" className="text-[10px] font-bold text-slate-500 hover:text-blue-500 flex items-center gap-2 transition-colors uppercase tracking-widest"><ShieldCheck size={14}/> Оферта и условия</Link>
+               <Link to="/privacy" className="text-[10px] font-bold text-slate-500 hover:text-blue-500 flex items-center gap-2 transition-colors uppercase tracking-widest"><ShieldCheck size={14}/> {interpolate(fullContent.ui?.privacyLabel, fullContent) || 'Политика конфиденциальности'}</Link>
+               <Link to="/requisites" className="text-[10px] font-bold text-slate-500 hover:text-blue-500 flex items-center gap-2 transition-colors uppercase tracking-widest"><ShieldCheck size={14}/> {interpolate(fullContent.ui?.requisitesLabel, fullContent) || 'Реквизиты организации'}</Link>
+               <Link to="/oferta" className="text-[10px] font-bold text-slate-500 hover:text-blue-500 flex items-center gap-2 transition-colors uppercase tracking-widest"><ShieldCheck size={14}/> {interpolate(fullContent.ui?.ofertaLabel, fullContent) || 'Оферта и условия'}</Link>
             </div>
           </div>
 
           <div className="pt-8 border-t border-soft max-w-md">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-50 mb-4 text-left ml-1">Наши соцсети</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-50 mb-4 text-left ml-1">{interpolate(fullContent.ui?.socialsTitle, fullContent) || 'Наши соцсети'}</p>
             <div className="flex flex-wrap gap-4">
               {(socials || []).map((social, i) => (
                 <a
@@ -171,7 +171,7 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
                     if (errors.name) setErrors({ ...errors, name: null });
                   }}
                   className={`w-full bg-white/5 border ${errors.name ? 'border-red-500/50' : 'border-slate-300 dark:border-white/10'} rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium text-[var(--text-main)] shadow-sm`}
-                  placeholder={interpolate(data.formName, fullContent) || "Иван Иванов"}
+                  placeholder={interpolate(data.formName, fullContent) || interpolate(fullContent.ui?.placeholderName, fullContent) || "Иван Иванов"}
                 />
                 {errors.name && <p className="text-[10px] text-red-400 font-bold ml-1 uppercase tracking-widest">{errors.name}</p>}
               </div>
@@ -188,7 +188,7 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
                     if (errors.phone) setErrors({ ...errors, phone: null });
                   }}
                   className={`w-full bg-white/5 border ${errors.phone ? 'border-red-500/50' : 'border-slate-300 dark:border-white/10'} rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium text-[var(--text-main)] shadow-sm`}
-                  placeholder={interpolate(data.formPhone, fullContent) || "+7 (999) 000-00-00"}
+                  placeholder={interpolate(data.formPhone, fullContent) || interpolate(fullContent.ui?.placeholderPhone, fullContent) || "+7 (999) 000-00-00"}
                 />
                 {errors.phone && <p className="text-[10px] text-red-400 font-bold ml-1 uppercase tracking-widest">{errors.phone}</p>}
               </div>
@@ -206,7 +206,7 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
                   if (errors.email) setErrors({ ...errors, email: null });
                 }}
                 className={`w-full bg-white/5 border ${errors.email ? 'border-red-500/50' : 'border-slate-300 dark:border-white/10'} rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium text-[var(--text-main)] shadow-sm`}
-                placeholder={interpolate(data.formEmail, fullContent) || "example@mail.ru"}
+                placeholder={interpolate(data.formEmail, fullContent) || interpolate(fullContent.ui?.placeholderEmail, fullContent) || "example@mail.ru"}
               />
               {errors.email && <p className="text-[10px] text-red-400 font-bold ml-1 uppercase tracking-widest">{errors.email}</p>}
             </div>
@@ -218,7 +218,7 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 className="w-full bg-white/5 border border-slate-300 dark:border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium h-32 resize-none text-[var(--text-main)] shadow-sm"
-                placeholder={interpolate(data.formMessage, fullContent) || "Расскажите о вашей задаче..."}
+                placeholder={interpolate(data.formMessage, fullContent) || interpolate(fullContent.ui?.placeholderMessage, fullContent) || "Расскажите о вашей задаче..."}
               ></textarea>
             </div>
 
@@ -251,7 +251,7 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
             </button>
 
             <p className="text-[9px] text-center opacity-50 font-bold uppercase tracking-widest">
-              С <Link to="/privacy" className="underline hover:text-blue-500 dark:hover:text-blue-400 transition-colors">Политикой конфиденциальности</Link> ознакомлен(а)
+              {interpolate(fullContent.ui?.consentAgreement, fullContent) || 'С Политикой конфиденциальности ознакомлен(а)'}
             </p>
             {errors.submit && <p className="text-xs text-red-400 font-bold text-center mt-4">{errors.submit}</p>}
           </form>

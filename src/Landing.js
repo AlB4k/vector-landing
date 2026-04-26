@@ -197,13 +197,13 @@ export default function Landing({ content, theme, setTheme }) {
             ))}
           </div>
           <div className="flex items-center gap-4">
-            <button onClick={() => setTheme(isLight ? 'dark' : 'light')} className="p-2 rounded-lg border border-[var(--border)] hover:bg-slate-500/10 transition-all" aria-label={isLight ? "Переключить на темную тему" : "Переключить на светлую тему"}>
+            <button onClick={() => setTheme(isLight ? 'dark' : 'light')} className="p-2 rounded-lg border border-[var(--border)] hover:bg-slate-500/10 transition-all" aria-label={isLight ? (interpolate(content.ui?.themeToggleDark, content) || "Переключить на темную тему") : (interpolate(content.ui?.themeToggleLight, content) || "Переключить на светлую тему")}>
               {isLight ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}
             </button>
             <a href={`tel:${content.phone}`} className="hidden lg:flex items-center gap-2 gradient-bg text-white px-6 py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest shadow-xl shadow-blue-900/10 hover:brightness-110 transition-all">
-              <Phone size={14} aria-hidden="true" /> Связаться
+              <Phone size={14} aria-hidden="true" /> {interpolate(content.hero.btnPrimary, content)}
             </a>
-            <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(true)} aria-label="Открыть мобильное меню"><Menu size={24} aria-hidden="true" /></button>
+            <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(true)} aria-label={interpolate(content.ui?.openMenu, content) || "Открыть мобильное меню"}><Menu size={24} aria-hidden="true" /></button>
           </div>
         </div>
       </nav>
@@ -212,8 +212,8 @@ export default function Landing({ content, theme, setTheme }) {
       <div className={`fixed inset-0 z-[60] bg-[#08080f]/98 backdrop-blur-2xl transition-all duration-500 ${mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
         <div className="p-8 flex flex-col h-full">
           <div className="flex justify-between items-center mb-16">
-            <Logo light={false} variant="small" customScale={content.logoScaleFooter} tagline={content.companyTagline} text={content.logoText} />
-            <button onClick={() => setMobileMenuOpen(false)} className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white border border-white/10 active:scale-90 transition-all" aria-label="Закрыть мобильное меню">
+            <Logo light={false} variant="small" customScale={content.logoScaleFooter} tagline={interpolate(content.companyTagline, content)} text={interpolate(content.logoText, content)} />
+            <button onClick={() => setMobileMenuOpen(false)} className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white border border-white/10 active:scale-90 transition-all" aria-label={interpolate(content.ui?.closeMenu, content) || "Закрыть мобильное меню"}>
               <X size={24} aria-hidden="true" />
             </button>
           </div>
@@ -228,15 +228,15 @@ export default function Landing({ content, theme, setTheme }) {
                 style={{ transitionDelay: `${i * 70}ms` }}
               >
                 <span className="text-blue-500 mr-3 md:mr-4 text-xs md:text-sm font-mono opacity-40">0{i+1}</span>
-                {s.label}
+                {interpolate(s.label, content)}
               </a>
             ))}
           </div>
 
           <div className="mt-auto pt-12 border-t border-white/5">
-            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-blue-500 mb-6 text-center">Прямая линия связи</p>
+            <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-blue-500 mb-6 text-center">{interpolate(content.hero.hotlineLabel, content)}</p>
             <a href={`tel:${content.phone}`} className="w-full flex justify-center items-center gap-4 gradient-bg py-5 rounded-2xl text-2xl font-black shadow-2xl shadow-blue-500/20 active:scale-95 transition-all text-white">
-              <Phone size={24} /> {content.phone}
+              <Phone size={24} /> {interpolate(content.phone, content)}
             </a>
           </div>
         </div>
@@ -249,12 +249,12 @@ export default function Landing({ content, theme, setTheme }) {
       <footer className="px-4 md:px-6 py-12 md:py-16 border-t border-[var(--border)]" style={{ backgroundColor: 'var(--bg-primary)' }}>
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 mb-12 md:mb-16">
           <div className="col-span-1 text-center md:text-left flex flex-col items-center md:items-start">
-            <Logo light={isLight} variant="small" customScale={content.logoScaleFooter} tagline={content.companyTagline} text={content.logoText} />
+            <Logo light={isLight} variant="small" customScale={content.logoScaleFooter} tagline={interpolate(content.companyTagline, content)} text={interpolate(content.logoText, content)} />
             <p className="mt-6 md:mt-8 text-[11px] md:text-xs leading-relaxed font-medium opacity-60 max-w-sm">{interpolate(content.footer.description, content)}</p>
             <div className="flex items-center gap-3 mt-8 md:mt-10">
               <a href={`mailto:${content.email}`} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-90"><Mail size={18}/></a>
               {(content.socialsList || []).map((social, i) => (
-                <a key={i} href={social.url} target="_blank" rel="noreferrer" title={social.label} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-90">
+                <a key={i} href={social.url} target="_blank" rel="noreferrer" title={interpolate(social.label, content)} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-90">
                   <LogoIcon name={social.icon} size={18} />
                 </a>
               ))}
@@ -262,23 +262,23 @@ export default function Landing({ content, theme, setTheme }) {
             </div>
           </div>
           <div className="text-center md:text-left">
-            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">{content.footer?.headers?.nav || 'Навигация'}</h4>
+            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">{interpolate(content.footer?.headers?.nav, content) || 'Навигация'}</h4>
             <ul className="space-y-3 md:space-y-4 text-[10px] md:text-xs font-bold uppercase tracking-widest opacity-80">
               {content.sections.filter(s => s.enabled && s.id !== 'hero').map(s => (
-                <li key={s.id}><a href={`#${s.id}`} className="hover:text-blue-500 transition-colors">{s.label}</a></li>
+                <li key={s.id}><a href={`#${s.id}`} className="hover:text-blue-500 transition-colors">{interpolate(s.label, content)}</a></li>
               ))}
             </ul>
           </div>
           <div className="text-center md:text-left">
-            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">{content.footer?.headers?.legal || 'Правовая информация'}</h4>
+            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">{interpolate(content.footer?.headers?.legal, content) || 'Правовая информация'}</h4>
             <ul className="space-y-3 md:space-y-4 text-[10px] md:text-xs font-bold uppercase tracking-widest opacity-80">
-              <li><Link to="/privacy" className="hover:text-blue-500 transition-colors">Политика конфиденциальности</Link></li>
-              <li><Link to="/requisites" className="hover:text-blue-500 transition-colors">Реквизиты организации</Link></li>
-              <li><Link to="/oferta" className="hover:text-blue-500 transition-colors">Оферта / Условия</Link></li>
+              <li><Link to="/privacy" className="hover:text-blue-500 transition-colors">{interpolate(content.pages.privacy.title, content)}</Link></li>
+              <li><Link to="/requisites" className="hover:text-blue-500 transition-colors">{interpolate(content.pages.requisites.title, content)}</Link></li>
+              <li><Link to="/oferta" className="hover:text-blue-500 transition-colors">{interpolate(content.pages.oferta.title, content)}</Link></li>
             </ul>
           </div>
           <div className="text-center md:text-left">
-            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">{content.footer?.headers?.contacts || 'Контакты'}</h4>
+            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">{interpolate(content.footer?.headers?.contacts, content) || 'Контакты'}</h4>
             <ul className="space-y-4 md:space-y-5 text-xs md:text-sm font-medium opacity-90">
               <li className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3"><MapPin size={16} className="text-blue-500 shrink-0" /><span className="max-w-[200px] md:max-w-none">{interpolate(content.address, content)}</span></li>
               <li className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3"><Phone size={16} className="text-blue-500 shrink-0" /><span>{interpolate(content.phone, content)}</span></li>
@@ -289,8 +289,8 @@ export default function Landing({ content, theme, setTheme }) {
         <div className="max-w-6xl mx-auto pt-8 md:pt-12 border-t border-soft flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8 text-[8px] md:text-[9px] font-bold uppercase tracking-[0.2em] opacity-60 text-center md:text-left">
           <p>© {new Date().getFullYear()} {interpolate(content.companyName, content)} • v{interpolate(content.legal.version, content)}</p>
           <div className="flex flex-col md:flex-row gap-4 md:gap-12">
-            <p>{interpolate(content.legal.statusLabel, content) || 'Рег.'}: {interpolate(content.pdnReg, content)}</p>
-            <p>{interpolate(content.legal.statusValue, content) || `Приказ ${interpolate(content.pdnOrder, content)}`}</p>
+            <p>{interpolate(content.ui?.regLabel, content) || 'Рег.'}: {interpolate(content.pdnReg, content)}</p>
+            <p>{interpolate(content.ui?.orderLabel, content) || `Приказ ${interpolate(content.pdnOrder, content)}`}</p>
           </div>
         </div>
       </footer>
