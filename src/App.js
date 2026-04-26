@@ -528,6 +528,8 @@ const INITIAL_CONTENT = {
     "scheduleEnabled": true,
     "startHour": 9,
     "endHour": 18,
+    "statusOnline": "Линия активна",
+    "statusOffline": "Офлайн",
     "workDays": [
       1,
       2,

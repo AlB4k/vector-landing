@@ -66,7 +66,7 @@ export const Hero = ({ data, config }) => {
                   <div className={`mt-6 flex items-center gap-2 px-3 py-1.5 rounded-lg border ${isOnline ? 'bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/20' : 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/20'}`}>
                     <div className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-green-500 animate-pulse' : 'bg-blue-400'}`}></div>
                     <span className="text-[10px] font-black uppercase tracking-widest">
-                      {isOnline ? 'Линия активна' : 'Офлайн'}
+                      {isOnline ? (config.statusOnline || 'Линия активна') : (config.statusOffline || 'Офлайн')}
                     </span>
                   </div>
                 )}

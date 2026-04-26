@@ -394,6 +394,10 @@ export default function CMS({ content, setContent, onLogout }) {
                     <InputField label="Начало работы (час, 0-23)" type="number" value={localContent.hotlineConfig.startHour} onChange={(val) => updateNested('hotlineConfig.startHour', parseInt(val))} />
                     <InputField label="Конец работы (час, 0-23)" type="number" value={localContent.hotlineConfig.endHour} onChange={(val) => updateNested('hotlineConfig.endHour', parseInt(val))} />
                   </div>
+                  <div className="grid grid-cols-2 gap-8">
+                    <InputField label="Текст статуса (Онлайн)" value={localContent.hotlineConfig.statusOnline} onChange={(val) => updateNested('hotlineConfig.statusOnline', val)} />
+                    <InputField label="Текст статуса (Офлайн)" value={localContent.hotlineConfig.statusOffline} onChange={(val) => updateNested('hotlineConfig.statusOffline', val)} />
+                  </div>
                   <div className="mt-4">
                     <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Рабочие дни (1=Пн, 0=Вс)</label>
                     <div className="flex gap-2">
