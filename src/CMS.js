@@ -55,6 +55,7 @@ const SectionCard = ({ title, children, icon }) => (
 
 export default function CMS({ content, setContent, onLogout }) {
   const [activeTab, setActiveTab] = useState('structure');
+  const [legalSubTab, setLegalSubTab] = useState('privacy');
   const [localContent, setLocalContent] = useState(content);
 
   // Глубокое сравнение для активации кнопки сохранения
@@ -961,15 +962,15 @@ export default function CMS({ content, setContent, onLogout }) {
                   {['privacy', 'requisites', 'oferta'].map(sub => (
                     <button
                       key={sub}
-                      onClick={() => updateNested('_legalTab', sub)}
-                      className={`px-6 py-3 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all border ${ (localContent._legalTab || 'privacy') === sub ? 'gradient-bg text-white shadow-lg' : 'bg-slate-900 text-slate-500 border-slate-800' }`}
+                      onClick={() => setLegalSubTab(sub)}
+                      className={`px-6 py-3 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all border ${ legalSubTab === sub ? 'gradient-bg text-white shadow-lg' : 'bg-slate-900 text-slate-500 border-slate-800' }`}
                     >
                       {sub === 'privacy' ? 'Политика' : sub === 'requisites' ? 'Реквизиты' : 'Оферта'}
                     </button>
                   ))}
                 </div>
 
-                {(localContent._legalTab === 'privacy' || !localContent._legalTab) && (
+                {legalSubTab === 'privacy' && (
                   <div className="space-y-6 animate-slow-fade">
                     <SectionCard title="Настройки политики конфиденциальности" icon={<Shield size={18}/>}>
                       <InputField label="Заголовок страницы" value={localContent.pages?.privacy?.title} onChange={(val) => updateNested('pages.privacy.title', val)} />
@@ -1011,7 +1012,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   </div>
                 )}
 
-                {localContent._legalTab === 'requisites' && (
+                {legalSubTab === 'requisites' && (
                   <div className="space-y-6 animate-slow-fade">
                     <SectionCard title="Настройки карточки организации" icon={<FileText size={18}/>}>
                       <InputField label="Заголовок страницы" value={localContent.pages?.requisites?.title} onChange={(val) => updateNested('pages.requisites.title', val)} />
@@ -1022,7 +1023,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   </div>
                 )}
 
-                {localContent._legalTab === 'oferta' && (
+                {legalSubTab === 'oferta' && (
                   <div className="space-y-6 animate-slow-fade">
                     <SectionCard title="Настройки оферты" icon={<FileText size={18}/>}>
                       <InputField label="Заголовок страницы" value={localContent.pages?.oferta?.title} onChange={(val) => updateNested('pages.oferta.title', val)} />
