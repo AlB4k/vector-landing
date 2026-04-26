@@ -31,26 +31,30 @@ export const validateContent = (data) => {
   const requiredFields = [
     'hero', 'sections', 'services', 'features', 'companyName',
     'stats', 'process', 'faq', 'news', 'serviceArea', 'contact',
-    'footer', 'analytics', 'legal', 'bpo'
+    'footer', 'analytics', 'legal', 'bpo', 'theme', 'ui', 'hotlineConfig',
+    'socials', 'integrations'
   ];
   requiredFields.forEach(field => {
-    if (!data[field]) errors.push(`Missing required field: ${field}`);
+    if (data[field] === undefined || data[field] === null) {
+      errors.push(field);
+    }
   });
 
   if (errors.length > 0) {
-    console.error("Content validation failed:", errors);
+    console.error("Content validation failed. Missing fields:", errors);
     return null;
   }
 
   // Санитизация всех ссылок в объекте рекурсивно (базовая реализация)
   const sanitized = JSON.parse(JSON.stringify(data));
 
+  // Безопасная обработка соцсетей
   const socials = sanitized.socialsList || sanitized.socials;
   if (socials && Array.isArray(socials)) {
     socials.forEach(item => {
-      if (item.url) item.url = sanitizeUrl(item.url);
+      if (item && item.url) item.url = sanitizeUrl(item.url);
     });
-  } else if (socials && typeof socials === 'object') {
+  } else if (socials && typeof socials === 'object' && sanitized.socials) {
     Object.keys(socials).forEach(key => {
       sanitized.socials[key] = sanitizeUrl(sanitized.socials[key]);
     });

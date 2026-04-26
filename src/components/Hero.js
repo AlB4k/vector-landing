@@ -10,8 +10,8 @@ export const Hero = ({ data, config, fullContent }) => {
     const now = new Date();
     const hour = now.getHours();
     const day = now.getDay();
-    const isWorkDay = config.workDays.includes(day);
-    return isWorkDay && hour >= config.startHour && hour < config.endHour;
+    const isWorkDay = Array.isArray(config.workDays) && config.workDays.includes(day);
+    return isWorkDay && hour >= (config.startHour || 0) && hour < (config.endHour || 24);
   }, [config]);
 
   return (

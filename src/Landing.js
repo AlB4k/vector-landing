@@ -106,7 +106,15 @@ export default function Landing({ content, theme, setTheme }) {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const themeConfig = content.theme[theme];
+  const themeConfig = content?.theme?.[theme] || (theme === 'light' ? content?.theme?.light : content?.theme?.dark) || {
+    primary: '#050508',
+    secondary: '#0a0a0f',
+    accentFrom: '#1e40af',
+    accentTo: '#06b6d4',
+    textMain: '#f8fafc',
+    textMuted: '#64748b',
+    blur: '12px'
+  };
 
   const themeStyles = {
     '--bg-primary': themeConfig.primary,

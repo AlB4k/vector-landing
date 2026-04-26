@@ -68,7 +68,7 @@ export const CookieBanner = ({ data, fullContent }) => {
 
         <div className="mt-6 pt-6 border-t border-slate-800 text-center">
           <Link to="/privacy" className="text-[9px] font-bold text-slate-500 hover:text-blue-400 uppercase tracking-widest transition-colors underline underline-offset-4 decoration-slate-800">
-            {interpolate(content.ui?.moreInPrivacy, fullContent) || 'Подробнее в Политике конфиденциальности'}
+            {interpolate(fullContent.ui?.moreInPrivacy, fullContent) || 'Подробнее в Политике конфиденциальности'}
           </Link>
         </div>
       </div>

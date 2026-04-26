@@ -527,6 +527,10 @@ const INITIAL_CONTENT = {
     "formspreeId": "",
     "formSubject": "Новая заявка от"
   },
+  "socials": [
+    { "icon": "Send", "url": "https://t.me/vektor_logistics", "label": "Telegram" },
+    { "icon": "MessageCircle", "url": "", "label": "WhatsApp" }
+  ],
   "pages": {
     "privacy": {
       "title": "Политика конфиденциальности",
@@ -553,16 +557,6 @@ const INITIAL_CONTENT = {
       "content": "Настоящий интернет-сайт {content.domain} носит исключительно информационный характер. Информация, представленная на сайте, включая описание услуг, технологические параметры и тарифные решения, не является публичной офертой.\n\n{content.companyName} оставляет за собой право в любое время без уведомления пользователей вносить изменения в информацию на сайте.\n\nВсе цены, условия и параметры оказываемых услуг (печать, логистика, дистрибуция) определяются индивидуально в рамках официального договора, заключаемого с каждым контрагентом в письменной форме."
     }
   },
-  "companyTagline": "Доставка + технологии",
-  "cookieBanner": {
-    "title": "Управление Cookie",
-    "description": "Мы используем cookie для корректной работы сайта. Технические cookie необходимы. Аналитические требуют вашего согласия в соответствии с ФЗ-152.",
-    "btnAll": "Принять все",
-    "btnEssential": "Только необходимые"
-  },
-  "loaderDelay": 1000,
-  "defaultTheme": "dark", // "dark", "light", "system"
-  "logoScaleHeader": 1.4,
   "logoScaleFooter": 1.2,
   "legal": {
     "statusLabel": "Статус",
@@ -797,40 +791,36 @@ export default function App() {
         if (validated) {
           // Deep merge helper to ensure new schema fields exist
           const deepMerge = (target, source) => {
+            if (!source || typeof source !== 'object' || Array.isArray(source)) return target;
             const output = { ...target };
-            if (source && typeof source === 'object' && !Array.isArray(source)) {
-              Object.keys(source).forEach(key => {
-                if (source[key] && typeof source[key] === 'object' && !Array.isArray(source[key])) {
-                  if (!(key in target)) {
-                    output[key] = source[key];
-                  } else {
-                    output[key] = deepMerge(target[key], source[key]);
-                  }
-                } else if (Array.isArray(source[key]) && key === 'sections') {
-                  // Special logic for sections: merge by ID to preserve user order/enabled state
-                  // but also include new sections from INITIAL_CONTENT (target)
-                  const targetSections = target[key] || [];
-                  const sourceSections = source[key] || [];
-                  const sourceMap = new Map(sourceSections.map(s => [s.id, s]));
 
-                  // Start with target (new code) and override with source (user data)
-                  output[key] = targetSections.map(tSec => {
-                    if (sourceMap.has(tSec.id)) {
-                      return { ...tSec, ...sourceMap.get(tSec.id) };
-                    }
-                    return tSec;
-                  });
-
-                  // Also add any sections from source that aren't in target (if any, though rare)
-                  const targetIds = new Set(targetSections.map(s => s.id));
-                  sourceSections.forEach(s => {
-                    if (!targetIds.has(s.id)) output[key].push(s);
-                  });
-                } else {
+            Object.keys(source).forEach(key => {
+              if (source[key] !== null && typeof source[key] === 'object' && !Array.isArray(source[key])) {
+                if (!(key in target) || target[key] === null || typeof target[key] !== 'object') {
                   output[key] = source[key];
+                } else {
+                  output[key] = deepMerge(target[key], source[key]);
                 }
-              });
-            }
+              } else if (Array.isArray(source[key]) && key === 'sections') {
+                const targetSections = target[key] || [];
+                const sourceSections = source[key] || [];
+                const sourceMap = new Map(sourceSections.map(s => [s.id, s]));
+
+                output[key] = targetSections.map(tSec => {
+                  if (sourceMap.has(tSec.id)) {
+                    return { ...tSec, ...sourceMap.get(tSec.id) };
+                  }
+                  return tSec;
+                });
+
+                const targetIds = new Set(targetSections.map(s => s.id));
+                sourceSections.forEach(s => {
+                  if (!targetIds.has(s.id)) output[key].push(s);
+                });
+              } else if (source[key] !== undefined && source[key] !== null) {
+                output[key] = source[key];
+              }
+            });
             return output;
           };
 
@@ -871,17 +861,22 @@ export default function App() {
     // Hide splash screen after configured delay
     const timer = setTimeout(() => {
       document.body.classList.add('loaded');
-    }, content.loaderDelay || 2000);
+      // Completely remove from layout after fade out
+      setTimeout(() => {
+        const loader = document.getElementById('loader-wrapper');
+        if (loader) loader.style.display = 'none';
+      }, 600); // 0.5s transition + 0.1s buffer
+    }, (content && content.loaderDelay) || 2000);
 
     return () => clearTimeout(timer);
-  }, [content.loaderDelay]);
+  }, [content?.loaderDelay]);
 
   useEffect(() => {
     // Inject Analytics only if IDs exist AND cookie consent is given
     const consentRaw = localStorage.getItem('cookieConsent');
     const hasConsent = consentRaw ? JSON.parse(consentRaw).accepted : false;
 
-    if (!hasConsent) return;
+    if (!hasConsent || !content || !content.analytics) return;
 
     if (content.analytics.yandexMetrica) {
       try {
