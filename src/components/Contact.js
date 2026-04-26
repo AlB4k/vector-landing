@@ -157,6 +157,7 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
             className="relative backdrop-blur-xl border border-[var(--border)] p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl space-y-6 text-left transition-colors duration-500"
             style={{ background: 'var(--card-bg)' }}
           >
+            <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2 text-left">
                 <label htmlFor="fullName" className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{data.formName}</label>
                 <input
