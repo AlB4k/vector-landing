@@ -1,26 +1,16 @@
-const CACHE_NAME = 'vector-v2.4.0';
-const ASSETS = [
-  '/',
-  '/index.html',
-  '/manifest.json',
-  '/logo_icon.png',
-  '/logo_site.png',
-  '/logo_full.png',
-  '/favicon.ico'
-];
+// Service Worker Kill Switch - Resolves Vercel cache desync
+self.addEventListener('install', (e) => {
+  self.skipWaiting();
+});
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS);
-    })
+self.addEventListener('activate', (e) => {
+  e.waitUntil(
+    caches.keys().then((keys) => {
+      return Promise.all(keys.map(key => caches.delete(key)));
+    }).then(() => self.clients.claim())
   );
 });
 
-self.addEventListener('fetch', (event) => {
-  event.respondWith(
-    caches.match(event.request).then((response) => {
-      return response || fetch(event.request);
-    })
-  );
+self.addEventListener('fetch', (e) => {
+  // Do nothing, let the network handle it
 });

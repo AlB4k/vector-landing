@@ -11,11 +11,22 @@ root.render(
   </React.StrictMode>
 );
 
-// Register Service Worker for PWA
+// Register Service Worker for PWA - Disabled due to Vercel cache desync issues
+/*
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js')
       .then(() => {}) // SW registered silently in production
       .catch(() => {}); // SW error handled silently in production
+  });
+}
+*/
+
+// Unregister existing service workers to resolve cache issues
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.getRegistrations().then((registrations) => {
+    for (let registration of registrations) {
+      registration.unregister();
+    }
   });
 }
