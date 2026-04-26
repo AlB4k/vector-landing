@@ -31,7 +31,7 @@ export const validateContent = (data) => {
   const requiredFields = [
     'hero', 'sections', 'services', 'features', 'companyName',
     'stats', 'process', 'faq', 'news', 'serviceArea', 'contact',
-    'footer', 'socials', 'analytics', 'legal', 'bpo'
+    'footer', 'analytics', 'legal', 'bpo'
   ];
   requiredFields.forEach(field => {
     if (!data[field]) errors.push(`Missing required field: ${field}`);
@@ -45,8 +45,13 @@ export const validateContent = (data) => {
   // Санитизация всех ссылок в объекте рекурсивно (базовая реализация)
   const sanitized = JSON.parse(JSON.stringify(data));
 
-  if (sanitized.socials) {
-    Object.keys(sanitized.socials).forEach(key => {
+  const socials = sanitized.socialsList || sanitized.socials;
+  if (socials && Array.isArray(socials)) {
+    socials.forEach(item => {
+      if (item.url) item.url = sanitizeUrl(item.url);
+    });
+  } else if (socials && typeof socials === 'object') {
+    Object.keys(socials).forEach(key => {
       sanitized.socials[key] = sanitizeUrl(sanitized.socials[key]);
     });
   }
