@@ -130,7 +130,7 @@ export default function Requisites({ content, theme }) {
                 </div>
                 <div>
                   <p className={`text-[9px] font-black uppercase ${isLight ? 'text-slate-400' : 'text-slate-600'} tracking-widest mb-1`}>{interpolate(content.ui?.basis, content) || 'Основание'}</p>
-                  <p className={`${isLight ? 'text-slate-900' : 'text-white'} font-bold leading-tight`}>{interpolate(content.ui?.basisLabel, content) || 'Приказ'} {interpolate(content.pdnOrder, content)}</p>
+                  <p className={`${isLight ? 'text-slate-900' : 'text-white'} font-bold leading-tight`}>{interpolate(content.ui?.orderLabel, content) || 'Приказ'} {interpolate(content.pdnOrder, content)}</p>
                 </div>
               </div>
             </section>

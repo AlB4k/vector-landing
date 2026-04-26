@@ -4,7 +4,6 @@ import { ArrowLeft, Shield } from 'lucide-react';
 import { interpolate } from '../utils/content';
 
 export default function PrivacyPolicy({ content, theme }) {
-  const lastUpdated = "24.04.2026";
   const isLight = theme === 'light';
   const privacyData = content.pages?.privacy || {};
 
