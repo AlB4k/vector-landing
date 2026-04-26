@@ -157,11 +157,11 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
             className="relative backdrop-blur-xl border border-[var(--border)] p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl space-y-6 text-left transition-colors duration-500"
             style={{ background: 'var(--card-bg)' }}
           >
-            <div className="grid md:grid-cols-2 gap-6">
               <div className="space-y-2 text-left">
-                <label className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{data.formName}</label>
+                <label htmlFor="fullName" className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{data.formName}</label>
                 <input
                   type="text"
+                  id="fullName"
                   name="fullName"
                   autoComplete="name"
                   value={formData.name}
@@ -175,9 +175,10 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
                 {errors.name && <p className="text-[10px] text-red-400 font-bold ml-1 uppercase tracking-widest">{errors.name}</p>}
               </div>
               <div className="space-y-2 text-left">
-                <label className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{data.formPhone}</label>
+                <label htmlFor="phone" className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{data.formPhone}</label>
                 <input
                   type="tel"
+                  id="phone"
                   name="phone"
                   autoComplete="tel"
                   value={formData.phone}
@@ -192,9 +193,10 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
               </div>
             </div>
             <div className="space-y-2 text-left">
-              <label className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{data.formEmail}</label>
+              <label htmlFor="email" className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{data.formEmail}</label>
               <input
                 type="email"
+                id="email"
                 name="email"
                 autoComplete="email"
                 value={emailValue}
@@ -208,8 +210,9 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
               {errors.email && <p className="text-[10px] text-red-400 font-bold ml-1 uppercase tracking-widest">{errors.email}</p>}
             </div>
             <div className="space-y-2 text-left">
-              <label className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{data.formMessage}</label>
+              <label htmlFor="message" className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{data.formMessage}</label>
               <textarea
+                id="message"
                 name="message"
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
