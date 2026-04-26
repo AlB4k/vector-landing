@@ -1,8 +1,9 @@
 import React from 'react';
 import { MapPin, Shield, CheckCircle2 } from 'lucide-react';
 import { SectionWrapper } from './Shared';
+import { interpolate } from '../utils/content';
 
-export const ServiceArea = ({ data, isLight }) => {
+export const ServiceArea = ({ data, fullContent, isLight }) => {
   const variants = ['radar', 'mesh', 'blueprint', 'isometric', 'topology', 'pulse', 'heatmap', 'default'];
 
   const mapVariant = React.useMemo(() => {
@@ -158,10 +159,10 @@ export const ServiceArea = ({ data, isLight }) => {
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-700 dark:text-blue-300">География работ</span>
             </div>
             <h2 className="text-3xl md:text-5xl font-black mb-4 md:mb-6 tracking-tight leading-tight text-[var(--text-main)]">
-              {data.title} <span className="text-blue-600 dark:text-blue-500">{data.accent}</span>
+              {interpolate(data.title, fullContent)} <span className="text-blue-600 dark:text-blue-500">{interpolate(data.accent, fullContent)}</span>
             </h2>
             <p className="text-[var(--text-muted)] text-sm md:text-lg max-w-xl leading-relaxed font-medium">
-              {data.subtitle}
+              {interpolate(data.subtitle, fullContent)}
             </p>
           </div>
 
@@ -173,18 +174,18 @@ export const ServiceArea = ({ data, isLight }) => {
                 </div>
                 <div className="relative z-10 flex-1">
                   <div className="flex justify-between items-start gap-2">
-                    <h4 className="font-bold text-sm mb-1 text-[var(--text-main)]">{loc.name}</h4>
+                    <h4 className="font-bold text-sm mb-1 text-[var(--text-main)]">{interpolate(loc.name, fullContent)}</h4>
                     {loc.status && (
                       <span className="text-[7px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500 border border-blue-500/20 whitespace-nowrap">
-                        {loc.status}
+                        {interpolate(loc.status, fullContent)}
                       </span>
                     )}
                   </div>
-                  <p className="text-[10px] text-[var(--text-muted)] opacity-70 font-medium uppercase tracking-widest">{loc.type}</p>
+                  <p className="text-[10px] text-[var(--text-muted)] opacity-70 font-medium uppercase tracking-widest">{interpolate(loc.type, fullContent)}</p>
                   {loc.freq && (
                     <p className="text-[9px] text-blue-500/60 font-bold uppercase tracking-widest mt-2 flex items-center gap-1.5">
                       <span className="w-1 h-1 rounded-full bg-blue-500/40"></span>
-                      {loc.freq}
+                      {interpolate(loc.freq, fullContent)}
                     </p>
                   )}
                 </div>
@@ -200,7 +201,7 @@ export const ServiceArea = ({ data, isLight }) => {
                 <div>
                   <p className="text-sm font-bold mb-1 text-[var(--text-main)]">Собственная курьерская сеть</p>
                   <p className="text-xs text-[var(--text-muted)] max-w-xs font-medium leading-relaxed">
-                    {data.ownNetworkNote || 'Прямой контроль сотрудников без посредников. 100% покрытие во всех районах присутствия.'}
+                    {interpolate(data.ownNetworkNote, fullContent) || 'Прямой контроль сотрудников без посредников. 100% покрытие во всех районах присутствия.'}
                   </p>
                 </div>
              </div>

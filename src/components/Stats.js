@@ -1,7 +1,8 @@
 import React from 'react';
 import { Counter, SectionWrapper } from './Shared';
+import { interpolate } from '../utils/content';
 
-export const Stats = ({ data }) => {
+export const Stats = ({ data, fullContent }) => {
   if (!data || !Array.isArray(data)) return null;
   // Позволяем отображать любые статы, где есть заголовок и значение (даже строковое)
   const activeStats = data.filter(stat => stat && stat.label && (stat.val || stat.val === 0));
@@ -23,13 +24,14 @@ export const Stats = ({ data }) => {
             </div>
             <div className="flex items-center gap-3">
               <div className="h-px w-6 bg-blue-500/40"></div>
-              <p className="text-[10px] font-black uppercase tracking-[0.25em] text-blue-600 dark:text-blue-400 leading-none">{stat.label}</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.25em] text-blue-600 dark:text-blue-400 leading-none">{interpolate(stat.label, fullContent)}</p>
             </div>
           </div>
 
           {/* Background decoration (hidden tech label) */}
-          <div className="absolute -bottom-4 right-0 text-[40px] font-black text-[var(--text-main)] opacity-[0.03] md:opacity-[0.05] select-none pointer-events-none uppercase tracking-tighter">
-            STAT_{i+1}
+          <div className="absolute -bottom-4 right-0 flex flex-col items-end opacity-[0.03] md:opacity-[0.05] select-none pointer-events-none font-mono">
+            <span className="text-[40px] font-black uppercase tracking-tighter italic">STAT_0{i+1}</span>
+            <span className="text-[8px] font-bold tracking-[0.4em] -mt-2">SYS_METRIC_REV.36</span>
           </div>
         </div>
       ))}

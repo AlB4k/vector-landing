@@ -1,8 +1,9 @@
 import React from 'react';
 import { ShieldCheck, Printer, Package, CheckCircle2 } from 'lucide-react';
 import { SectionWrapper } from './Shared';
+import { interpolate } from '../utils/content';
 
-export const BPO = ({ data }) => {
+export const BPO = ({ data, fullContent }) => {
   if (!data || !data.steps || !data.advantages) return null;
 
   return (
@@ -12,11 +13,11 @@ export const BPO = ({ data }) => {
         <div className="flex-1 space-y-12">
           <div>
             <h2 className="text-3xl md:text-5xl font-black mb-6 tracking-tight leading-tight">
-              {data.title} <span className="text-blue-500">{data.accent}</span>
+              {interpolate(data.title, fullContent)} <span className="text-blue-500">{interpolate(data.accent, fullContent)}</span>
             </h2>
             <p className="text-blue-400 font-bold uppercase text-[10px] tracking-[0.2em] mb-4">Технология Pressure Seal</p>
             <p className="text-[var(--text-muted)] text-sm md:text-lg max-w-xl leading-relaxed font-medium">
-              {data.subtitle}
+              {interpolate(data.subtitle, fullContent)}
             </p>
           </div>
 
@@ -30,8 +31,8 @@ export const BPO = ({ data }) => {
                   {idx !== data.steps.length - 1 && <div className="w-0.5 h-full bg-blue-500/10 mt-2"></div>}
                 </div>
                 <div className="pb-8">
-                  <h4 className="font-bold text-lg mb-2 text-[var(--text-main)] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{step.title}</h4>
-                  <p className="text-sm text-[var(--text-muted)] leading-relaxed font-medium opacity-80">{step.desc}</p>
+                  <h4 className="font-bold text-lg mb-2 text-[var(--text-main)] group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">{interpolate(step.title, fullContent)}</h4>
+                  <p className="text-sm text-[var(--text-muted)] leading-relaxed font-medium opacity-80">{interpolate(step.desc, fullContent)}</p>
                 </div>
               </div>
             ))}
@@ -50,7 +51,7 @@ export const BPO = ({ data }) => {
               </div>
               <p className="text-xs font-black uppercase tracking-widest text-blue-600 dark:text-blue-500 mb-3">Юридическая справка</p>
               <p className="text-xs leading-relaxed text-[var(--text-main)] opacity-80 font-medium italic">
-                {data.legalNote}
+                {interpolate(data.legalNote, fullContent)}
               </p>
             </div>
             <div className="absolute -bottom-8 -right-8 w-32 h-32 bg-blue-500/5 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-1000"></div>
@@ -65,7 +66,7 @@ export const BPO = ({ data }) => {
                 {data.advantages.map((adv, i) => (
                   <li key={i} className="flex items-start gap-3">
                     <CheckCircle2 size={16} className="text-blue-600 dark:text-blue-500 shrink-0 mt-0.5" />
-                    <span className="text-xs font-medium text-[var(--text-main)] opacity-90 leading-relaxed">{adv}</span>
+                    <span className="text-xs font-medium text-[var(--text-main)] opacity-90 leading-relaxed">{interpolate(adv, fullContent)}</span>
                   </li>
                 ))}
              </ul>

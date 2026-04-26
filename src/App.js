@@ -159,6 +159,7 @@ const INITIAL_CONTENT = {
   ],
   "hero": {
     "badge": "Являемся оператором ПДн, Обеспечиваем исполнение 152-ФЗ.",
+    "badgeIcon": "ShieldCheck",
     "title1": "Надёжные решения.",
     "titleGradient": "В срок. Без проблем.",
     "subtitle": "Печатаем, формируем бесконвертные отправления и доставляем платёжные документы для управляющих и ресурсоснабжающих организаций,  расчётных центров, региональных операторов и фондов Воронежской области и других территорий. Работаем с 2024 года. Полное соответствие 152-ФЗ на всех этапах процесса.",
@@ -656,7 +657,7 @@ function LoginScreen({ onLogin, companyName }) {
     <div className="min-h-screen bg-[#08080f] flex items-center justify-center p-6">
       <div className={`w-full max-w-md bg-slate-900/50 p-10 rounded-[2.5rem] border ${error ? 'border-red-500 animate-shake' : 'border-slate-800'} glass shadow-2xl transition-all`}>
         <div className="flex justify-center mb-8">
-          <Logo light={false} text={companyName || 'ВЕКТОР'} tagline="ADMIN ACCESS" />
+          <Logo light={false} text={companyName || INITIAL_CONTENT.logoText} tagline="ADMIN ACCESS" />
         </div>
         <h2 className="text-3xl font-black text-white text-center mb-2">CMS Доступ</h2>
         <p className="text-slate-400 text-center mb-8 font-medium">
@@ -687,7 +688,7 @@ function LoginScreen({ onLogin, companyName }) {
         </form>
 
         <p className="mt-8 text-center text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-          {companyName || 'ООО ВЕКТОР'} • Security Panel
+          {companyName || INITIAL_CONTENT.companyName} • Security Panel
         </p>
       </div>
 
@@ -781,6 +782,24 @@ export default function App() {
         console.error("Failed to parse saved content", e);
       }
     }
+  }, []);
+
+  useEffect(() => {
+    const handleStorage = (e) => {
+      if (e.key === 'vector_content' && e.newValue) {
+        try {
+          const parsed = JSON.parse(e.newValue);
+          const validated = validateContent(parsed);
+          if (validated) {
+            setContent(validated);
+          }
+        } catch (err) {
+          console.error("Storage sync failed:", err);
+        }
+      }
+    };
+    window.addEventListener('storage', handleStorage);
+    return () => window.removeEventListener('storage', handleStorage);
   }, []);
 
   const handleUpdateContent = (newContent) => {

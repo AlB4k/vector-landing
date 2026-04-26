@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Cookie, X, Check, Shield } from 'lucide-react';
+import { interpolate } from '../utils/content';
 
-export const CookieBanner = ({ data }) => {
+export const CookieBanner = ({ data, fullContent }) => {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
@@ -43,9 +44,9 @@ export const CookieBanner = ({ data }) => {
             <Cookie size={24} />
           </div>
           <div>
-            <h4 className="text-sm font-black text-[var(--text-main)] uppercase tracking-widest mb-2">{data.title}</h4>
+            <h4 className="text-sm font-black text-[var(--text-main)] uppercase tracking-widest mb-2">{interpolate(data.title, fullContent)}</h4>
             <p className="text-[11px] leading-relaxed text-[var(--text-muted)] font-medium">
-              {data.description}
+              {interpolate(data.description, fullContent)}
             </p>
           </div>
         </div>
@@ -55,13 +56,13 @@ export const CookieBanner = ({ data }) => {
             onClick={() => handleAccept('all')}
             className="w-full py-3.5 bg-blue-600 hover:bg-blue-500 text-white rounded-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2 shadow-lg shadow-blue-900/40"
           >
-            <Check size={14} /> {data.btnAll}
+            <Check size={14} /> {interpolate(data.btnAll, fullContent)}
           </button>
           <button
             onClick={() => handleAccept('essential')}
             className="w-full py-3.5 bg-slate-800 hover:bg-slate-700 text-white rounded-xl font-black text-[10px] uppercase tracking-widest transition-all flex items-center justify-center gap-2"
           >
-            <Shield size={14} /> {data.btnEssential}
+            <Shield size={14} /> {interpolate(data.btnEssential, fullContent)}
           </button>
         </div>
 

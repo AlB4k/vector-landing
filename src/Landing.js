@@ -129,16 +129,16 @@ export default function Landing({ content, theme, setTheme }) {
   const renderSection = (section) => {
     if (!section.enabled) return null;
     switch (section.id) {
-      case 'hero': return <Hero key={section.id} data={content.hero} config={content.hotlineConfig} />;
-      case 'features': return <Features key={section.id} data={content.features} />;
-      case 'stats': return <Stats key={section.id} data={content.stats} />;
-      case 'process': return <Process key={section.id} data={content.process} />;
-      case 'services': return <Services key={section.id} data={content.services} />;
-      case 'bpo': return <BPO key={section.id} data={content.bpo} />;
-      case 'serviceArea': return <ServiceArea key={section.id} data={content.serviceArea} isLight={isLight} />;
-      case 'faq': return <FAQ key={section.id} data={content.faq} />;
-      case 'news': return <News key={section.id} data={content.news} />;
-      case 'contact': return <Contact key={section.id} data={content.contact} companyInfo={{ phone: content.phone, email: content.email, address: content.address, companyName: content.companyName }} socials={content.socials} integrations={content.integrations} handleFormSubmit={handleFormSubmit} emailValue={emailValue} setEmailValue={setEmailValue} isLight={isLight} />;
+      case 'hero': return <Hero key={section.id} data={content.hero} config={content.hotlineConfig} fullContent={content} />;
+      case 'features': return <Features key={section.id} data={content.features} fullContent={content} />;
+      case 'stats': return <Stats key={section.id} data={content.stats} fullContent={content} />;
+      case 'process': return <Process key={section.id} data={content.process} fullContent={content} />;
+      case 'services': return <Services key={section.id} data={content.services} fullContent={content} />;
+      case 'bpo': return <BPO key={section.id} data={content.bpo} fullContent={content} />;
+      case 'serviceArea': return <ServiceArea key={section.id} data={content.serviceArea} isLight={isLight} fullContent={content} />;
+      case 'faq': return <FAQ key={section.id} data={content.faq} fullContent={content} />;
+      case 'news': return <News key={section.id} data={content.news} fullContent={content} />;
+      case 'contact': return <Contact key={section.id} data={content.contact} companyInfo={{ phone: content.phone, email: content.email, address: content.address, companyName: content.companyName }} socials={content.socialsList || content.socials} integrations={content.integrations} handleFormSubmit={handleFormSubmit} emailValue={emailValue} setEmailValue={setEmailValue} isLight={isLight} fullContent={content} />;
       default: return null;
     }
   };
@@ -147,7 +147,7 @@ export default function Landing({ content, theme, setTheme }) {
     <div style={{ ...themeStyles, backgroundColor: 'var(--bg-primary)', color: 'var(--text-main)', minHeight: '100vh' }} className="font-sans transition-colors duration-500 overflow-x-hidden text-left">
       <style>{animations}</style>
 
-      <CookieBanner data={content.cookieBanner} />
+      <CookieBanner data={content.cookieBanner} fullContent={content} />
 
       {/* Scroll Progress Bar */}
       {content.ui?.showScrollProgress && (
@@ -163,7 +163,7 @@ export default function Landing({ content, theme, setTheme }) {
       {content.ui?.showBackToTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-          className={`fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50 p-3 md:p-4 rounded-xl md:rounded-2xl ${isLight ? 'bg-white/80 border-slate-200 text-blue-600' : 'bg-slate-900/80 border-white/10 text-blue-500'} backdrop-blur-xl border shadow-2xl transition-all duration-500 hover:scale-110 active:scale-95 ${isScrolled ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
+          className={`fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[70] p-3 md:p-4 rounded-xl md:rounded-2xl ${isLight ? 'bg-white border-slate-200 text-blue-600 shadow-blue-500/10' : 'bg-slate-900 border-white/10 text-blue-500 shadow-black/40'} backdrop-blur-xl border shadow-2xl transition-all duration-500 hover:scale-110 active:scale-95 ${isScrolled ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
           style={{ marginBottom: 'env(safe-area-inset-bottom)' }}
         >
           <ChevronUp size={24} />
@@ -280,17 +280,17 @@ export default function Landing({ content, theme, setTheme }) {
           <div className="text-center md:text-left">
             <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">{content.footer?.headers?.contacts || 'Контакты'}</h4>
             <ul className="space-y-4 md:space-y-5 text-xs md:text-sm font-medium opacity-90">
-              <li className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3"><MapPin size={16} className="text-blue-500 shrink-0" /><span className="max-w-[200px] md:max-w-none">{content.address}</span></li>
-              <li className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3"><Phone size={16} className="text-blue-500 shrink-0" /><span>{content.phone}</span></li>
-              <li className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3"><Mail size={16} className="text-blue-500 shrink-0" /><span>{content.email}</span></li>
+              <li className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3"><MapPin size={16} className="text-blue-500 shrink-0" /><span className="max-w-[200px] md:max-w-none">{interpolate(content.address, content)}</span></li>
+              <li className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3"><Phone size={16} className="text-blue-500 shrink-0" /><span>{interpolate(content.phone, content)}</span></li>
+              <li className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3"><Mail size={16} className="text-blue-500 shrink-0" /><span>{interpolate(content.email, content)}</span></li>
             </ul>
           </div>
         </div>
         <div className="max-w-6xl mx-auto pt-8 md:pt-12 border-t border-soft flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8 text-[8px] md:text-[9px] font-bold uppercase tracking-[0.2em] opacity-60 text-center md:text-left">
-          <p>© {new Date().getFullYear()} {content.companyName} • v{content.legal.version}</p>
+          <p>© {new Date().getFullYear()} {interpolate(content.companyName, content)} • v{interpolate(content.legal.version, content)}</p>
           <div className="flex flex-col md:flex-row gap-4 md:gap-12">
-            <p>{content.legal.statusLabel || 'Рег.'}: {content.pdnReg}</p>
-            <p>{content.legal.statusValue || `Приказ ${content.pdnOrder}`}</p>
+            <p>{interpolate(content.legal.statusLabel, content) || 'Рег.'}: {interpolate(content.pdnReg, content)}</p>
+            <p>{interpolate(content.legal.statusValue, content) || `Приказ ${interpolate(content.pdnOrder, content)}`}</p>
           </div>
         </div>
       </footer>

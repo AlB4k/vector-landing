@@ -1,15 +1,16 @@
 import React from 'react';
 import { Newspaper, Calendar } from 'lucide-react';
 import { SectionWrapper } from './Shared';
+import { interpolate } from '../utils/content';
 
-export const News = ({ data }) => {
+export const News = ({ data, fullContent }) => {
   if (!data || !data.items || data.items.length === 0) return null;
 
   return (
     <SectionWrapper id="news" className="max-w-4xl mx-auto px-4 md:px-6">
       <div className="text-center mb-10 md:mb-16">
         <h2 className="text-3xl md:text-4xl font-black mb-4 tracking-tight leading-tight text-[var(--text-main)] uppercase">
-          {data.title} <span className="text-blue-600 dark:text-blue-500">{data.accent}</span>
+          {interpolate(data.title, fullContent)} <span className="text-blue-600 dark:text-blue-500">{interpolate(data.accent, fullContent)}</span>
         </h2>
       </div>
 
@@ -25,7 +26,7 @@ export const News = ({ data }) => {
                 <div className="flex items-center gap-2 md:justify-center">
                   <Calendar size={12} className="text-blue-500/50" />
                   <span className="text-[10px] md:text-[11px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-widest font-mono">
-                    {item.date}
+                    {interpolate(item.date, fullContent)}
                   </span>
                 </div>
               </div>
@@ -34,21 +35,22 @@ export const News = ({ data }) => {
               <div className="flex-1">
                 {item.tag && (
                   <span className="inline-block px-2 py-0.5 rounded-md bg-blue-500/10 border border-blue-500/20 text-[8px] font-black text-blue-500 uppercase tracking-widest mb-3">
-                    {item.tag}
+                    {interpolate(item.tag, fullContent)}
                   </span>
                 )}
                 <h3 className="text-lg md:text-xl font-black mb-3 text-[var(--text-main)] tracking-tight leading-tight group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
-                  {item.title}
+                  {interpolate(item.title, fullContent)}
                 </h3>
                 <p className="text-xs md:text-sm text-[var(--text-muted)] leading-relaxed font-medium">
-                  {item.desc}
+                  {interpolate(item.desc, fullContent)}
                 </p>
               </div>
             </div>
 
             {/* Industrial tech decoration */}
-            <div className="absolute top-0 right-0 p-4 opacity-[0.03] select-none pointer-events-none font-mono text-[40px] font-black italic">
-              NEWS_0{i + 1}
+            <div className="absolute top-0 right-0 p-4 opacity-[0.03] select-none pointer-events-none font-mono text-right">
+              <div className="text-[40px] font-black italic leading-none">NEWS_0{i + 1}</div>
+              <div className="text-[8px] font-bold tracking-[0.3em] uppercase">LOG_ENTRY_v{i+1}.0.4</div>
             </div>
           </div>
         ))}
