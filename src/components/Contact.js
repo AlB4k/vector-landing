@@ -54,7 +54,7 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
             email: emailValue,
             phone: formData.phone,
             message: formData.message,
-            _subject: `Новая заявка от ${formData.name}`,
+            _subject: `${integrations.formSubject || 'Новая заявка от'} ${formData.name}`,
             consent_granted: "Yes"
           })
         });
@@ -131,16 +131,17 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
           <div className="pt-8 border-t border-soft max-w-md">
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-50 mb-4 text-left ml-1">Наши соцсети</p>
             <div className="flex flex-wrap gap-4">
-              {socials.telegram && (
-                <a href={socials.telegram} target="_blank" rel="noreferrer" className="px-6 py-2.5 rounded-xl border border-soft hover:bg-blue-500 hover:text-white transition-all font-bold text-[10px] uppercase tracking-widest flex items-center gap-2">
-                  <Send size={14} /> Telegram
+              {(socials || []).map((social, i) => (
+                <a
+                  key={i}
+                  href={social.url}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-6 py-2.5 rounded-xl border border-soft hover:bg-blue-500 hover:text-white transition-all font-bold text-[10px] uppercase tracking-widest flex items-center gap-2"
+                >
+                  <LogoIcon name={social.icon} size={14} /> {social.label}
                 </a>
-              )}
-              {socials.whatsapp && (
-                <a href={socials.whatsapp} target="_blank" rel="noreferrer" className="px-6 py-2.5 rounded-xl border border-soft hover:bg-green-500 hover:text-white transition-all font-bold text-[10px] uppercase tracking-widest flex items-center gap-2">
-                  <MessageCircle size={14} /> WhatsApp
-                </a>
-              )}
+              ))}
             </div>
           </div>
         </div>
@@ -228,7 +229,7 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
                   className={`mt-1 w-5 h-5 rounded border-white/10 bg-white/5 text-blue-600 focus:ring-blue-500/50 transition-all cursor-pointer ${errors.consent ? 'ring-2 ring-red-500/50' : ''}`}
                 />
                 <label htmlFor="consent" className="text-[10px] leading-relaxed text-slate-500 dark:text-slate-400 font-medium cursor-pointer">
-                  Я даю согласие на обработку персональных данных в соответствии с <Link to="/privacy" className="text-blue-500 dark:text-blue-400 font-bold hover:underline" target="_blank">Политикой конфиденциальности</Link> ООО «ВЕКТОР» (152-ФЗ)
+                  Я даю согласие на обработку персональных данных в соответствии с <Link to="/privacy" className="text-blue-500 dark:text-blue-400 font-bold hover:underline" target="_blank">Политикой конфиденциальности</Link> {companyInfo.companyName} (152-ФЗ)
                 </label>
               </div>
               {errors.consent && <p className="text-[9px] text-red-400 font-bold ml-8 uppercase tracking-widest">{errors.consent}</p>}

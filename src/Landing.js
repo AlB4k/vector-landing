@@ -15,7 +15,7 @@ import {
   ShieldCheck,
   ChevronUp
 } from 'lucide-react';
-import { Logo } from './components/Shared';
+import { Logo, DynamicIcon as LogoIcon } from './components/Shared';
 import { Hero } from './components/Hero';
 import { Features } from './components/Features';
 import { Stats } from './components/Stats';
@@ -149,21 +149,25 @@ export default function Landing({ content, theme, setTheme }) {
       <CookieBanner data={content.cookieBanner} />
 
       {/* Scroll Progress Bar */}
-      <div className="fixed top-0 left-0 w-full h-[3px] z-[100] pointer-events-none">
-        <div
-          className="h-full gradient-bg shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-150 ease-out"
-          style={{ width: `${scrollProgress}%` }}
-        ></div>
-      </div>
+      {content.ui?.showScrollProgress && (
+        <div className="fixed top-0 left-0 w-full h-[3px] z-[100] pointer-events-none">
+          <div
+            className="h-full gradient-bg shadow-[0_0_15px_rgba(59,130,246,0.5)] transition-all duration-150 ease-out"
+            style={{ width: `${scrollProgress}%` }}
+          ></div>
+        </div>
+      )}
 
       {/* Back to Top */}
-      <button
-        onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className={`fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50 p-3 md:p-4 rounded-xl md:rounded-2xl ${isLight ? 'bg-white/80 border-slate-200 text-blue-600' : 'bg-slate-900/80 border-white/10 text-blue-500'} backdrop-blur-xl border shadow-2xl transition-all duration-500 hover:scale-110 active:scale-95 ${isScrolled ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
-        style={{ marginBottom: 'env(safe-area-inset-bottom)' }}
-      >
-        <ChevronUp size={24} />
-      </button>
+      {content.ui?.showBackToTop && (
+        <button
+          onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          className={`fixed bottom-6 right-6 md:bottom-8 md:right-8 z-50 p-3 md:p-4 rounded-xl md:rounded-2xl ${isLight ? 'bg-white/80 border-slate-200 text-blue-600' : 'bg-slate-900/80 border-white/10 text-blue-500'} backdrop-blur-xl border shadow-2xl transition-all duration-500 hover:scale-110 active:scale-95 ${isScrolled ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
+          style={{ marginBottom: 'env(safe-area-inset-bottom)' }}
+        >
+          <ChevronUp size={24} />
+        </button>
+      )}
 
       {/* Modals */}
       {activeModal && (
@@ -185,7 +189,7 @@ export default function Landing({ content, theme, setTheme }) {
       {/* Navbar */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 py-4 ${isScrolled ? 'backdrop-blur-md border-b border-[var(--border)]' : 'bg-transparent'}`} style={{ backgroundColor: isScrolled ? 'var(--nav-bg)' : 'transparent' }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Logo light={isLight} customScale={content.logoScaleHeader} tagline={content.companyTagline} />
+          <Logo light={isLight} customScale={content.logoScaleHeader} tagline={content.companyTagline} text={content.logoText} />
           <div className="hidden md:flex items-center gap-8 text-[10px] font-bold uppercase tracking-[0.15em] opacity-80">
             {content.sections.filter(s => s.enabled && s.id !== 'hero').map((s) => (
               <a key={s.id} href={`#${s.id}`} className="hover:text-blue-500 transition-colors">{s.label}</a>
@@ -207,7 +211,7 @@ export default function Landing({ content, theme, setTheme }) {
       <div className={`fixed inset-0 z-[60] bg-[#08080f]/98 backdrop-blur-2xl transition-all duration-500 ${mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
         <div className="p-8 flex flex-col h-full">
           <div className="flex justify-between items-center mb-16">
-            <Logo light={false} variant="small" customScale={content.logoScaleFooter} tagline={content.companyTagline} />
+            <Logo light={false} variant="small" customScale={content.logoScaleFooter} tagline={content.companyTagline} text={content.logoText} />
             <button onClick={() => setMobileMenuOpen(false)} className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white border border-white/10 active:scale-90 transition-all" aria-label="Закрыть мобильное меню">
               <X size={24} aria-hidden="true" />
             </button>
@@ -244,17 +248,20 @@ export default function Landing({ content, theme, setTheme }) {
       <footer className="px-4 md:px-6 py-12 md:py-16 border-t border-[var(--border)]" style={{ backgroundColor: 'var(--bg-primary)' }}>
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 mb-12 md:mb-16">
           <div className="col-span-1 text-center md:text-left flex flex-col items-center md:items-start">
-            <Logo light={isLight} variant="small" customScale={content.logoScaleFooter} tagline={content.companyTagline} />
+            <Logo light={isLight} variant="small" customScale={content.logoScaleFooter} tagline={content.companyTagline} text={content.logoText} />
             <p className="mt-6 md:mt-8 text-[11px] md:text-xs leading-relaxed font-medium opacity-60 max-w-sm">{content.footer.description}</p>
             <div className="flex items-center gap-3 mt-8 md:mt-10">
               <a href={`mailto:${content.email}`} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-90"><Mail size={18}/></a>
-              {content.socials.telegram && <a href={content.socials.telegram} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-90"><Send size={18}/></a>}
-              {content.socials.whatsapp && <a href={content.socials.whatsapp} target="_blank" rel="noreferrer" className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-green-500 hover:text-white transition-all opacity-90"><MessageCircle size={18}/></a>}
+              {(content.socialsList || []).map((social, i) => (
+                <a key={i} href={social.url} target="_blank" rel="noreferrer" title={social.label} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-90">
+                  <LogoIcon name={social.icon} size={18} />
+                </a>
+              ))}
               <button onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { altKey: true, shiftKey: true, key: 'C' }))} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-slate-500/10 transition-all opacity-20 hover:opacity-100"><Lock size={14}/></button>
             </div>
           </div>
           <div className="text-center md:text-left">
-            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">Навигация</h4>
+            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">{content.footer?.headers?.nav || 'Навигация'}</h4>
             <ul className="space-y-3 md:space-y-4 text-[10px] md:text-xs font-bold uppercase tracking-widest opacity-80">
               {content.sections.filter(s => s.enabled && s.id !== 'hero').map(s => (
                 <li key={s.id}><a href={`#${s.id}`} className="hover:text-blue-500 transition-colors">{s.label}</a></li>
@@ -262,7 +269,7 @@ export default function Landing({ content, theme, setTheme }) {
             </ul>
           </div>
           <div className="text-center md:text-left">
-            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">Правовая информация</h4>
+            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">{content.footer?.headers?.legal || 'Правовая информация'}</h4>
             <ul className="space-y-3 md:space-y-4 text-[10px] md:text-xs font-bold uppercase tracking-widest opacity-80">
               <li><Link to="/privacy" className="hover:text-blue-500 transition-colors">Политика конфиденциальности</Link></li>
               <li><Link to="/requisites" className="hover:text-blue-500 transition-colors">Реквизиты организации</Link></li>
@@ -270,7 +277,7 @@ export default function Landing({ content, theme, setTheme }) {
             </ul>
           </div>
           <div className="text-center md:text-left">
-            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">Контакты</h4>
+            <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">{content.footer?.headers?.contacts || 'Контакты'}</h4>
             <ul className="space-y-4 md:space-y-5 text-xs md:text-sm font-medium opacity-90">
               <li className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3"><MapPin size={16} className="text-blue-500 shrink-0" /><span className="max-w-[200px] md:max-w-none">{content.address}</span></li>
               <li className="flex flex-col md:flex-row items-center md:items-start gap-2 md:gap-3"><Phone size={16} className="text-blue-500 shrink-0" /><span>{content.phone}</span></li>
@@ -279,7 +286,7 @@ export default function Landing({ content, theme, setTheme }) {
           </div>
         </div>
         <div className="max-w-6xl mx-auto pt-8 md:pt-12 border-t border-soft flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8 text-[8px] md:text-[9px] font-bold uppercase tracking-[0.2em] opacity-60 text-center md:text-left">
-          <p>© 2026 {content.companyName} • v{content.legal.version}</p>
+          <p>© {new Date().getFullYear()} {content.companyName} • v{content.legal.version}</p>
           <div className="flex flex-col md:flex-row gap-4 md:gap-12">
             <p>{content.legal.statusLabel || 'Рег.'}: {content.pdnReg}</p>
             <p>{content.legal.statusValue || `Приказ ${content.pdnOrder}`}</p>

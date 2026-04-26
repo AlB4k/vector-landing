@@ -34,8 +34,8 @@ export default function Requisites({ content, theme }) {
           <div className="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center text-blue-500 mb-8 border border-blue-500/20 mx-auto md:mx-0">
             <Building2 size={32} />
           </div>
-          <h1 className={`text-4xl md:text-5xl font-black ${isLight ? 'text-slate-900' : 'text-white'} mb-4 tracking-tight uppercase`}>Карточка организации</h1>
-          <p className="text-sm opacity-50 font-medium tracking-wide">ООО «ВЕКТОР» • Актуальные реквизиты юридического лица</p>
+          <h1 className={`text-4xl md:text-5xl font-black ${isLight ? 'text-slate-900' : 'text-white'} mb-4 tracking-tight uppercase`}>{content.pages?.requisites?.title || 'Карточка организации'}</h1>
+          <p className="text-sm opacity-50 font-medium tracking-wide">{(content.pages?.requisites?.subtitle || `${content.companyName} • Актуальные реквизиты юридического лица`).replace('ООО «ВЕКТОР»', content.companyName)}</p>
         </header>
 
         <div className="grid md:grid-cols-2 gap-8">
@@ -47,11 +47,11 @@ export default function Requisites({ content, theme }) {
               <div className="space-y-6">
                 <div>
                   <p className={`text-[9px] font-black uppercase ${isLight ? 'text-slate-400' : 'text-slate-600'} tracking-widest mb-1`}>Полное наименование</p>
-                  <p className={`${isLight ? 'text-slate-900' : 'text-white'} font-bold leading-relaxed`}>Общество с ограниченной ответственностью «ВЕКТОР»</p>
+                  <p className={`${isLight ? 'text-slate-900' : 'text-white'} font-bold leading-relaxed`}>{content.pages?.requisites?.fullCompanyName || `Общество с ограниченной ответственностью «${content.logoText || 'ВЕКТОР'}»`}</p>
                 </div>
                 <div>
                   <p className={`text-[9px] font-black uppercase ${isLight ? 'text-slate-400' : 'text-slate-600'} tracking-widest mb-1`}>Сокращенное наименование</p>
-                  <p className={`${isLight ? 'text-slate-900' : 'text-white'} font-bold tracking-tight`}>ООО «ВЕКТОР»</p>
+                  <p className={`${isLight ? 'text-slate-900' : 'text-white'} font-bold tracking-tight`}>{content.companyName}</p>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-4 pt-2">
                   <div>
@@ -164,7 +164,7 @@ export default function Requisites({ content, theme }) {
                   </div>
                 </div>
                 <div className={`mt-12 p-6 ${isLight ? 'bg-blue-500/5 border-blue-500/20' : 'bg-blue-500/5 border-blue-500/10'} border rounded-2xl`}>
-                  <p className={`text-[9px] font-black uppercase ${isLight ? 'text-slate-400' : 'text-slate-600'} tracking-widest mb-2 italic`}>Для запроса банковских реквизитов (р/с) и договоров, пожалуйста, свяжитесь с нашим отделом бухгалтерии.</p>
+                  <p className={`text-[9px] font-black uppercase ${isLight ? 'text-slate-400' : 'text-slate-600'} tracking-widest mb-2 italic`}>{content.pages?.requisites?.note || 'Для запроса банковских реквизитов (р/с) и договоров, пожалуйста, свяжитесь с нашим отделом бухгалтерии.'}</p>
                 </div>
               </div>
             </section>

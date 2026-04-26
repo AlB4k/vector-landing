@@ -152,6 +152,8 @@ export default function CMS({ content, setContent, onLogout }) {
     { id: 'news', label: 'Новости', icon: <Send size={18}/> },
     { id: 'faq', label: 'FAQ', icon: <HelpCircle size={18}/> },
     { id: 'contact', label: 'Контакты', icon: <Mail size={18}/> },
+    { id: 'legal', label: 'Страницы', icon: <Shield size={18}/> },
+    { id: 'socials', label: 'Соцсети', icon: <Send size={18}/> },
     { id: 'modals', label: 'Модалки', icon: <Layers size={18}/> },
     { id: 'footer', label: 'Подвал', icon: <MapPin size={18}/> },
     { id: 'analytics', label: 'Интеграции', icon: <BarChart3 size={18}/> },
@@ -875,6 +877,132 @@ export default function CMS({ content, setContent, onLogout }) {
               </SectionCard>
             )}
 
+            {activeTab === 'socials' && (
+              <div className="space-y-6">
+                <SectionCard title="Список социальных сетей" icon={<Send size={18}/>}>
+                  <p className="text-[10px] text-slate-500 font-medium mb-6 leading-relaxed">
+                    Этот список используется в подвале сайта и в блоке контактов. Вы можете добавлять новые сети, менять их иконки (Lucide) и порядок.
+                  </p>
+                  <div className="space-y-4">
+                    {localContent.socialsList?.map((social, idx) => (
+                      <div key={idx} className="bg-slate-950/40 p-6 rounded-2xl border border-slate-800 relative group">
+                        <div className="absolute top-4 right-4 flex gap-2">
+                          <button onClick={() => moveItem('socialsList', idx, -1)} className="p-2 text-slate-700 hover:text-blue-500 disabled:opacity-10" disabled={idx === 0}><ArrowUp size={16}/></button>
+                          <button onClick={() => moveItem('socialsList', idx, 1)} className="p-2 text-slate-700 hover:text-blue-500 disabled:opacity-10" disabled={idx === localContent.socialsList.length - 1}><ArrowDown size={16}/></button>
+                          <button onClick={() => {
+                            const newS = [...localContent.socialsList];
+                            newS.splice(idx, 1);
+                            updateNested('socialsList', newS);
+                          }} className="p-2 text-slate-700 hover:text-red-500 transition-colors"><Trash2 size={16}/></button>
+                        </div>
+                        <div className="grid grid-cols-2 gap-6 mr-24">
+                          <InputField label="Название (Label)" value={social.label} onChange={(val) => {
+                            const newS = [...localContent.socialsList];
+                            newS[idx].label = val;
+                            updateNested('socialsList', newS);
+                          }} />
+                          <InputField label="Иконка Lucide" value={social.icon} onChange={(val) => {
+                            const newS = [...localContent.socialsList];
+                            newS[idx].icon = val;
+                            updateNested('socialsList', newS);
+                          }} />
+                        </div>
+                        <InputField label="Ссылка (URL)" value={social.url} onChange={(val) => {
+                          const newS = [...localContent.socialsList];
+                          newS[idx].url = val;
+                          updateNested('socialsList', newS);
+                        }} />
+                      </div>
+                    ))}
+                    <button onClick={() => updateNested('socialsList', [...(localContent.socialsList || []), { label: 'New', icon: 'Send', url: 'https://' }])} className="w-full py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 transition-all flex items-center justify-center gap-3"><Plus size={20}/> Добавить соцсеть</button>
+                  </div>
+                </SectionCard>
+              </div>
+            )}
+
+            {activeTab === 'legal' && (
+              <div className="space-y-8">
+                <div className="flex gap-4 mb-8">
+                  {['privacy', 'requisites', 'oferta'].map(sub => (
+                    <button
+                      key={sub}
+                      onClick={() => updateNested('_legalTab', sub)}
+                      className={`px-6 py-3 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all border ${ (localContent._legalTab || 'privacy') === sub ? 'gradient-bg text-white shadow-lg' : 'bg-slate-900 text-slate-500 border-slate-800' }`}
+                    >
+                      {sub === 'privacy' ? 'Политика' : sub === 'requisites' ? 'Реквизиты' : 'Оферта'}
+                    </button>
+                  ))}
+                </div>
+
+                {(localContent._legalTab === 'privacy' || !localContent._legalTab) && (
+                  <div className="space-y-6 animate-slow-fade">
+                    <SectionCard title="Настройки политики конфиденциальности" icon={<Shield size={18}/>}>
+                      <InputField label="Заголовок страницы" value={localContent.pages?.privacy?.title} onChange={(val) => updateNested('pages.privacy.title', val)} />
+                    </SectionCard>
+
+                    <div className="mb-6 ml-2">
+                      <h4 className="text-lg font-black text-white mb-1 tracking-tight uppercase tracking-widest text-xs">Разделы политики</h4>
+                    </div>
+
+                    {localContent.pages?.privacy?.sections?.map((sec, idx) => (
+                      <div key={idx} className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 relative group mb-6">
+                        <div className="absolute top-6 right-6 flex gap-2">
+                          <button onClick={() => moveItem('pages.privacy.sections', idx, -1)} className="p-2 text-slate-700 hover:text-blue-500 disabled:opacity-10" disabled={idx === 0}><ArrowUp size={16}/></button>
+                          <button onClick={() => moveItem('pages.privacy.sections', idx, 1)} className="p-2 text-slate-700 hover:text-blue-500 disabled:opacity-10" disabled={idx === localContent.pages.privacy.sections.length - 1}><ArrowDown size={16}/></button>
+                          <button onClick={() => {
+                            const newS = [...localContent.pages.privacy.sections];
+                            newS.splice(idx, 1);
+                            updateNested('pages.privacy.sections', newS);
+                          }} className="p-2 text-slate-700 hover:text-red-500 transition-colors"><Trash2 size={18}/></button>
+                        </div>
+                        <div className="grid grid-cols-2 gap-8 mr-24">
+                          <InputField label="ID раздела (anchor)" value={sec.id} onChange={(val) => {
+                            const newS = [...localContent.pages.privacy.sections];
+                            newS[idx].id = val;
+                            updateNested('pages.privacy.sections', newS);
+                          }} />
+                          <InputField label="Заголовок раздела" value={sec.title} onChange={(val) => {
+                            const newS = [...localContent.pages.privacy.sections];
+                            newS[idx].title = val;
+                            updateNested('pages.privacy.sections', newS);
+                          }} />
+                        </div>
+                        <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Содержимое (HTML поддерживается)</label>
+                        <textarea value={sec.content} onChange={(e) => {
+                          const newS = [...localContent.pages.privacy.sections];
+                          newS[idx].content = e.target.value;
+                          updateNested('pages.privacy.sections', newS);
+                        }} className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white text-sm font-medium h-48 resize-none" />
+                        <p className="text-[9px] text-slate-600 mt-2 italic">Переменные: {'{content.companyName}'}, {'{content.address}'}, {'{content.email}'}, {'{content.inn}'}, {'{content.ogrn}'}</p>
+                      </div>
+                    ))}
+                    <button onClick={() => updateNested('pages.privacy.sections', [...(localContent.pages?.privacy?.sections || []), { id: 'new', title: 'Новый раздел', content: 'Текст раздела...' }])} className="w-full py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 transition-all flex items-center justify-center gap-3"><Plus size={20}/> Добавить раздел политики</button>
+                  </div>
+                )}
+
+                {localContent._legalTab === 'requisites' && (
+                  <div className="space-y-6 animate-slow-fade">
+                    <SectionCard title="Настройки карточки организации" icon={<FileText size={18}/>}>
+                      <InputField label="Заголовок страницы" value={localContent.pages?.requisites?.title} onChange={(val) => updateNested('pages.requisites.title', val)} />
+                      <InputField label="Подзаголовок (Subtitle)" value={localContent.pages?.requisites?.subtitle} onChange={(val) => updateNested('pages.requisites.subtitle', val)} />
+                      <InputField label="Полное наименование" value={localContent.pages?.requisites?.fullCompanyName} onChange={(val) => updateNested('pages.requisites.fullCompanyName', val)} />
+                      <InputField label="Примечание (внизу)" value={localContent.pages?.requisites?.note} onChange={(val) => updateNested('pages.requisites.note', val)} />
+                    </SectionCard>
+                  </div>
+                )}
+
+                {localContent._legalTab === 'oferta' && (
+                  <div className="space-y-6 animate-slow-fade">
+                    <SectionCard title="Настройки оферты" icon={<FileText size={18}/>}>
+                      <InputField label="Заголовок страницы" value={localContent.pages?.oferta?.title} onChange={(val) => updateNested('pages.oferta.title', val)} />
+                      <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Текст оферты (HTML/Переносы строк)</label>
+                      <textarea value={localContent.pages?.oferta?.content} onChange={(e) => updateNested('pages.oferta.content', e.target.value)} className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white text-sm font-medium h-96 resize-none" />
+                    </SectionCard>
+                  </div>
+                )}
+              </div>
+            )}
+
             {activeTab === 'modals' && (
               <div className="space-y-8">
                 <SectionCard title="Модальное окно: Успех" icon={<Check size={18}/>}>
@@ -900,11 +1028,12 @@ export default function CMS({ content, setContent, onLogout }) {
                     <InputField label="URL документа оферты" value={localContent.footer.offerLink} onChange={(val) => updateNested('footer.offerLink', val)} />
                   </div>
                 </SectionCard>
-                <SectionCard title="Ссылки на социальные сети" icon={<Send size={18}/>}>
-                  <div className="space-y-2">
-                    <InputField label="Telegram Channel URL" value={localContent.socials.telegram} onChange={(val) => updateNested('socials.telegram', val)} />
-                    <InputField label="WhatsApp Business URL" value={localContent.socials.whatsapp} onChange={(val) => updateNested('socials.whatsapp', val)} />
-                    <InputField label="VK Community URL" value={localContent.socials.vk} onChange={(val) => updateNested('socials.vk', val)} />
+
+                <SectionCard title="Заголовки колонок" icon={<Layers size={18}/>}>
+                  <div className="grid grid-cols-3 gap-8">
+                    <InputField label="Колонка 1 (Навигация)" value={localContent.footer?.headers?.nav} onChange={(val) => updateNested('footer.headers.nav', val)} />
+                    <InputField label="Колонка 2 (Правовая)" value={localContent.footer?.headers?.legal} onChange={(val) => updateNested('footer.headers.legal', val)} />
+                    <InputField label="Колонка 3 (Контакты)" value={localContent.footer?.headers?.contacts} onChange={(val) => updateNested('footer.headers.contacts', val)} />
                   </div>
                 </SectionCard>
               </div>
@@ -959,7 +1088,7 @@ export default function CMS({ content, setContent, onLogout }) {
                               <img src="/logo_site.png" style={{ transform: `scale(${localContent.logoScaleHeader})` }} className="w-full h-full object-contain" alt="" />
                             </div>
                             <div className="flex flex-col text-left">
-                              <span className="text-3xl font-black text-white whitespace-nowrap leading-none">ВЕКТОР</span>
+                              <span className="text-3xl font-black text-white whitespace-nowrap leading-none">{localContent.logoText || 'ВЕКТОР'}</span>
                               <span className="text-[10px] font-bold tracking-[0.35em] text-blue-400 uppercase mt-1">{localContent.companyTagline}</span>
                             </div>
                           </div>
@@ -986,7 +1115,7 @@ export default function CMS({ content, setContent, onLogout }) {
                               <img src="/logo_site.png" style={{ transform: `scale(${localContent.logoScaleFooter})` }} className="w-full h-full object-contain" alt="" />
                             </div>
                             <div className="flex flex-col text-left">
-                              <span className="text-lg font-black text-white whitespace-nowrap leading-none">ВЕКТОР</span>
+                              <span className="text-lg font-black text-white whitespace-nowrap leading-none">{localContent.logoText || 'ВЕКТОР'}</span>
                               <span className="text-[7px] font-bold tracking-[0.35em] text-blue-400 uppercase mt-0.5">{localContent.companyTagline}</span>
                             </div>
                           </div>
@@ -997,9 +1126,10 @@ export default function CMS({ content, setContent, onLogout }) {
                 </SectionCard>
 
                 <SectionCard title="Формы и уведомления" icon={<Send size={18}/>}>
+                  <InputField label="Тема письма (Subject)" value={localContent.integrations.formSubject} onChange={(val) => updateNested('integrations.formSubject', val)} />
                   <InputField label="Formspree ID (для реальных заявок)" value={localContent.integrations.formspreeId} onChange={(val) => updateNested('integrations.formspreeId', val)} />
                   <p className="text-[10px] text-slate-500 font-medium leading-relaxed -mt-2 ml-1 max-w-md">
-                    Если поле пустое, форма работает в демо-режиме (имитация отправки).
+                    Если поле ID пустое, форма работает в демо-режиме (имитация отправки).
                   </p>
                 </SectionCard>
 

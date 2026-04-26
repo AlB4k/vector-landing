@@ -431,7 +431,7 @@ const INITIAL_CONTENT = {
     "formPhone": "Телефон ",
     "formMessage": "Тираж (кол-во квитанций), район доставки, дата начала",
     "formButton": "Отправить запрос",
-    "formConsent": "Я даю согласие на обработку персональных данных в соответствии с Политикой конфиденциальности ООО «ВЕКТОР» (ФЗ-152)",
+    "formConsent": "Я даю согласие на обработку персональных данных в соответствии с Политикой конфиденциальности {content.companyName} (ФЗ-152)",
     "infoTitle": "Контактная информация",
     "infoDesc": "Принимаем заявки в рабочие дни с 8:00 до 18:00. Ответ — в течение 1 часа."
   },
@@ -445,20 +445,51 @@ const INITIAL_CONTENT = {
   "footer": {
     "description": "Специализированный оператор по производству и адресной доставке  платёжных документов. Оператор ПДн, рег. № 36-25-043546.",
     "offerLabel": "Оферта и условия",
-    "offerLink": "/offer"
+    "offerLink": "/offer",
+    "headers": {
+      "nav": "Навигация",
+      "legal": "Правовая информация",
+      "contacts": "Контакты"
+    }
   },
-  "socials": {
-    "telegram": "https://t.me/vektor_logistics",
-    "whatsapp": "",
-    "vk": ""
-  },
+  "socialsList": [
+    { "icon": "Send", "url": "https://t.me/vektor_logistics", "label": "Telegram" },
+    { "icon": "MessageCircle", "url": "", "label": "WhatsApp" }
+  ],
   "analytics": {
     "yandexMetrica": "",
     "googleAnalytics": "",
     "pixelId": ""
   },
   "integrations": {
-    "formspreeId": ""
+    "formspreeId": "",
+    "formSubject": "Новая заявка от"
+  },
+  "pages": {
+    "privacy": {
+      "title": "Политика конфиденциальности",
+      "version": "v1.1",
+      "lastUpdated": "24.04.2026",
+      "sections": [
+        { "id": "general", "title": "Общие положения", "content": "Настоящая Политика в отношении обработки персональных данных разработана {content.companyName} (ОГРН {content.ogrn}, ИНН {content.inn}) в соответствии с требованиями Федерального закона от 27.07.2006 № 152-ФЗ «О персональных данных».\n\nОператор персональных данных: {content.companyName}, адрес: {content.address}. Регистрация в реестре Роскомнадзора: №{content.pdnReg}, Приказ {content.pdnOrder}." },
+        { "id": "data-list", "title": "Состав персональных данных", "content": "Мы обрабатываем следующие категории персональных данных, предоставленных вами через формы обратной связи на сайте:\n\n• Фамилия, имя, отчество;\n• Номер контактного телефона;\n• Адрес электронной почты (email);\n• Адрес объекта (для целей логистики);\n• Технические данные: IP-адрес, тип устройства, файлы cookie (аналитические и технические)." },
+        { "id": "goals", "title": "Цели обработки", "content": "Обработка ПДн осуществляется для достижения следующих целей:\n\n• Ответ на обращения пользователей и предоставление консультаций;\n• Подготовка коммерческих предложений;\n• Заключение и исполнение договоров на оказание услуг печати и дистрибуции;\n• Соблюдение требований законодательства РФ." },
+        { "id": "rights", "title": "Права субъекта ПДн", "content": "Вы имеете право на:\n\n• Доступ к своим персональным данным;\n• Уточнение (исправление) неточных данных;\n• Требование блокирования или уничтожения данных;\n• Отзыв согласия на обработку в любое время;\n• Обжалование действий Оператора в Роскомнадзоре или суде." },
+        { "id": "protection", "title": "Меры защиты", "content": "{content.companyName} применяет организационные и технические меры для защиты персональных данных от несанкционированного доступа. Это включает использование защищенного контура печати, шифрование каналов передачи данных и строгое ограничение круга лиц, имеющих доступ к информации в соответствии с ФЗ-152." },
+        { "id": "contacts", "title": "Контакты и обращения", "content": "Для реализации ваших прав или получения информации об обработке ваших ПДн направьте письменный запрос на адрес: {content.address} или на электронную почту: {content.email}." }
+      ]
+    },
+    "requisites": {
+      "title": "Карточка организации",
+      "subtitle": "{content.companyName} • Актуальные реквизиты юридического лица",
+      "fullCompanyName": "Общество с ограниченной ответственностью «{content.logoText}»",
+      "note": "Для запроса банковских реквизитов (р/с) и договоров, пожалуйста, свяжитесь с нашим отделом бухгалтерии."
+    },
+    "oferta": {
+      "title": "Оферта и условия",
+      "domain": "vektor-vrn.ru",
+      "content": "Настоящий интернет-сайт {content.domain} носит исключительно информационный характер. Информация, представленная на сайте, включая описание услуг, технологические параметры и тарифные решения, не является публичной офертой.\n\n{content.companyName} оставляет за собой право в любое время без уведомления пользователей вносить изменения в информацию на сайте.\n\nВсе цены, условия и параметры оказываемых услуг (печать, логистика, дистрибуция) определяются индивидуально в рамках официального договора, заключаемого с каждым контрагентом в письменной форме."
+    }
   },
   "companyTagline": "Доставка + технологии",
   "cookieBanner": {
@@ -474,7 +505,7 @@ const INITIAL_CONTENT = {
   "legal": {
     "statusLabel": "Статус",
     "statusValue": "Оператор ПДн (Роскомнадзор), рег. № 36-25-043546",
-    "privacy": "Настоящая Политика конфиденциальности персональных данных (далее – Политика конфиденциальности) действует в отношении всей информации, которую ООО \"ВЕКТОР\", расположенное на домене vektor-vrn.ru, может получить о Пользователе во время использования сайта...",
+    "privacy": "Настоящая Политика конфиденциальности персональных данных (далее – Политика конфиденциальности) действует в отношении всей информации, которую {content.companyName}, расположенное на домене {content.domain}, может получить о Пользователе во время использования сайта...",
     "agreement": "Согласие на обработку персональных данных... В соответствии с Федеральным законом № 152-ФЗ «О персональных данных» от 27.07.2006 года настоящим подтверждаю своё согласие на обработку моих персональных данных...",
     "version": "2.0"
   },
@@ -567,13 +598,13 @@ const INITIAL_CONTENT = {
         "date": "01.02.2026",
         "tag": "БЕЗОПАСНОСТЬ",
         "title": "Успешная аттестация Роскомнадзора",
-        "desc": "ООО \"ВЕКТОР\" подтвердило статус оператора персональных данных, успешно пройдя плановую проверку соответствия техническим регламентам ФЗ-152."
+        "desc": "Компания подтвердила статус оператора персональных данных, успешно пройдя плановую проверку соответствия техническим регламентам ФЗ-152."
       }
     ]
   }
 };
 
-function LoginScreen({ onLogin }) {
+function LoginScreen({ onLogin, companyName }) {
   const [pass, setPass] = useState('');
   const [error, setError] = useState(false);
   const [attempts, setAttempts] = useState(0);
@@ -623,8 +654,8 @@ function LoginScreen({ onLogin }) {
   return (
     <div className="min-h-screen bg-[#08080f] flex items-center justify-center p-6">
       <div className={`w-full max-w-md bg-slate-900/50 p-10 rounded-[2.5rem] border ${error ? 'border-red-500 animate-shake' : 'border-slate-800'} glass shadow-2xl transition-all`}>
-        <div className="w-16 h-16 gradient-bg rounded-2xl flex items-center justify-center mx-auto mb-8 shadow-lg" style={{ background: lockoutTime > 0 ? 'linear-gradient(135deg, #ef4444, #991b1b)' : 'linear-gradient(135deg, #3b82f6, #60a5fa)' }}>
-          <Lock size={28} className="text-white" />
+        <div className="flex justify-center mb-8">
+          <Logo light={false} text={companyName || 'ВЕКТОР'} tagline="ADMIN ACCESS" />
         </div>
         <h2 className="text-3xl font-black text-white text-center mb-2">CMS Доступ</h2>
         <p className="text-slate-400 text-center mb-8 font-medium">
@@ -655,7 +686,7 @@ function LoginScreen({ onLogin }) {
         </form>
 
         <p className="mt-8 text-center text-[10px] text-slate-500 font-bold uppercase tracking-widest">
-          OOO "ВЕКТОР" • Security Panel
+          {companyName || 'ООО ВЕКТОР'} • Security Panel
         </p>
       </div>
 
@@ -713,6 +744,26 @@ export default function App() {
                   } else {
                     output[key] = deepMerge(target[key], source[key]);
                   }
+                } else if (Array.isArray(source[key]) && key === 'sections') {
+                  // Special logic for sections: merge by ID to preserve user order/enabled state
+                  // but also include new sections from INITIAL_CONTENT (target)
+                  const targetSections = target[key] || [];
+                  const sourceSections = source[key] || [];
+                  const sourceMap = new Map(sourceSections.map(s => [s.id, s]));
+
+                  // Start with target (new code) and override with source (user data)
+                  output[key] = targetSections.map(tSec => {
+                    if (sourceMap.has(tSec.id)) {
+                      return { ...tSec, ...sourceMap.get(tSec.id) };
+                    }
+                    return tSec;
+                  });
+
+                  // Also add any sections from source that aren't in target (if any, though rare)
+                  const targetIds = new Set(targetSections.map(s => s.id));
+                  sourceSections.forEach(s => {
+                    if (!targetIds.has(s.id)) output[key].push(s);
+                  });
                 } else {
                   output[key] = source[key];
                 }
@@ -811,7 +862,7 @@ export default function App() {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isAuth]);
 
-  if (view === 'login') return <LoginScreen onLogin={() => { setIsAuth(true); setView('cms'); }} />;
+  if (view === 'login') return <LoginScreen onLogin={() => { setIsAuth(true); setView('cms'); }} companyName={content.companyName} />;
 
   return (
     <ErrorBoundary>

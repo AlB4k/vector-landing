@@ -17,8 +17,8 @@ export default function Oferta({ content, theme }) {
           <div className="w-16 h-16 bg-blue-600/10 rounded-2xl flex items-center justify-center text-blue-500 mb-8 border border-blue-500/20 mx-auto md:mx-0">
             <Scale size={32} />
           </div>
-          <h1 className={`text-3xl md:text-5xl font-black ${isLight ? 'text-slate-900' : 'text-white'} mb-4 tracking-tight uppercase leading-tight`}>Оферта и условия</h1>
-          <p className="text-sm opacity-50 font-medium">Юридические условия взаимодействия с ООО «ВЕКТОР»</p>
+          <h1 className={`text-3xl md:text-5xl font-black ${isLight ? 'text-slate-900' : 'text-white'} mb-4 tracking-tight uppercase leading-tight`}>{content.pages?.oferta?.title || 'Оферта и условия'}</h1>
+          <p className="text-sm opacity-50 font-medium">Юридические условия взаимодействия с {content.companyName}</p>
         </header>
 
         <section className={`${isLight ? 'bg-slate-50 border-slate-200 shadow-lg' : 'bg-slate-900/30 border-blue-500/20 shadow-2xl'} p-6 md:p-10 rounded-3xl md:rounded-[2.5rem] border mb-8 md:mb-12`}>
@@ -33,17 +33,23 @@ export default function Oferta({ content, theme }) {
           </div>
 
           <div className={`space-y-6 text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'} break-words md:break-normal`}>
-            <p>
-              Настоящий интернет-сайт <span className={`${isLight ? 'text-slate-900' : 'text-white'} font-bold underline underline-offset-4 decoration-blue-500/50`}>vektor-vrn.ru</span> носит исключительно информационный характер. Информация, представленная на сайте, включая описание услуг, технологические параметры и тарифные решения, не является публичной офертой.
-            </p>
-            <p>
-              ООО «ВЕКТОР» оставляет за собой право в любое время без уведомления пользователей вносить изменения в информацию на сайте.
-            </p>
-            <div className={`${isLight ? 'bg-blue-50 border-blue-200' : 'bg-blue-500/5 border-blue-500/10'} p-6 md:p-8 border rounded-2xl border-l-4 border-l-blue-500`}>
-              <p className={`${isLight ? 'text-slate-800' : 'text-white'} font-bold leading-relaxed uppercase tracking-tight text-[11px] md:text-xs`}>
-                Все цены, условия и параметры оказываемых услуг (печать, логистика, дистрибуция) определяются индивидуально в рамках официального договора, заключаемого с каждым контрагентом в письменной форме.
-              </p>
-            </div>
+            {content.pages?.oferta?.content ? (
+              <div className="whitespace-pre-line" dangerouslySetInnerHTML={{ __html: (content.pages.oferta.content || "").replace(/ООО «ВЕКТОР»/g, content.companyName).replace(/\{content\.domain\}/g, content.domain || 'vektor-vrn.ru') }} />
+            ) : (
+              <>
+                <p>
+                  Настоящий интернет-сайт <span className={`${isLight ? 'text-slate-900' : 'text-white'} font-bold underline underline-offset-4 decoration-blue-500/50`}>{content.domain || 'vektor-vrn.ru'}</span> носит исключительно информационный характер. Информация, представленная на сайте, включая описание услуг, технологические параметры и тарифные решения, не является публичной офертой.
+                </p>
+                <p>
+                  {content.companyName} оставляет за собой право в любое время без уведомления пользователей вносить изменения в информацию на сайте.
+                </p>
+                <div className={`${isLight ? 'bg-blue-50 border-blue-200' : 'bg-blue-500/5 border-blue-500/10'} p-6 md:p-8 border rounded-2xl border-l-4 border-l-blue-500`}>
+                  <p className={`${isLight ? 'text-slate-800' : 'text-white'} font-bold leading-relaxed uppercase tracking-tight text-[11px] md:text-xs`}>
+                    Все цены, условия и параметры оказываемых услуг (печать, логистика, дистрибуция) определяются индивидуально в рамках официального договора, заключаемого с каждым контрагентом в письменной форме.
+                  </p>
+                </div>
+              </>
+            )}
           </div>
         </section>
 
@@ -70,8 +76,8 @@ export default function Oferta({ content, theme }) {
         </div>
 
         <footer className={`mt-24 pt-12 border-t ${isLight ? 'border-slate-100' : 'border-slate-900'} text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 flex justify-between`}>
-          <span>© 2026 ООО «ВЕКТОР»</span>
-          <span className="text-right">Версия документа: 2.0_NODISCLAIMER</span>
+          <span>© {new Date().getFullYear()} {content.companyName}</span>
+          <span className="text-right">Версия документа: {content.legal.version || '2.0'}</span>
         </footer>
       </div>
     </div>

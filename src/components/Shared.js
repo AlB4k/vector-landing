@@ -8,7 +8,7 @@ export const DynamicIcon = ({ name, size = 24, className = "" }) => {
   return <IconComponent size={size} className={className} aria-hidden="true" />;
 };
 
-export const Logo = ({ light, variant = "large", customScale, tagline = "LOGISTIC TECH" }) => {
+export const Logo = ({ light, variant = "large", customScale, tagline = "LOGISTIC TECH", text }) => {
   const isSmall = variant === "small";
   const scale = customScale || (isSmall ? 1.2 : 1.4);
 
@@ -21,7 +21,7 @@ export const Logo = ({ light, variant = "large", customScale, tagline = "LOGISTI
 
         <img
           src="/logo_site.png"
-          alt="Вектор"
+          alt={text || "Logo"}
           style={{ transform: `scale(${scale})` }}
           className="w-full h-full object-contain relative z-10 transition-transform duration-700"
           loading="eager"
@@ -32,7 +32,7 @@ export const Logo = ({ light, variant = "large", customScale, tagline = "LOGISTI
 
       <div className="flex flex-col leading-tight">
         <div className={`flex items-center ${isSmall ? 'gap-1 md:gap-1.5' : 'gap-1.5 md:gap-2.5'}`}>
-          <span className={`${isSmall ? 'text-sm md:text-base' : 'text-lg md:text-2xl'} font-black tracking-tighter ${light ? 'text-slate-900' : 'text-white'}`}>ВЕКТОР</span>
+          <span className={`${isSmall ? 'text-sm md:text-base' : 'text-lg md:text-2xl'} font-black tracking-tighter ${light ? 'text-slate-900' : 'text-white'}`}>{text || 'ВЕКТОР'}</span>
           <div className={`${isSmall ? 'w-0.5 h-0.5' : 'w-1 h-1 md:w-1.5 md:h-1.5'} rounded-full bg-blue-500 shadow-lg shadow-blue-500/20`}></div>
         </div>
         <span className={`${isSmall ? 'text-[8px] md:text-[10px]' : 'text-[9px] md:text-[11px]'} font-bold tracking-[0.35em] opacity-60 uppercase ${light ? 'text-slate-600' : 'text-blue-400'}`}>{tagline}</span>
