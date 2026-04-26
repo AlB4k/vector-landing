@@ -138,7 +138,7 @@ export default function Landing({ content, theme, setTheme }) {
       case 'serviceArea': return <ServiceArea key={section.id} data={content.serviceArea} isLight={isLight} />;
       case 'faq': return <FAQ key={section.id} data={content.faq} />;
       case 'news': return <News key={section.id} data={content.news} />;
-      case 'contact': return <Contact key={section.id} data={content.contact} companyInfo={{ phone: content.phone, email: content.email, address: content.address }} socials={content.socials} integrations={content.integrations} handleFormSubmit={handleFormSubmit} emailValue={emailValue} setEmailValue={setEmailValue} isLight={isLight} />;
+      case 'contact': return <Contact key={section.id} data={content.contact} companyInfo={{ phone: content.phone, email: content.email, address: content.address, companyName: content.companyName }} socials={content.socials} integrations={content.integrations} handleFormSubmit={handleFormSubmit} emailValue={emailValue} setEmailValue={setEmailValue} isLight={isLight} />;
       default: return null;
     }
   };
