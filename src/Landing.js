@@ -27,6 +27,7 @@ import { ServiceArea } from './components/ServiceArea';
 import { Contact } from './components/Contact';
 import { BPO } from './components/BPO';
 import { CookieBanner } from './components/CookieBanner';
+import { interpolate } from './utils/content';
 
 // --- STYLES ---
 const animations = `
@@ -249,7 +250,7 @@ export default function Landing({ content, theme, setTheme }) {
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 mb-12 md:mb-16">
           <div className="col-span-1 text-center md:text-left flex flex-col items-center md:items-start">
             <Logo light={isLight} variant="small" customScale={content.logoScaleFooter} tagline={content.companyTagline} text={content.logoText} />
-            <p className="mt-6 md:mt-8 text-[11px] md:text-xs leading-relaxed font-medium opacity-60 max-w-sm">{content.footer.description}</p>
+            <p className="mt-6 md:mt-8 text-[11px] md:text-xs leading-relaxed font-medium opacity-60 max-w-sm">{interpolate(content.footer.description, content)}</p>
             <div className="flex items-center gap-3 mt-8 md:mt-10">
               <a href={`mailto:${content.email}`} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-90"><Mail size={18}/></a>
               {(content.socialsList || []).map((social, i) => (

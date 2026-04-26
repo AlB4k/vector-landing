@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Shield } from 'lucide-react';
+import { interpolate } from '../utils/content';
 
 export default function PrivacyPolicy({ content, theme }) {
   const lastUpdated = "24.04.2026";
@@ -52,7 +53,7 @@ export default function PrivacyPolicy({ content, theme }) {
                 <h2 className={`text-xl font-black ${isLight ? 'text-slate-900' : 'text-white'} mb-6 uppercase tracking-wider flex items-center gap-3`}>
                   <span className="text-blue-500">0{idx+1}.</span> {s.title}
                 </h2>
-                <div className="whitespace-pre-line" dangerouslySetInnerHTML={{ __html: (s.content || "").replace(/ООО «ВЕКТОР»/g, content.companyName).replace(/\{content.address\}/g, content.address).replace(/\{content.email\}/g, content.email).replace(/\{content.inn\}/g, content.inn).replace(/\{content.ogrn\}/g, content.ogrn).replace(/\{content.pdnReg\}/g, content.pdnReg).replace(/\{content.pdnOrder\}/g, content.pdnOrder) }} />
+                <div className="whitespace-pre-line" dangerouslySetInnerHTML={{ __html: interpolate(s.content, content) }} />
                 {s.id === 'contacts' && (
                   <div className="flex flex-col md:flex-row gap-6 mt-8">
                     <div className="flex-1">

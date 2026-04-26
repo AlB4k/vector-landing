@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Send, MessageCircle, ArrowRight, Loader2, ShieldCheck } from 'lucide-react';
-import { SectionWrapper } from './Shared';
+import { SectionWrapper, DynamicIcon as LogoIcon } from './Shared';
+import { interpolate } from '../utils/content';
 
 export const Contact = ({ data, companyInfo, socials, integrations, handleFormSubmit, emailValue, setEmailValue }) => {
   const [formData, setFormData] = useState({ name: '', phone: '', message: '' });
@@ -229,7 +230,7 @@ export const Contact = ({ data, companyInfo, socials, integrations, handleFormSu
                   className={`mt-1 w-5 h-5 rounded border-white/10 bg-white/5 text-blue-600 focus:ring-blue-500/50 transition-all cursor-pointer ${errors.consent ? 'ring-2 ring-red-500/50' : ''}`}
                 />
                 <label htmlFor="consent" className="text-[10px] leading-relaxed text-slate-500 dark:text-slate-400 font-medium cursor-pointer">
-                  Я даю согласие на обработку персональных данных в соответствии с <Link to="/privacy" className="text-blue-500 dark:text-blue-400 font-bold hover:underline" target="_blank">Политикой конфиденциальности</Link> {companyInfo.companyName} (152-ФЗ)
+                  {interpolate(data.formConsent, { ...companyInfo, logoText: data.accent })}
                 </label>
               </div>
               {errors.consent && <p className="text-[9px] text-red-400 font-bold ml-8 uppercase tracking-widest">{errors.consent}</p>}

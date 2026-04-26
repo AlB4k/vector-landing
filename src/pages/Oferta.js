@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Scale, AlertCircle, FileText } from 'lucide-react';
+import { interpolate } from '../utils/content';
 
 export default function Oferta({ content, theme }) {
   const isLight = theme === 'light';
@@ -34,7 +35,7 @@ export default function Oferta({ content, theme }) {
 
           <div className={`space-y-6 text-sm leading-relaxed ${isLight ? 'text-slate-600' : 'text-slate-400'} break-words md:break-normal`}>
             {content.pages?.oferta?.content ? (
-              <div className="whitespace-pre-line" dangerouslySetInnerHTML={{ __html: (content.pages.oferta.content || "").replace(/ООО «ВЕКТОР»/g, content.companyName).replace(/\{content\.domain\}/g, content.domain || 'vektor-vrn.ru') }} />
+              <div className="whitespace-pre-line" dangerouslySetInnerHTML={{ __html: interpolate(content.pages.oferta.content, content) }} />
             ) : (
               <>
                 <p>

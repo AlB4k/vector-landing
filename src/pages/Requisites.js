@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowLeft, FileText, MapPin, Phone, Mail, Building2, Copy, Check } from 'lucide-react';
+import { interpolate } from '../utils/content';
 
 export default function Requisites({ content, theme }) {
   const [copied, setCopied] = useState(null);
@@ -35,7 +36,7 @@ export default function Requisites({ content, theme }) {
             <Building2 size={32} />
           </div>
           <h1 className={`text-4xl md:text-5xl font-black ${isLight ? 'text-slate-900' : 'text-white'} mb-4 tracking-tight uppercase`}>{content.pages?.requisites?.title || 'Карточка организации'}</h1>
-          <p className="text-sm opacity-50 font-medium tracking-wide">{(content.pages?.requisites?.subtitle || `${content.companyName} • Актуальные реквизиты юридического лица`).replace('ООО «ВЕКТОР»', content.companyName)}</p>
+          <p className="text-sm opacity-50 font-medium tracking-wide">{interpolate(content.pages?.requisites?.subtitle, content) || `${content.companyName} • Актуальные реквизиты юридического лица`}</p>
         </header>
 
         <div className="grid md:grid-cols-2 gap-8">
@@ -47,7 +48,7 @@ export default function Requisites({ content, theme }) {
               <div className="space-y-6">
                 <div>
                   <p className={`text-[9px] font-black uppercase ${isLight ? 'text-slate-400' : 'text-slate-600'} tracking-widest mb-1`}>Полное наименование</p>
-                  <p className={`${isLight ? 'text-slate-900' : 'text-white'} font-bold leading-relaxed`}>{content.pages?.requisites?.fullCompanyName || `Общество с ограниченной ответственностью «${content.logoText || 'ВЕКТОР'}»`}</p>
+                  <p className={`${isLight ? 'text-slate-900' : 'text-white'} font-bold leading-relaxed`}>{interpolate(content.pages?.requisites?.fullCompanyName, content) || `Общество с ограниченной ответственностью «${content.logoText || 'ВЕКТОР'}»`}</p>
                 </div>
                 <div>
                   <p className={`text-[9px] font-black uppercase ${isLight ? 'text-slate-400' : 'text-slate-600'} tracking-widest mb-1`}>Сокращенное наименование</p>
