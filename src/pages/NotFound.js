@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { Home, AlertCircle } from 'lucide-react';
+import { interpolate } from '../utils/content';
 
 export default function NotFound({ content }) {
   const version = content?.legal?.version || '2.4.0-PROD';
