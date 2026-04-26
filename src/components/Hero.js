@@ -56,7 +56,7 @@ export const Hero = ({ data, config }) => {
                 style={{ background: 'var(--card-bg)' }}
               >
                 <div className="w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-6 group-hover:scale-110 transition-transform duration-500">
-                  <Phone size={24} />
+                  <DynamicIcon name={data.hotlineIcon || 'Phone'} size={24} />
                 </div>
                 <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-blue-600 dark:text-blue-400/80 mb-2">{data.hotlineLabel}</span>
                 <a href={`tel:${data.hotlinePhone}`} className="text-2xl sm:text-3xl md:text-4xl font-black text-[var(--text-main)] hover:text-blue-600 dark:hover:text-blue-400 transition-colors tracking-tight">

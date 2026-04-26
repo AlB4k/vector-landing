@@ -141,6 +141,7 @@ export default function CMS({ content, setContent, onLogout }) {
     { id: 'structure', label: 'Структура', icon: <Layers size={18}/> },
     { id: 'general', label: 'Основные', icon: <Settings size={18}/> },
     { id: 'theme', label: 'Оформление', icon: <Palette size={18}/> },
+    { id: 'ui', label: 'Интерфейс', icon: <Layers size={18}/> },
     { id: 'hero', label: 'Hero', icon: <LayoutDashboard size={18}/> },
     { id: 'features', label: 'Преимущества', icon: <FileText size={18}/> },
     { id: 'stats', label: 'Цифры', icon: <BarChart3 size={18}/> },
@@ -327,21 +328,34 @@ export default function CMS({ content, setContent, onLogout }) {
               </div>
             )}
 
-            {activeTab === 'theme' && (
-              <div className="space-y-10">
-                {['dark', 'light'].map(m => (
-                  <SectionCard key={m} title={`Настройки оформления: ${m === 'dark' ? 'Темная тема' : 'Светлая тема'}`} icon={<Palette size={18}/>}>
-                    <div className="grid grid-cols-2 gap-x-8">
-                      {Object.keys(localContent.theme[m]).map(key => (
-                        <InputField key={key} label={key} value={localContent.theme[m][key]} onChange={(val) => {
-                          const newTheme = JSON.parse(JSON.stringify(localContent.theme));
-                          newTheme[m][key] = val;
-                          updateNested('theme', newTheme);
-                        }} />
-                      ))}
+            {activeTab === 'ui' && (
+              <div className="space-y-8">
+                <SectionCard title="Настройки интерфейса" icon={<Layers size={18}/>}>
+                  <div className="space-y-6">
+                    <InputField label="Текст логотипа (основной)" value={localContent.logoText} onChange={(val) => updateNested('logoText', val)} />
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 pt-4 border-t border-slate-900/50">
+                      <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50">
+                        <input
+                          type="checkbox"
+                          checked={localContent.ui?.showScrollProgress}
+                          onChange={(e) => updateNested('ui.showScrollProgress', e.target.checked)}
+                          className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
+                        />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Полоса прогресса прокрутки (сверху)</label>
+                      </div>
+                      <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50">
+                        <input
+                          type="checkbox"
+                          checked={localContent.ui?.showBackToTop}
+                          onChange={(e) => updateNested('ui.showBackToTop', e.target.checked)}
+                          className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
+                        />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Кнопка «Наверх»</label>
+                      </div>
                     </div>
-                  </SectionCard>
-                ))}
+                  </div>
+                </SectionCard>
               </div>
             )}
 
@@ -354,8 +368,9 @@ export default function CMS({ content, setContent, onLogout }) {
                     <InputField label="Градиентный акцент заголовка" value={localContent.hero.titleGradient} onChange={(val) => updateNested('hero.titleGradient', val)} />
                     <div className="grid grid-cols-2 gap-8">
                       <InputField label="Метка горячей линии" value={localContent.hero.hotlineLabel} onChange={(val) => updateNested('hero.hotlineLabel', val)} />
-                      <InputField label="Номер горячей линии" value={localContent.hero.hotlinePhone} onChange={(val) => updateNested('hero.hotlinePhone', val)} />
+                      <InputField label="Lucide Icon (Hotline)" value={localContent.hero.hotlineIcon} onChange={(val) => updateNested('hero.hotlineIcon', val)} />
                     </div>
+                    <InputField label="Номер горячей линии" value={localContent.hero.hotlinePhone} onChange={(val) => updateNested('hero.hotlinePhone', val)} />
                     <div className="grid grid-cols-2 gap-8">
                       <InputField label="Текст кнопки 1 (Основная)" value={localContent.hero.btnPrimary} onChange={(val) => updateNested('hero.btnPrimary', val)} />
                       <InputField label="Текст кнопки 2 (Вторичная)" value={localContent.hero.btnSecondary} onChange={(val) => updateNested('hero.btnSecondary', val)} />

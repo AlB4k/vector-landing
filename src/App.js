@@ -61,6 +61,13 @@ class ErrorBoundary extends React.Component {
 
 const INITIAL_CONTENT = {
   "companyName": "ООО \"ВЕКТОР\"",
+  "companyTagline": "Доставка + технологии",
+  "logoText": "ВЕКТОР",
+  "ui": {
+    "showScrollProgress": true,
+    "showBackToTop": true,
+    "showFooterCopyright": true
+  },
   "address": "394014, г. Воронеж, ул. Лебедева, д. 4, пом. IV",
   "phone": "+7 (930) 409-27-00",
   "email": "Vektor0949@yandex.ru",
@@ -157,7 +164,8 @@ const INITIAL_CONTENT = {
     "btnPrimary": "Связаться с нами",
     "btnSecondary": "Что мы предлагаем",
     "hotlineLabel": "Прямая линия",
-    "hotlinePhone": "+7 (930) 409-27-00"
+    "hotlinePhone": "+7 (930) 409-27-00",
+    "hotlineIcon": "Phone"
   },
   "stats": [
     {
@@ -460,6 +468,7 @@ const INITIAL_CONTENT = {
     "btnEssential": "Только необходимые"
   },
   "loaderDelay": 1000,
+  "defaultTheme": "dark", // "dark", "light", "system"
   "logoScaleHeader": 1.4,
   "logoScaleFooter": 1.2,
   "legal": {
@@ -668,6 +677,17 @@ export default function App() {
   const [content, setContent] = useState(INITIAL_CONTENT);
   const [theme, setTheme] = useState('dark');
   const [consentVersion, setConsentVersion] = useState(0);
+
+  // Initialize theme based on content settings
+  useEffect(() => {
+    const setting = content.defaultTheme || 'dark';
+    if (setting === 'system') {
+      const isDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      setTheme(isDark ? 'dark' : 'light');
+    } else {
+      setTheme(setting);
+    }
+  }, [content.defaultTheme]);
 
   useEffect(() => {
     const handleConsentUpdate = () => setConsentVersion(v => v + 1);
