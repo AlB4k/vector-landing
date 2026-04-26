@@ -6,6 +6,7 @@ import { interpolate } from '../utils/content';
 
 export const Contact = ({ data, companyInfo, socials, integrations, handleFormSubmit, emailValue, setEmailValue }) => {
   const [formData, setFormData] = useState({ name: '', phone: '', message: '' });
+  if (!data || !companyInfo) return null;
   const [isSending, setIsSending] = useState(false);
   const [consent, setConsent] = useState(false);
   const [errors, setErrors] = useState({});

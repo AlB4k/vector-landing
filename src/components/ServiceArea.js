@@ -6,14 +6,17 @@ export const ServiceArea = ({ data, isLight }) => {
   const variants = ['radar', 'mesh', 'blueprint', 'isometric', 'topology', 'pulse', 'heatmap', 'default'];
 
   const mapVariant = React.useMemo(() => {
+    if (!data) return 'default';
     if (data.randomMapVariant) {
       return variants[Math.floor(Math.random() * variants.length)];
     }
     return data.mapVariant || 'default';
-  }, [data.mapVariant, data.randomMapVariant]);
+  }, [data, variants]);
+
+  if (!data || !data.locations) return null;
 
   return (
-    <SectionWrapper id="serviceArea" className="max-w-7xl mx-auto" pattern="grid">
+    <SectionWrapper id="geography" className="max-w-7xl mx-auto" pattern="mesh">
       <div className="grid lg:grid-cols-2 gap-10 md:gap-16 items-center">
         {/* Left: Interactive Map Visual */}
         <div className="relative aspect-[4/3] sm:aspect-square max-w-lg mx-auto lg:mx-0 group w-full">

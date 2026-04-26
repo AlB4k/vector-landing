@@ -3,6 +3,7 @@ import { ArrowRight, Phone } from 'lucide-react';
 import { DynamicIcon } from './Shared';
 
 export const Hero = ({ data, config }) => {
+  if (!data) return null;
   const isOnline = React.useMemo(() => {
     if (!config || !config.scheduleEnabled) return true;
     const now = new Date();

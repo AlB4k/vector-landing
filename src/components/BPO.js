@@ -3,7 +3,7 @@ import { ShieldCheck, Printer, Package, CheckCircle2 } from 'lucide-react';
 import { SectionWrapper } from './Shared';
 
 export const BPO = ({ data }) => {
-  if (!data) return null;
+  if (!data || !data.steps || !data.advantages) return null;
 
   return (
     <SectionWrapper id="bpo" className="max-w-7xl mx-auto" pattern="dots">

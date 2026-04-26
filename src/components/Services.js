@@ -2,7 +2,9 @@ import React from 'react';
 import { Check } from 'lucide-react';
 import { SectionWrapper } from './Shared';
 
-export const Services = ({ data }) => (
+export const Services = ({ data }) => {
+  if (!data || !data.list) return null;
+  return (
   <SectionWrapper id="services" className="max-w-6xl mx-auto" pattern="dots">
     <div className="text-center mb-16">
       <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight text-[var(--text-main)]">{data.title} <span className="text-blue-600 dark:text-blue-500">{data.accent}</span></h2>
@@ -45,5 +47,6 @@ export const Services = ({ data }) => (
       );
     })}
   </div>
-  </SectionWrapper>
-);
+    </SectionWrapper>
+  );
+};
