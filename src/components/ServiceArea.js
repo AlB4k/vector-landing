@@ -5,18 +5,102 @@ import { interpolate } from '../utils/content';
 
 // --- Модульные SVG-варианты ---
 
-const RadarVariant = () => (
-  <g className="animate-pulse">
-    <circle cx="200" cy="200" r="150" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="10 5" opacity="0.3" />
-    <circle cx="200" cy="200" r="100" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="10 5" opacity="0.2" />
-    <line x1="200" y1="50" x2="200" y2="350" stroke="currentColor" strokeWidth="0.5" opacity="0.2" />
-    <line x1="50" y1="200" x2="350" y2="200" stroke="currentColor" strokeWidth="0.5" opacity="0.2" />
+const RadarVariant = ({ isLight }) => (
+  <g>
+    {/* Концентрические круги радара */}
+    <circle cx="200" cy="200" r="160" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.1" />
+    <circle cx="200" cy="200" r="120" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.15" />
+    <circle cx="200" cy="200" r="80" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.2" />
+    <circle cx="200" cy="200" r="40" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.25" />
+
+    {/* Скан-линии */}
+    <line x1="40" y1="200" x2="360" y2="200" stroke="currentColor" strokeWidth="0.5" opacity="0.1" />
+    <line x1="200" y1="40" x2="200" y2="360" stroke="currentColor" strokeWidth="0.5" opacity="0.1" />
+
+    {/* Вращающийся луч */}
+    <g className="origin-center animate-spin" style={{ animationDuration: '4s' }}>
+      <path
+        d="M200,200 L200,40 A160,160 0 0,1 360,200 Z"
+        fill="url(#radarGradient)"
+        opacity="0.6"
+      />
+      <line x1="200" y1="200" x2="200" y2="40" stroke="currentColor" strokeWidth="1.5" className={isLight ? "text-blue-600" : "text-blue-400"} />
+    </g>
+
+    {/* Мерцающие точки интереса */}
+    {[
+      { x: 150, y: 150, d: '0s' },
+      { x: 280, y: 140, d: '1.2s' },
+      { x: 230, y: 300, d: '2.5s' },
+      { x: 110, y: 240, d: '3.7s' }
+    ].map((pt, i) => (
+      <circle
+        key={i}
+        cx={pt.x}
+        cy={pt.y}
+        r="2"
+        fill="currentColor"
+        className="animate-pulse"
+        style={{ animationDelay: pt.d }}
+      />
+    ))}
   </g>
 );
 
-const MeshVariant = () => (
-  <path d="M50,200 Q100,50 200,200 T350,200" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.1" className="animate-slow-fade" />
-);
+const MeshVariant = ({ isLight }) => {
+  const lines = 12;
+  const color = isLight ? 'stroke-blue-600' : 'stroke-blue-400';
+
+  return (
+    <g className="opacity-30">
+      {/* Горизонтальные линии с перспективой */}
+      {[...Array(lines)].map((_, i) => {
+        const y = 100 + (i * 20);
+        const perspectiveScale = 0.5 + (i / lines) * 1.5;
+        const width = 300 * perspectiveScale;
+        const xStart = 200 - width / 2;
+        const xEnd = 200 + width / 2;
+
+        return (
+          <line
+            key={`h-${i}`}
+            x1={xStart}
+            y1={y}
+            x2={xEnd}
+            y2={y}
+            className={`${color} animate-pulse`}
+            strokeWidth="0.5"
+            opacity={0.1 + (i / lines) * 0.3}
+            style={{ animationDelay: `${i * 0.1}s`, animationDuration: '3s' }}
+          />
+        );
+      })}
+
+      {/* Вертикальные линии (сходящиеся в точку) */}
+      {[...Array(lines)].map((_, i) => {
+        const xTop = 150 + (i * (100 / (lines - 1)));
+        const xBottom = 50 + (i * (300 / (lines - 1)));
+
+        return (
+          <line
+            key={`v-${i}`}
+            x1={xTop}
+            y1={100}
+            x2={xBottom}
+            y2={340}
+            className={`${color} animate-pulse`}
+            strokeWidth="0.5"
+            opacity={0.2}
+            style={{ animationDelay: `${i * 0.1}s`, animationDuration: '3s' }}
+          />
+        );
+      })}
+
+      {/* Анимированный узел */}
+      <circle cx="200" cy="220" r="100" fill="url(#meshRadial)" opacity="0.4" className="animate-pulse" />
+    </g>
+  );
+};
 
 const TopologyVariant = () => (
   <g opacity="0.15" className="animate-slow-fade">
@@ -171,6 +255,14 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
                 </linearGradient>
                 <radialGradient id="heatGradient">
                   <stop offset="0%" stopColor="currentColor" stopOpacity="0.8" />
+                  <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
+                </radialGradient>
+                <linearGradient id="radarGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="currentColor" stopOpacity="0.5" />
+                  <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
+                </linearGradient>
+                <radialGradient id="meshRadial" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
+                  <stop offset="0%" stopColor="currentColor" stopOpacity="0.3" />
                   <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
                 </radialGradient>
               </defs>
