@@ -62,10 +62,10 @@ const HeatmapVariant = () => (
   </g>
 );
 
-const IsometricVariant = () => (
+const IsometricVariant = ({ isLight }) => (
   <g>
-    <circle cx="160" cy="140" r="3" className="fill-blue-400/40" />
-    <circle cx="240" cy="250" r="3" className="fill-blue-400/40" />
+    <circle cx="160" cy="140" r="3" className={isLight ? "fill-blue-500/40" : "fill-blue-400/40"} />
+    <circle cx="240" cy="250" r="3" className={isLight ? "fill-blue-500/40" : "fill-blue-400/40"} />
     <path d="M160,140 L200,200 L240,250" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.1" />
   </g>
 );
@@ -99,7 +99,7 @@ const MAP_VARIANTS = {
   default: () => null
 };
 
-const BaseLayer = ({ variant }) => (
+const BaseLayer = ({ variant, isLight }) => (
   <>
     {/* Abstract Voronezh Region Shape */}
     <path
@@ -108,7 +108,7 @@ const BaseLayer = ({ variant }) => (
       stroke="currentColor"
       strokeWidth="2"
       strokeDasharray={variant === 'blueprint' ? 'none' : '8 4'}
-      className="text-blue-500 will-change-transform"
+      className={`${isLight ? 'text-blue-600' : 'text-blue-500'} will-change-transform`}
     />
 
     {/* Animated Connection Lines */}
@@ -116,17 +116,17 @@ const BaseLayer = ({ variant }) => (
       d="M200,200 L250,120 M200,200 L300,180 M200,200 L120,280"
       stroke="currentColor"
       strokeWidth="1"
-      className="text-blue-400/30 animate-pulse will-change-opacity"
+      className={`${isLight ? 'text-blue-500/30' : 'text-blue-400/30'} animate-pulse will-change-opacity`}
     />
 
     {/* Main City Point */}
-    <circle cx="200" cy="200" r="6" className="fill-blue-500 shadow-xl" />
-    <circle cx="200" cy="200" r="12" className="stroke-blue-500/50 fill-none animate-ping will-change-transform" />
+    <circle cx="200" cy="200" r="6" className={`${isLight ? 'fill-blue-600' : 'fill-blue-500'} shadow-xl`} />
+    <circle cx="200" cy="200" r="12" className={`fill-none animate-ping will-change-transform ${isLight ? 'stroke-blue-600/50' : 'stroke-blue-500/50'}`} />
 
     {/* Regional Points */}
-    <circle cx="250" cy="120" r="4" className="fill-slate-500 group-hover:fill-blue-400 transition-colors" />
-    <circle cx="300" cy="180" r="4" className="fill-slate-500 group-hover:fill-blue-400 transition-colors" />
-    <circle cx="120" cy="280" r="4" className="fill-slate-500 group-hover:fill-blue-400 transition-colors" />
+    <circle cx="250" cy="120" r="4" className={`fill-slate-500 transition-colors ${isLight ? 'group-hover:fill-blue-600' : 'group-hover:fill-blue-400'}`} />
+    <circle cx="300" cy="180" r="4" className={`fill-slate-500 transition-colors ${isLight ? 'group-hover:fill-blue-600' : 'group-hover:fill-blue-400'}`} />
+    <circle cx="120" cy="280" r="4" className={`fill-slate-500 transition-colors ${isLight ? 'group-hover:fill-blue-600' : 'group-hover:fill-blue-400'}`} />
   </>
 );
 
@@ -150,12 +150,14 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
       <div className="grid lg:grid-cols-2 gap-10 md:gap-16 items-center">
         {/* Left: Interactive Map Visual */}
         <div className="relative aspect-[4/3] sm:aspect-square max-w-lg mx-auto lg:mx-0 group w-full">
-          <div className="absolute inset-0 bg-blue-500/10 rounded-3xl md:rounded-[3rem] blur-2xl group-hover:bg-blue-500/20 transition-all duration-1000"></div>
+          <div className={`absolute inset-0 rounded-3xl md:rounded-[3rem] blur-2xl transition-all duration-1000 ${
+            isLight ? 'bg-blue-600/10 group-hover:bg-blue-600/20' : 'bg-blue-500/10 group-hover:bg-blue-500/20'
+          }`}></div>
 
-          <div className={`relative h-full w-full backdrop-blur-xl border rounded-3xl md:rounded-[3rem] p-4 md:p-8 flex items-center justify-center overflow-hidden text-blue-500 transition-colors duration-500 ${
+          <div className={`relative h-full w-full backdrop-blur-xl border rounded-3xl md:rounded-[3rem] p-4 md:p-8 flex items-center justify-center overflow-hidden transition-colors duration-500 ${
             isLight
-              ? 'bg-white/40 border-slate-200'
-              : 'bg-slate-900/40 border-white/10'
+              ? 'bg-white/40 border-slate-200 text-blue-600'
+              : 'bg-slate-900/40 border-white/10 text-blue-500'
           }`}>
             {/* Stylized SVG Map Overlay */}
             <svg viewBox="0 0 400 400" className="w-full h-full opacity-40 group-hover:opacity-60 transition-opacity duration-1000">
@@ -175,23 +177,27 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
               <rect width="100%" height="100%" fill="url(#dotPattern)" />
 
               {/* Variant-specific Map Elements */}
-              <VariantComponent />
+              <VariantComponent isLight={isLight} />
 
               {/* Shared Base Layer */}
-              <BaseLayer variant={mapVariant} />
+              <BaseLayer variant={mapVariant} isLight={isLight} />
             </svg>
 
             {/* Industrial Overlay Labels */}
             <div className={`absolute top-6 left-6 md:top-10 md:left-10 p-2.5 md:p-3 border rounded-lg text-[7px] md:text-[8px] font-mono uppercase tracking-widest leading-none ${
-              isLight ? 'bg-white/80 border-slate-200 text-blue-600' : 'bg-black/40 border-white/10 text-blue-400'
+              isLight ? 'bg-white/80 border-slate-200 text-blue-600' : 'bg-black/40 border-white/10 text-blue-500'
             }`}>
               <p>{interpolate(fullContent.ui?.regionLabel, fullContent) || 'Region'}: Voronezh_36</p>
               <p className="mt-1 opacity-50">{interpolate(fullContent.ui?.coverageLabel, fullContent) || 'S_Coverage'}: 98.4%</p>
-              {mapVariant !== 'default' && <p className="mt-1 text-blue-500 font-bold">Mode: {mapVariant.toUpperCase()}</p>}
+              {mapVariant !== 'default' && (
+                <p className={`mt-1 font-bold ${isLight ? 'text-blue-600' : 'text-blue-500'}`}>
+                  Mode: {mapVariant.toUpperCase()}
+                </p>
+              )}
             </div>
 
             <div className={`absolute bottom-6 right-6 md:bottom-10 md:right-10 p-2.5 md:p-3 border rounded-lg text-[7px] md:text-[8px] font-mono uppercase tracking-widest leading-none text-right ${
-              isLight ? 'bg-white/80 border-slate-200 text-blue-600' : 'bg-black/40 border-white/10 text-blue-400'
+              isLight ? 'bg-white/80 border-slate-200 text-blue-600' : 'bg-black/40 border-white/10 text-blue-500'
             }`}>
               <p>Active_Routes: 142</p>
               <p className="mt-1 opacity-50">SLA_Target: 24h</p>
@@ -202,7 +208,9 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
         {/* Right: Textual Content */}
         <div className="space-y-8 md:space-y-10 px-2 md:px-0">
           <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md border border-blue-500/20 bg-blue-500/5 mb-6">
+            <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-md border mb-6 ${
+              isLight ? 'border-blue-600/20 bg-blue-600/5' : 'border-blue-500/20 bg-blue-500/5'
+            }`}>
               <MapPin size={14} className="text-blue-600 dark:text-blue-400" />
               <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-700 dark:text-blue-300">{interpolate(fullContent.ui?.geographyLabel, fullContent) || 'География работ'}</span>
             </div>
@@ -216,23 +224,33 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
             {data.locations.map((loc, i) => (
-              <div key={i} className="flex items-start gap-4 p-5 rounded-2xl border border-[var(--border)] hover:border-blue-500/30 transition-all group shadow-sm relative overflow-hidden" style={{ background: 'var(--card-bg)' }}>
-                <div className="mt-1 p-2 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 group-hover:scale-110 transition-transform relative z-10">
+              <div key={i} className={`flex items-start gap-4 p-5 rounded-2xl border border-[var(--border)] transition-all group shadow-sm relative overflow-hidden ${
+                isLight ? 'hover:border-blue-600/30' : 'hover:border-blue-500/30'
+              }`} style={{ background: 'var(--card-bg)' }}>
+                <div className={`mt-1 p-2 rounded-lg group-hover:scale-110 transition-transform relative z-10 ${
+                  isLight ? 'bg-blue-600/10 text-blue-600' : 'bg-blue-500/10 text-blue-400'
+                }`}>
                   <CheckCircle2 size={18} />
                 </div>
                 <div className="relative z-10 flex-1">
                   <div className="flex justify-between items-start gap-2">
                     <h4 className="font-bold text-sm mb-1 text-[var(--text-main)]">{interpolate(loc.name, fullContent)}</h4>
                     {loc.status && (
-                      <span className="text-[7px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full bg-blue-500/10 text-blue-500 border border-blue-500/20 whitespace-nowrap">
+                      <span className={`text-[7px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border whitespace-nowrap ${
+                        isLight
+                          ? 'bg-blue-600/10 text-blue-600 border-blue-600/20'
+                          : 'bg-blue-500/10 text-blue-500 border-blue-500/20'
+                      }`}>
                         {interpolate(loc.status, fullContent)}
                       </span>
                     )}
                   </div>
                   <p className="text-[10px] text-[var(--text-muted)] opacity-70 font-medium uppercase tracking-widest">{interpolate(loc.type, fullContent)}</p>
                   {loc.freq && (
-                    <p className="text-[9px] text-blue-500/60 font-bold uppercase tracking-widest mt-2 flex items-center gap-1.5">
-                      <span className="w-1 h-1 rounded-full bg-blue-500/40"></span>
+                    <p className={`text-[9px] font-bold uppercase tracking-widest mt-2 flex items-center gap-1.5 ${
+                      isLight ? 'text-blue-600/70' : 'text-blue-500/60'
+                    }`}>
+                      <span className={`w-1 h-1 rounded-full ${isLight ? 'bg-blue-600/50' : 'bg-blue-500/40'}`}></span>
                       {interpolate(loc.freq, fullContent)}
                     </p>
                   )}
@@ -241,9 +259,13 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
             ))}
           </div>
 
-          <div className="p-6 md:p-8 rounded-3xl md:rounded-[2rem] bg-gradient-to-br from-blue-600/10 to-indigo-600/10 border border-blue-500/20 relative overflow-hidden">
+          <div className={`p-6 md:p-8 rounded-3xl md:rounded-[2rem] bg-gradient-to-br from-blue-600/10 to-indigo-600/10 border relative overflow-hidden ${
+            isLight ? 'border-blue-600/20' : 'border-blue-500/20'
+          }`}>
              <div className="relative z-10 flex flex-col sm:flex-row items-center sm:items-start gap-5 sm:gap-6 text-center sm:text-left">
-                <div className="w-12 h-12 rounded-2xl bg-blue-600 dark:bg-blue-500 flex items-center justify-center text-white shadow-lg shadow-blue-500/20 shrink-0">
+                <div className={`w-12 h-12 rounded-2xl bg-blue-600 dark:bg-blue-500 flex items-center justify-center text-white shadow-lg shrink-0 ${
+                  isLight ? 'shadow-blue-600/20' : 'shadow-blue-500/20'
+                }`}>
                   <Shield size={24} />
                 </div>
                 <div>
@@ -253,7 +275,7 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
                   </p>
                 </div>
              </div>
-             <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/10 blur-3xl"></div>
+             <div className={`absolute top-0 right-0 w-32 h-32 blur-3xl ${isLight ? 'bg-blue-600/10' : 'bg-blue-500/10'}`}></div>
           </div>
         </div>
       </div>
