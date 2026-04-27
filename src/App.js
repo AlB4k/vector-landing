@@ -680,35 +680,30 @@ const INITIAL_CONTENT = {
     "items": [
       {
         "id": "client-1",
-        "name": "УК ЖилУют",
+        "name": "АО «ЕПСС ЖКХ ВО»",
         "logoUrl": "",
-        "category": "УК",
-        "contractSince": "2024",
-        "deliveryVolume": "50 000 квитанций/мес",
-        "testimonial": "Перешли на БПО и забыли о жалобах на открытые данные. Все четко и в срок.",
-        "testimonialAuthor": "Алексей С., тех. директор",
+        "url": "epss-vrn.ru",
         "isVisible": true
       },
       {
         "id": "client-2",
-        "name": "РСО Энерго",
+        "name": "Фонд капитального ремонта МКД Воронежской области",
         "logoUrl": "",
-        "category": "РСО",
-        "contractSince": "2024",
-        "deliveryVolume": "120 000 квитанций/мес",
-        "testimonial": "Профессиональный подход к логистике. Фотофиксация реально помогает контролировать курьеров.",
-        "testimonialAuthor": "Мария И., руководитель службы сбыта",
+        "url": "fkr36.ru",
         "isVisible": true
       },
       {
         "id": "client-3",
-        "name": "ЕРЦ Центр",
+        "name": "Филиал АО «РИР Энерго» — «Воронежская генерация»",
+        "logoUrl": "/logos/rir-energo.png",
+        "url": "voronezh.rirenergy.ru",
+        "isVisible": true
+      },
+      {
+        "id": "client-4",
+        "name": "ООО «РВК-Воронеж»",
         "logoUrl": "",
-        "category": "Расчетный центр",
-        "contractSince": "2025",
-        "deliveryVolume": "300 000 квитанций/мес",
-        "testimonial": "Самый быстрый запуск тиража в моей практике. Верификация по ФИАС сэкономила нам бюджет.",
-        "testimonialAuthor": "Сергей В., зам. директора",
+        "url": "voronezh.rosvodokanal.ru",
         "isVisible": true
       }
     ]
