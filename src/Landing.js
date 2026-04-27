@@ -137,15 +137,15 @@ export default function Landing({ content, theme, setTheme }) {
   const renderSection = (section) => {
     if (!section.enabled) return null;
     switch (section.id) {
-      case 'hero': return <Hero key={section.id} data={content.hero} config={content.hotlineConfig} fullContent={content} />;
-      case 'features': return <Features key={section.id} data={content.features} fullContent={content} />;
-      case 'stats': return <Stats key={section.id} data={content.stats} fullContent={content} />;
-      case 'process': return <Process key={section.id} data={content.process} fullContent={content} />;
-      case 'services': return <Services key={section.id} data={content.services} fullContent={content} />;
-      case 'bpo': return <BPO key={section.id} data={content.bpo} fullContent={content} />;
+      case 'hero': return <Hero key={section.id} data={content.hero} config={content.hotlineConfig} isLight={isLight} fullContent={content} />;
+      case 'features': return <Features key={section.id} data={content.features} isLight={isLight} fullContent={content} />;
+      case 'stats': return <Stats key={section.id} data={content.stats} isLight={isLight} fullContent={content} />;
+      case 'process': return <Process key={section.id} data={content.process} isLight={isLight} fullContent={content} />;
+      case 'services': return <Services key={section.id} data={content.services} isLight={isLight} fullContent={content} />;
+      case 'bpo': return <BPO key={section.id} data={content.bpo} isLight={isLight} fullContent={content} />;
       case 'serviceArea': return <ServiceArea key={section.id} data={content.serviceArea} isLight={isLight} fullContent={content} />;
-      case 'faq': return <FAQ key={section.id} data={content.faq} fullContent={content} />;
-      case 'news': return <News key={section.id} data={content.news} fullContent={content} />;
+      case 'faq': return <FAQ key={section.id} data={content.faq} isLight={isLight} fullContent={content} />;
+      case 'news': return <News key={section.id} data={content.news} isLight={isLight} fullContent={content} />;
       case 'contact': return <Contact key={section.id} data={content.contact} companyInfo={{ phone: content.phone, email: content.email, address: content.address, companyName: content.companyName }} socials={content.socialsList || content.socials} integrations={content.integrations} handleFormSubmit={handleFormSubmit} emailValue={emailValue} setEmailValue={setEmailValue} isLight={isLight} fullContent={content} />;
       default: return null;
     }

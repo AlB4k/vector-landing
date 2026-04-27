@@ -4,7 +4,7 @@ import { Phone, Mail, MapPin, Send, MessageCircle, ArrowRight, Loader2, ShieldCh
 import { SectionWrapper, DynamicIcon as LogoIcon } from './Shared';
 import { interpolate } from '../utils/content';
 
-export const Contact = ({ data, fullContent, companyInfo, socials, integrations, handleFormSubmit, emailValue, setEmailValue }) => {
+export const Contact = ({ data, fullContent, companyInfo, socials, integrations, handleFormSubmit, emailValue, setEmailValue, isLight }) => {
   const [formData, setFormData] = useState({ name: '', phone: '', message: '' });
   if (!data || !companyInfo) return null;
   const [isSending, setIsSending] = useState(false);
@@ -62,7 +62,7 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
         });
         if (!response.ok) throw new Error('Failed to send');
       } catch (err) {
-        // Silent error handling for production, user gets feedback via errors.submit
+        // Бесшумная обработка ошибок для продакшена, пользователь получает обратную связь через errors.submit
         setErrors({ submit: 'Ошибка отправки. Попробуйте позже.' });
         setIsSending(false);
         return;
@@ -80,43 +80,49 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
   return (
     <SectionWrapper id="contact" className="max-w-7xl mx-auto">
       <div className="grid lg:grid-cols-2 gap-16 items-start">
-        {/* Left: Info */}
+        {/* Лево: Информация */}
         <div className="space-y-12">
           <div>
-            <h2 className="text-3xl md:text-5xl font-black mb-6 tracking-tight">
-              {interpolate(data.title, fullContent)} <span className="text-blue-500">{interpolate(data.accent, fullContent)}</span>
+            <h2 className="text-3xl md:text-5xl font-black mb-6 tracking-tight text-[var(--text-main)]">
+              {interpolate(data.title, fullContent)} <span className={isLight ? "text-blue-600" : "text-blue-500"}>{interpolate(data.accent, fullContent)}</span>
             </h2>
-            <p className="opacity-70 text-base md:text-lg max-w-md leading-relaxed font-medium">
+            <p className="opacity-70 text-base md:text-lg max-w-md leading-relaxed font-medium text-[var(--text-muted)]">
               {interpolate(data.subtitle, fullContent)}
             </p>
           </div>
 
           <div className="space-y-8">
             <div className="flex items-start gap-5 group text-left">
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform shrink-0">
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 ${
+                isLight ? 'bg-blue-600/10 text-blue-600' : 'bg-blue-500/10 text-blue-400'
+              }`}>
                 <Phone size={24} />
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-blue-500 mb-1">{interpolate(fullContent.ui?.phoneLabel, fullContent) || 'Телефон'}</p>
-                <a href={`tel:${companyInfo.phone}`} className="text-xl font-bold hover:text-blue-400 transition-colors">{interpolate(companyInfo.phone, fullContent)}</a>
+                <p className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${isLight ? 'text-blue-600' : 'text-blue-500'}`}>{interpolate(fullContent.ui?.phoneLabel, fullContent) || 'Телефон'}</p>
+                <a href={`tel:${companyInfo.phone}`} className={`text-xl font-bold transition-colors ${isLight ? 'hover:text-blue-600' : 'hover:text-blue-400'}`}>{interpolate(companyInfo.phone, fullContent)}</a>
               </div>
             </div>
             <div className="flex items-start gap-5 group text-left">
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform shrink-0">
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 ${
+                isLight ? 'bg-blue-600/10 text-blue-600' : 'bg-blue-500/10 text-blue-400'
+              }`}>
                 <Mail size={24} />
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-blue-500 mb-1">{interpolate(fullContent.ui?.emailLabel, fullContent) || 'Email'}</p>
-                <a href={`mailto:${companyInfo.email}`} className="text-xl font-bold hover:text-blue-400 transition-colors">{interpolate(companyInfo.email, fullContent)}</a>
+                <p className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${isLight ? 'text-blue-600' : 'text-blue-500'}`}>{interpolate(fullContent.ui?.emailLabel, fullContent) || 'Email'}</p>
+                <a href={`mailto:${companyInfo.email}`} className={`text-xl font-bold transition-colors ${isLight ? 'hover:text-blue-600' : 'hover:text-blue-400'}`}>{interpolate(companyInfo.email, fullContent)}</a>
               </div>
             </div>
             <div className="flex items-start gap-5 group text-left">
-              <div className="w-12 h-12 rounded-2xl bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform shrink-0">
+              <div className={`w-12 h-12 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 ${
+                isLight ? 'bg-blue-600/10 text-blue-600' : 'bg-blue-500/10 text-blue-400'
+              }`}>
                 <MapPin size={24} />
               </div>
               <div>
-                <p className="text-[10px] font-bold uppercase tracking-widest text-blue-500 mb-1">{interpolate(fullContent.ui?.legalAddress, fullContent) || 'Адрес'}</p>
-                <p className="text-sm font-medium opacity-90 max-w-xs">{interpolate(companyInfo.address, fullContent)}</p>
+                <p className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${isLight ? 'text-blue-600' : 'text-blue-500'}`}>{interpolate(fullContent.ui?.legalAddress, fullContent) || 'Адрес'}</p>
+                <p className="text-sm font-medium opacity-90 max-w-xs text-[var(--text-main)]">{interpolate(companyInfo.address, fullContent)}</p>
               </div>
             </div>
           </div>
@@ -139,7 +145,9 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
                   href={social.url}
                   target="_blank"
                   rel="noreferrer"
-                  className="px-6 py-2.5 rounded-xl border border-soft hover:bg-blue-500 hover:text-white transition-all font-bold text-[10px] uppercase tracking-widest flex items-center gap-2"
+                  className={`px-6 py-2.5 rounded-xl border border-soft transition-all font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 ${
+                    isLight ? 'hover:bg-blue-600 hover:text-white' : 'hover:bg-blue-500 hover:text-white'
+                  }`}
                 >
                   <LogoIcon name={social.icon} size={14} /> {interpolate(social.label, fullContent)}
                 </a>
@@ -148,9 +156,9 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
           </div>
         </div>
 
-        {/* Right: Form */}
+        {/* Право: Форма */}
         <div className="relative">
-          <div className="absolute -inset-4 bg-blue-500/5 rounded-[2.5rem] blur-2xl"></div>
+          <div className={`absolute -inset-4 rounded-[2.5rem] blur-2xl ${isLight ? 'bg-blue-600/5' : 'bg-blue-500/5'}`}></div>
           <form
             onSubmit={onSubmit}
             noValidate
@@ -250,7 +258,7 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
               {isSending ? <Loader2 className="animate-spin" size={20} aria-hidden="true" /> : <>{interpolate(data.formButton, fullContent)} <ArrowRight size={20} aria-hidden="true" /></>}
             </button>
 
-            <p className="text-[9px] text-center opacity-50 font-bold uppercase tracking-widest">
+            <p className="text-[9px] text-center opacity-50 font-bold uppercase tracking-widest text-[var(--text-muted)]">
               {interpolate(fullContent.ui?.consentAgreement, fullContent) || 'С Политикой конфиденциальности ознакомлен(а)'}
             </p>
             {errors.submit && <p className="text-xs text-red-400 font-bold text-center mt-4">{errors.submit}</p>}
