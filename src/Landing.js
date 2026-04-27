@@ -259,15 +259,17 @@ export default function Landing({ content, theme, setTheme }) {
           <div className="col-span-1 text-center md:text-left flex flex-col items-center md:items-start">
             <Logo light={isLight} variant="small" customScale={content.logoScaleFooter} tagline={interpolate(content.companyTagline, content)} text={interpolate(content.logoText, content)} />
             <p className="mt-6 md:mt-8 text-[11px] md:text-xs leading-relaxed font-medium opacity-60 max-w-sm">{interpolate(content.footer.description, content)}</p>
-            <div className="flex items-center gap-3 mt-8 md:mt-10">
-              <a href={`mailto:${content.email}`} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-90"><Mail size={18}/></a>
-              {(content.socialsList || []).map((social, i) => (
-                <a key={i} href={social.url} target="_blank" rel="noreferrer" title={interpolate(social.label, content)} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-90">
-                  <LogoIcon name={social.icon} size={18} />
-                </a>
-              ))}
-              <button onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { altKey: true, shiftKey: true, key: 'C' }))} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-slate-500/10 transition-all opacity-20 hover:opacity-100"><Lock size={14}/></button>
-            </div>
+            {content.ui?.showSocials && (
+              <div className="flex items-center gap-3 mt-8 md:mt-10">
+                <a href={`mailto:${content.email}`} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-90"><Mail size={18}/></a>
+                {(content.socialsList || []).map((social, i) => (
+                  <a key={i} href={social.url} target="_blank" rel="noreferrer" title={interpolate(social.label, content)} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-90">
+                    <LogoIcon name={social.icon} size={18} />
+                  </a>
+                ))}
+                <button onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { altKey: true, shiftKey: true, key: 'C' }))} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-slate-500/10 transition-all opacity-20 hover:opacity-100"><Lock size={14}/></button>
+              </div>
+            )}
           </div>
           <div className="text-center md:text-left">
             <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">{interpolate(content.footer?.headers?.nav, content) || 'Навигация'}</h4>

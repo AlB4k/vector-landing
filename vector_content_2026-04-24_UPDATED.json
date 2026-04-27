@@ -48,6 +48,13 @@
     { "id": "contact",     "enabled": true,  "label": "Контакты"       }
   ],
 
+  "ui": {
+    "showScrollProgress": true,
+    "showBackToTop": true,
+    "showSocials": false,
+    "socialsTitle": "Наши соцсети"
+  },
+
   "hero": {
     "badge": "Соответствие 152-ФЗ включено в базовый тариф",
     "title1": "Квитанция — в каждый ящик.",

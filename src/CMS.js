@@ -399,6 +399,15 @@ export default function CMS({ content, setContent, onLogout }) {
                         />
                         <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Кнопка «Наверх»</label>
                       </div>
+                      <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50">
+                        <input
+                          type="checkbox"
+                          checked={localContent.ui?.showSocials}
+                          onChange={(e) => updateNested('ui.showSocials', e.target.checked)}
+                          className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
+                        />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Отображать блок «Наши соцсети»</label>
+                      </div>
                     </div>
                   </div>
                 </SectionCard>

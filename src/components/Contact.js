@@ -136,24 +136,26 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
             </div>
           </div>
 
-          <div className="pt-8 border-t border-soft max-w-md">
-            <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-50 mb-4 text-left ml-1">{interpolate(fullContent.ui?.socialsTitle, fullContent) || 'Наши соцсети'}</p>
-            <div className="flex flex-wrap gap-4">
-              {(socials || []).map((social, i) => (
-                <a
-                  key={i}
-                  href={social.url}
-                  target="_blank"
-                  rel="noreferrer"
-                  className={`px-6 py-2.5 rounded-xl border border-soft transition-all font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 ${
-                    isLight ? 'hover:bg-blue-600 hover:text-white' : 'hover:bg-blue-500 hover:text-white'
-                  }`}
-                >
-                  <LogoIcon name={social.icon} size={14} /> {interpolate(social.label, fullContent)}
-                </a>
-              ))}
+          {fullContent.ui?.showSocials && (
+            <div className="pt-8 border-t border-soft max-w-md">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] opacity-50 mb-4 text-left ml-1">{interpolate(fullContent.ui?.socialsTitle, fullContent) || 'Наши соцсети'}</p>
+              <div className="flex flex-wrap gap-4">
+                {(socials || []).map((social, i) => (
+                  <a
+                    key={i}
+                    href={social.url}
+                    target="_blank"
+                    rel="noreferrer"
+                    className={`px-6 py-2.5 rounded-xl border border-soft transition-all font-bold text-[10px] uppercase tracking-widest flex items-center gap-2 ${
+                      isLight ? 'hover:bg-blue-600 hover:text-white' : 'hover:bg-blue-500 hover:text-white'
+                    }`}
+                  >
+                    <LogoIcon name={social.icon} size={14} /> {interpolate(social.label, fullContent)}
+                  </a>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Право: Форма */}
