@@ -14,17 +14,17 @@ const RadarVariant = ({ isLight }) => (
     <circle cx="200" cy="200" r="40" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.25" />
 
     {/* Скан-линии */}
-    <line x1="40" y1="200" x2="360" y2="200" stroke="currentColor" strokeWidth="0.5" opacity="0.1" />
-    <line x1="200" y1="40" x2="200" y2="360" stroke="currentColor" strokeWidth="0.5" opacity="0.1" />
+    <line x1="40" y1="200" x2="360" y2="200" stroke="currentColor" strokeWidth="0.5" opacity={isLight ? 0.2 : 0.1} />
+    <line x1="200" y1="40" x2="200" y2="360" stroke="currentColor" strokeWidth="0.5" opacity={isLight ? 0.2 : 0.1} />
 
     {/* Вращающийся луч */}
     <g className="origin-center animate-spin" style={{ animationDuration: '4s' }}>
       <path
         d="M200,200 L200,40 A160,160 0 0,1 360,200 Z"
         fill="url(#radarGradient)"
-        opacity="0.6"
+        opacity={isLight ? 0.4 : 0.6}
       />
-      <line x1="200" y1="200" x2="200" y2="40" stroke="currentColor" strokeWidth="1.5" className={isLight ? "text-blue-600" : "text-blue-400"} />
+      <line x1="200" y1="200" x2="200" y2="40" stroke="currentColor" strokeWidth={isLight ? 1.2 : 1.5} className={isLight ? "text-blue-600" : "text-blue-400"} />
     </g>
 
     {/* Мерцающие точки интереса */}
@@ -49,10 +49,10 @@ const RadarVariant = ({ isLight }) => (
 
 const MeshVariant = ({ isLight }) => {
   const lines = 12;
-  const color = isLight ? 'stroke-blue-600' : 'stroke-blue-400';
+  const color = isLight ? 'stroke-blue-700' : 'stroke-blue-400';
 
   return (
-    <g className="opacity-30">
+    <g className={isLight ? "opacity-50" : "opacity-30"}>
       {/* Горизонтальные линии с перспективой */}
       {[...Array(lines)].map((_, i) => {
         const y = 100 + (i * 20);
@@ -69,8 +69,8 @@ const MeshVariant = ({ isLight }) => {
             x2={xEnd}
             y2={y}
             className={`${color} animate-pulse`}
-            strokeWidth="0.5"
-            opacity={0.1 + (i / lines) * 0.3}
+            strokeWidth={isLight ? "0.8" : "0.5"}
+            opacity={0.1 + (i / lines) * 0.4}
             style={{ animationDelay: `${i * 0.1}s`, animationDuration: '3s' }}
           />
         );
@@ -89,15 +89,15 @@ const MeshVariant = ({ isLight }) => {
             x2={xBottom}
             y2={340}
             className={`${color} animate-pulse`}
-            strokeWidth="0.5"
-            opacity={0.2}
+            strokeWidth={isLight ? "0.8" : "0.5"}
+            opacity={isLight ? 0.3 : 0.2}
             style={{ animationDelay: `${i * 0.1}s`, animationDuration: '3s' }}
           />
         );
       })}
 
       {/* Анимированный узел */}
-      <circle cx="200" cy="220" r="100" fill="url(#meshRadial)" opacity="0.4" className="animate-pulse" />
+      <circle cx="200" cy="220" r="100" fill="url(#meshRadial)" opacity={isLight ? 0.6 : 0.4} className="animate-pulse" />
     </g>
   );
 };
@@ -110,12 +110,12 @@ const TopologyVariant = ({ isLight }) => (
         d={`M${80 + i * 5},${160 + i * 5} C${120 - i * 2},${80 - i * 5} ${280 + i * 5},${100 - i * 2} ${320 - i * 5},${180 + i * 5} S${260 + i * 5},${300 + i * 5} ${180 + i * 2},${340 - i * 5} S${80 + i * 5},${260 + i * 5} ${80 + i * 5},${160 + i * 5}`}
         fill="none"
         stroke="currentColor"
-        strokeWidth="0.8"
-        opacity={isLight ? 0.1 + i * 0.02 : 0.15 + i * 0.03}
+        strokeWidth={isLight ? "1.2" : "0.8"}
+        opacity={isLight ? 0.15 + i * 0.03 : 0.15 + i * 0.03}
         className="animate-morph-slow"
         style={{
           animationDelay: `${i * 0.5}s`,
-          filter: !isLight ? 'drop-shadow(0 0 3px currentColor)' : 'none'
+          filter: !isLight ? 'drop-shadow(0 0 3px currentColor)' : 'drop-shadow(0 0 1px rgba(0,0,0,0.1))'
         }}
       />
     ))}
@@ -140,7 +140,7 @@ const PulseVariant = ({ isLight }) => {
           r="0"
           fill="none"
           stroke="currentColor"
-          strokeWidth={isLight ? "1" : "2"}
+          strokeWidth={isLight ? "1.5" : "2"}
           className="animate-ripple"
           style={{ animationDelay: `${i * 1.3}s` }}
         />
@@ -153,10 +153,10 @@ const PulseVariant = ({ isLight }) => {
           d={`M200,200 Q${(200 + node.x) / 2 + 15},${(200 + node.y) / 2 - 15} ${node.x},${node.y}`}
           fill="none"
           stroke="currentColor"
-          strokeWidth="0.5"
+          strokeWidth={isLight ? "0.8" : "0.5"}
           strokeDasharray="4 4"
           className="animate-pulse-flow"
-          opacity={isLight ? "0.3" : "0.5"}
+          opacity={isLight ? "0.4" : "0.5"}
           style={{ animationDelay: `${i * 0.4}s` }}
         />
       ))}
@@ -173,7 +173,7 @@ const HeatmapVariant = ({ isLight }) => {
     { x: 150, y: 150, r: 35, d: '2.2s' }
   ];
 
-  const colorClass = isLight ? 'text-indigo-500' : 'text-orange-500';
+  const colorClass = isLight ? 'text-indigo-600' : 'text-orange-500';
 
   return (
     <g className={colorClass}>
@@ -185,7 +185,7 @@ const HeatmapVariant = ({ isLight }) => {
           r={spot.r}
           fill="url(#heatGradient)"
           className="animate-breathe"
-          style={{ animationDelay: spot.d }}
+          style={{ animationDelay: spot.d, opacity: isLight ? 0.7 : 1 }}
         />
       ))}
     </g>
@@ -203,11 +203,11 @@ const IsometricVariant = ({ isLight }) => {
   return (
     <g transform="translate(20, -20) rotate(15) skewX(-20) scale(0.95)">
       {/* Изометрическая сетка */}
-      <g opacity={isLight ? "0.05" : "0.1"}>
+      <g opacity={isLight ? "0.08" : "0.1"}>
         {[...Array(11)].map((_, i) => (
           <React.Fragment key={i}>
-            <line x1="0" y1={i * 40} x2="400" y2={i * 40} stroke="currentColor" strokeWidth="0.5" />
-            <line x1={i * 40} y1="0" x2={i * 40} y2="400" stroke="currentColor" strokeWidth="0.5" />
+            <line x1="0" y1={i * 40} x2="400" y2={i * 40} stroke="currentColor" strokeWidth={isLight ? "0.8" : "0.5"} />
+            <line x1={i * 40} y1="0" x2={i * 40} y2="400" stroke="currentColor" strokeWidth={isLight ? "0.8" : "0.5"} />
           </React.Fragment>
         ))}
       </g>
@@ -263,8 +263,8 @@ const DigitalVariant = ({ isLight }) => {
   const rows = 12;
   const cols = 12;
 
-  const colorClass = isLight ? 'text-slate-400' : 'text-emerald-500';
-  const accentClass = isLight ? 'text-blue-500' : 'text-cyan-400';
+  const colorClass = isLight ? 'text-slate-500' : 'text-emerald-500';
+  const accentClass = isLight ? 'text-blue-600' : 'text-cyan-400';
 
   const getHexPath = (cx, cy, r) => {
     const points = [];
@@ -295,12 +295,12 @@ const DigitalVariant = ({ isLight }) => {
               d={getHexPath(cx, cy, hexRadius - 2)}
               fill="none"
               stroke="currentColor"
-              strokeWidth="0.5"
+              strokeWidth={isLight ? "0.8" : "0.5"}
               className={`${isAccent ? accentClass : ''} animate-flicker`}
               style={{
                 animationDelay: `${delay}s`,
                 animationDuration: `${duration}s`,
-                opacity: isAccent ? 0.6 : 0.2
+                opacity: isAccent ? (isLight ? 0.8 : 0.6) : (isLight ? 0.3 : 0.2)
               }}
             />
           );
@@ -541,20 +541,20 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
             </svg>
 
             {/* Промышленные информационные метки */}
-            <div className={`absolute top-6 left-6 md:top-10 md:left-10 p-2.5 md:p-3 border rounded-lg text-[7px] md:text-[8px] font-mono uppercase tracking-widest leading-none ${
-              isLight ? 'bg-white/80 border-slate-200 text-blue-600' : 'bg-black/40 border-white/10 text-blue-500'
+            <div className={`absolute top-6 left-6 md:top-10 md:left-10 p-2.5 md:p-3 border rounded-lg text-[7px] md:text-[8px] font-mono uppercase tracking-widest leading-none shadow-sm ${
+              isLight ? 'bg-white/90 border-slate-200 text-blue-700' : 'bg-black/60 border-white/10 text-blue-500'
             }`}>
               <p>{interpolate(fullContent.ui?.regionLabel, fullContent) || 'Region'}: Voronezh_36</p>
               <p className="mt-1 opacity-50">{interpolate(fullContent.ui?.coverageLabel, fullContent) || 'S_Coverage'}: 98.4%</p>
               {mapVariant !== 'default' && (
                 <p className={`mt-1 font-bold ${isLight ? 'text-blue-600' : 'text-blue-500'}`}>
-                  Mode: {mapVariant.toUpperCase()}
+                  Mode: <span className={isLight ? 'bg-blue-600/10 px-1 rounded' : ''}>{mapVariant.toUpperCase()}</span>
                 </p>
               )}
             </div>
 
-            <div className={`absolute bottom-6 right-6 md:bottom-10 md:right-10 p-2.5 md:p-3 border rounded-lg text-[7px] md:text-[8px] font-mono uppercase tracking-widest leading-none text-right ${
-              isLight ? 'bg-white/80 border-slate-200 text-blue-600' : 'bg-black/40 border-white/10 text-blue-500'
+            <div className={`absolute bottom-6 right-6 md:bottom-10 md:right-10 p-2.5 md:p-3 border rounded-lg text-[7px] md:text-[8px] font-mono uppercase tracking-widest leading-none text-right shadow-sm ${
+              isLight ? 'bg-white/90 border-slate-200 text-blue-700' : 'bg-black/60 border-white/10 text-blue-500'
             }`}>
               <p>Active_Routes: 142</p>
               <p className="mt-1 opacity-50">SLA_Target: 24h</p>
