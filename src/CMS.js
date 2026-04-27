@@ -1093,6 +1093,7 @@ export default function CMS({ content, setContent, onLogout }) {
                     <InputField label="Поле: Сообщение" value={localContent.contact?.formMessage} onChange={(val) => updateNested('contact.formMessage', val)} />
                   </div>
                   <InputField label="Текст на кнопке отправки" value={localContent.contact?.formButton} onChange={(val) => updateNested('contact.formButton', val)} />
+                  <InputField label="Текст согласия (Consent)" value={localContent.contact?.formConsent} onChange={(val) => updateNested('contact.formConsent', val)} />
                 </div>
               </SectionCard>
             )}

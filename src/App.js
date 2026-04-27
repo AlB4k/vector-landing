@@ -702,7 +702,7 @@ const INITIAL_CONTENT = {
       {
         "id": "client-4",
         "name": "ООО «РВК-Воронеж»",
-        "logoUrl": "",
+        "logoUrl": "/logos/rvk.svg",
         "url": "voronezh.rosvodokanal.ru",
         "isVisible": true
       }

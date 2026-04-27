@@ -32,7 +32,7 @@ export const validateContent = (data) => {
     'hero', 'sections', 'services', 'features', 'companyName',
     'stats', 'process', 'faq', 'news', 'serviceArea', 'contact',
     'footer', 'analytics', 'legal', 'bpo', 'theme', 'ui', 'hotlineConfig',
-    'socials', 'integrations', 'cookieBanner'
+    'socials', 'integrations', 'cookieBanner', 'trustedClients'
   ];
   requiredFields.forEach(field => {
     if (data[field] === undefined || data[field] === null) {
