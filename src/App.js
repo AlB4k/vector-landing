@@ -213,7 +213,7 @@ const INITIAL_CONTENT = {
       "label": "Услуги"
     },
     {
-      "id": "serviceArea",
+      "id": "geography",
       "enabled": true,
       "label": "География"
     },

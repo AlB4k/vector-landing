@@ -145,7 +145,7 @@ export default function Landing({ content, theme, setTheme }) {
       case 'process': return <Process key={section.id} data={content.process} isLight={isLight} fullContent={content} />;
       case 'services': return <Services key={section.id} data={content.services} isLight={isLight} fullContent={content} />;
       case 'bpo': return <BPO key={section.id} data={content.bpo} isLight={isLight} fullContent={content} />;
-      case 'serviceArea': return <ServiceArea key={section.id} data={content.serviceArea} isLight={isLight} fullContent={content} />;
+      case 'geography': return <ServiceArea key={section.id} data={content.serviceArea} isLight={isLight} fullContent={content} />;
       case 'faq': return <FAQ key={section.id} data={content.faq} isLight={isLight} fullContent={content} />;
       case 'news': return <News key={section.id} data={content.news} isLight={isLight} fullContent={content} />;
       case 'contact': return <Contact key={section.id} data={content.contact} companyInfo={{ phone: content.phone, email: content.email, address: content.address, companyName: content.companyName }} socials={content.socialsList || content.socials} integrations={content.integrations} handleFormSubmit={handleFormSubmit} emailValue={emailValue} setEmailValue={setEmailValue} isLight={isLight} fullContent={content} />;
@@ -203,7 +203,7 @@ export default function Landing({ content, theme, setTheme }) {
           <Logo light={isLight} customScale={content.logoScaleHeader} tagline={content.companyTagline} text={content.logoText} />
           <div className="hidden md:flex items-center gap-8 text-[10px] font-bold uppercase tracking-[0.15em] opacity-80">
             {content.sections.filter(s => s.enabled && s.id !== 'hero').map((s) => (
-              <a key={s.id} href={`#${s.id}`} className="hover:text-blue-500 transition-colors">{s.label}</a>
+              <a key={s.id} href={`#${s.id}`} className="hover:text-blue-500 transition-colors">{interpolate(s.label, content)}</a>
             ))}
           </div>
           <div className="flex items-center gap-4">

@@ -417,7 +417,7 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
   const VariantComponent = MAP_VARIANTS[mapVariant] || MAP_VARIANTS.default;
 
   return (
-    <SectionWrapper id="geography" className="max-w-7xl mx-auto" pattern="mesh">
+    <SectionWrapper id="geography" /* id="geography" — не менять, используется в навигации */ className="max-w-7xl mx-auto" pattern="mesh">
       <div className="grid lg:grid-cols-2 gap-10 md:gap-16 items-center">
         {/* Лево: Интерактивная карта */}
         <div className="relative aspect-[4/3] sm:aspect-square max-w-lg mx-auto lg:mx-0 group w-full">

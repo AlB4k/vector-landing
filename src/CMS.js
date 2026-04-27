@@ -150,7 +150,7 @@ export default function CMS({ content, setContent, onLogout }) {
     { id: 'process', label: 'Процесс', icon: <Zap size={18}/> },
     { id: 'services', label: 'Услуги', icon: <Phone size={18}/> },
     { id: 'bpo', label: 'О БПО', icon: <FileText size={18}/> },
-    { id: 'serviceArea', label: 'География', icon: <MapPin size={18}/> },
+    { id: 'geography', label: 'География', icon: <MapPin size={18}/> },
     { id: 'news', label: 'Новости', icon: <Send size={18}/> },
     { id: 'faq', label: 'FAQ', icon: <HelpCircle size={18}/> },
     { id: 'contact', label: 'Контакты', icon: <Mail size={18}/> },
@@ -887,7 +887,7 @@ export default function CMS({ content, setContent, onLogout }) {
               </div>
             )}
 
-            {activeTab === 'serviceArea' && (
+            {activeTab === 'geography' && (
               <div className="space-y-6">
                 <SectionCard title="Зона покрытия и география" icon={<MapPin size={18}/>}>
                   <div className="grid grid-cols-2 gap-8">

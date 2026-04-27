@@ -15,7 +15,7 @@ export const Hero = ({ data, config, isLight, fullContent }) => {
   }, [config]);
 
   return (
-    <section className="relative pt-24 pb-16 md:pt-48 md:pb-32 px-6 overflow-hidden">
+    <section id="hero" /* id="hero" — не менять, используется в навигации */ className="relative pt-24 pb-16 md:pt-48 md:pb-32 px-6 overflow-hidden">
       {/* Анимированные фоновые элементы */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className={`absolute top-0 -left-4 w-72 h-72 rounded-full mix-blend-multiply filter blur-3xl animate-blob ${isLight ? 'bg-blue-400 opacity-15' : 'bg-blue-600 opacity-10'}`}></div>
