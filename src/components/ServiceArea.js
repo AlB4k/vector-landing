@@ -146,13 +146,69 @@ const HeatmapVariant = () => (
   </g>
 );
 
-const IsometricVariant = ({ isLight }) => (
-  <g>
-    <circle cx="160" cy="140" r="3" className={isLight ? "fill-blue-500/40" : "fill-blue-400/40"} />
-    <circle cx="240" cy="250" r="3" className={isLight ? "fill-blue-500/40" : "fill-blue-400/40"} />
-    <path d="M160,140 L200,200 L240,250" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.1" />
-  </g>
-);
+const IsometricVariant = ({ isLight }) => {
+  const nodes = [
+    { x: 200, y: 200, h: 60, delay: '0s' },
+    { x: 250, y: 120, h: 40, delay: '0.2s' },
+    { x: 300, y: 180, h: 30, delay: '0.4s' },
+    { x: 120, y: 280, h: 50, delay: '0.6s' }
+  ];
+
+  return (
+    <g transform="translate(20, -20) rotate(15) skewX(-20) scale(0.95)">
+      {/* Изометрическая сетка */}
+      <g opacity={isLight ? "0.05" : "0.1"}>
+        {[...Array(11)].map((_, i) => (
+          <React.Fragment key={i}>
+            <line x1="0" y1={i * 40} x2="400" y2={i * 40} stroke="currentColor" strokeWidth="0.5" />
+            <line x1={i * 40} y1="0" x2={i * 40} y2="400" stroke="currentColor" strokeWidth="0.5" />
+          </React.Fragment>
+        ))}
+      </g>
+
+      {/* Столбики данных */}
+      {nodes.map((node, i) => (
+        <g key={i} transform={`translate(${node.x}, ${node.y})`}>
+          {/* Эффект свечения в основании */}
+          <ellipse cx="0" cy="0" rx="10" ry="4" fill="currentColor" opacity="0.1" className="animate-pulse" />
+
+          {/* Вертикальный индикатор */}
+          <rect
+            x="-2"
+            y={-node.h}
+            width="4"
+            height={node.h}
+            fill="url(#isoBarGradient)"
+            className="animate-grow-y"
+            style={{ animationDelay: node.delay, transformOrigin: 'bottom' }}
+          />
+
+          {/* Верхушка столбика */}
+          <circle
+            cx="0"
+            cy={-node.h}
+            r="3"
+            fill="currentColor"
+            className="animate-bounce"
+            style={{ animationDelay: node.delay, animationDuration: '3s' }}
+          />
+
+          {/* Соединительная линия (проекция) */}
+          <line
+            x1="0"
+            y1="0"
+            x2="0"
+            y2={-node.h}
+            stroke="currentColor"
+            strokeWidth="0.5"
+            strokeDasharray="2 2"
+            opacity="0.3"
+          />
+        </g>
+      ))}
+    </g>
+  );
+};
 
 const DigitalVariant = () => (
   <g className="opacity-20 animate-pulse">
@@ -169,7 +225,58 @@ const DigitalVariant = () => (
   </g>
 );
 
-const BlueprintVariant = () => null; // Обрабатывается как переопределение базового слоя
+const BlueprintVariant = ({ isLight }) => (
+  <g>
+    {/* Техническая координатная сетка */}
+    <g opacity={isLight ? "0.1" : "0.15"}>
+      {[...Array(21)].map((_, i) => (
+        <React.Fragment key={i}>
+          <line x1={i * 20} y1="0" x2={i * 20} y2="400" stroke="currentColor" strokeWidth="0.2" />
+          <line x1="0" y1={i * 20} x2="400" y2={i * 20} stroke="currentColor" strokeWidth="0.2" />
+        </React.Fragment>
+      ))}
+    </g>
+
+    {/* Оси координат с маркерами */}
+    <g opacity="0.4" className={isLight ? "text-blue-700" : "text-blue-400"}>
+      <line x1="20" y1="380" x2="380" y2="380" stroke="currentColor" strokeWidth="1" markerEnd="url(#arrowhead)" />
+      <line x1="20" y1="380" x2="20" y2="20" stroke="currentColor" strokeWidth="1" markerEnd="url(#arrowhead)" />
+      <text x="385" y="384" fontSize="8" fontFamily="monospace" fontWeight="bold">X</text>
+      <text x="16" y="14" fontSize="8" fontFamily="monospace" fontWeight="bold">Y</text>
+
+      {/* Шкалы */}
+      {[50, 100, 150, 200, 250, 300, 350].map(val => (
+        <React.Fragment key={val}>
+          <line x1={val} y1="378" x2={val} y2="382" stroke="currentColor" strokeWidth="1" />
+          <line x1="18" y1={val} x2="22" y2={val} stroke="currentColor" strokeWidth="1" />
+        </React.Fragment>
+      ))}
+    </g>
+
+    {/* Технические аннотации (размеры) */}
+    <g className={`text-[7px] font-mono ${isLight ? "text-blue-800" : "text-blue-300"}`} opacity="0.5">
+      {/* Горизонтальный размер */}
+      <path d="M100,140 L100,80 M300,180 L300,80" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2 2" />
+      <path d="M100,90 L300,90" stroke="currentColor" strokeWidth="0.5" markerStart="url(#arrowhead-rev)" markerEnd="url(#arrowhead)" />
+      <text x="180" y="86" fill="currentColor">dist_x: 200.00mm</text>
+
+      {/* Вертикальный размер */}
+      <path d="M300,180 L360,180 M280,280 L360,280" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2 2" />
+      <path d="M350,180 L350,280" stroke="currentColor" strokeWidth="0.5" markerStart="url(#arrowhead-rev)" markerEnd="url(#arrowhead)" />
+      <text x="354" y="235" fill="currentColor" transform="rotate(90, 354, 235)">dist_y: 100.00mm</text>
+
+      {/* Угловая пометка */}
+      <path d="M200,200 L240,160" stroke="currentColor" strokeWidth="0.5" strokeDasharray="4 2" />
+      <text x="215" y="175" fill="currentColor" transform="rotate(-45, 215, 175)">∠45°_REF</text>
+    </g>
+
+    {/* Технический штамп (декоративный) */}
+    <rect x="300" y="340" width="80" height="30" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.3" />
+    <line x1="300" y1="355" x2="380" y2="355" stroke="currentColor" strokeWidth="0.5" opacity="0.3" />
+    <text x="305" y="351" fontSize="5" fontFamily="monospace" opacity="0.3">DWG_NO: VTR-36</text>
+    <text x="305" y="366" fontSize="5" fontFamily="monospace" opacity="0.3">SCALE: 1:500</text>
+  </g>
+);
 
 const MAP_VARIANTS = {
   radar: RadarVariant,
@@ -185,36 +292,43 @@ const MAP_VARIANTS = {
 
 const MAP_OPTIONS = ['radar', 'mesh', 'blueprint', 'isometric', 'topology', 'pulse', 'heatmap', 'digital', 'default'];
 
-const BaseLayer = ({ variant, isLight }) => (
-  <>
-    {/* Абстрактная форма Воронежской области */}
-    <path
-      d="M100,150 L150,100 L250,120 L300,180 L280,280 L180,320 L120,280 Z"
-      fill={variant === 'blueprint' ? 'url(#mapGradient)' : 'none'}
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeDasharray={variant === 'blueprint' ? 'none' : '8 4'}
-      className={`${isLight ? 'text-blue-600' : 'text-blue-500'} will-change-transform`}
-    />
+const BaseLayer = ({ variant, isLight }) => {
+  const isIsometric = variant === 'isometric';
+  const transform = isIsometric ? "translate(20, -20) rotate(15) skewX(-20) scale(0.95)" : "";
 
-    {/* Анимированные линии связи */}
-    <path
-      d="M200,200 L250,120 M200,200 L300,180 M200,200 L120,280"
-      stroke="currentColor"
-      strokeWidth="1"
-      className={`${isLight ? 'text-blue-500/30' : 'text-blue-400/30'} animate-pulse will-change-opacity`}
-    />
+  return (
+    <g transform={transform}>
+      {/* Абстрактная форма Воронежской области */}
+      <path
+        d="M100,150 L150,100 L250,120 L300,180 L280,280 L180,320 L120,280 Z"
+        fill={variant === 'blueprint' ? 'url(#mapGradient)' : 'none'}
+        stroke="currentColor"
+        strokeWidth={variant === 'blueprint' ? "1" : "2"}
+        strokeDasharray={variant === 'blueprint' ? '4 2' : '8 4'}
+        className={`${isLight ? 'text-blue-600' : 'text-blue-500'} transition-all duration-1000`}
+      />
 
-    {/* Главная точка города */}
-    <circle cx="200" cy="200" r="6" className={`${isLight ? 'fill-blue-600' : 'fill-blue-500'} shadow-xl`} />
-    <circle cx="200" cy="200" r="12" className={`fill-none animate-ping will-change-transform ${isLight ? 'stroke-blue-600/50' : 'stroke-blue-500/50'}`} />
+      {/* Анимированные линии связи */}
+      <path
+        d="M200,200 L250,120 M200,200 L300,180 M200,200 L120,280"
+        stroke="currentColor"
+        strokeWidth="1"
+        className={`${isLight ? 'text-blue-500/30' : 'text-blue-400/30'} animate-pulse`}
+      />
 
-    {/* Региональные точки */}
-    <circle cx="250" cy="120" r="4" className={`fill-slate-500 transition-colors ${isLight ? 'group-hover:fill-blue-600' : 'group-hover:fill-blue-400'}`} />
-    <circle cx="300" cy="180" r="4" className={`fill-slate-500 transition-colors ${isLight ? 'group-hover:fill-blue-600' : 'group-hover:fill-blue-400'}`} />
-    <circle cx="120" cy="280" r="4" className={`fill-slate-500 transition-colors ${isLight ? 'group-hover:fill-blue-600' : 'group-hover:fill-blue-400'}`} />
-  </>
-);
+      {/* Главная точка города */}
+      <circle cx="200" cy="200" r={isIsometric ? "4" : "6"} className={`${isLight ? 'fill-blue-600' : 'fill-blue-500'} shadow-xl`} />
+      {!isIsometric && (
+        <circle cx="200" cy="200" r="12" className={`fill-none animate-ping ${isLight ? 'stroke-blue-600/50' : 'stroke-blue-500/50'}`} />
+      )}
+
+      {/* Региональные точки */}
+      <circle cx="250" cy="120" r={isIsometric ? "2" : "4"} className={`fill-slate-500 transition-colors ${isLight ? 'group-hover:fill-blue-600' : 'group-hover:fill-blue-400'}`} />
+      <circle cx="300" cy="180" r={isIsometric ? "2" : "4"} className={`fill-slate-500 transition-colors ${isLight ? 'group-hover:fill-blue-600' : 'group-hover:fill-blue-400'}`} />
+      <circle cx="120" cy="280" r={isIsometric ? "2" : "4"} className={`fill-slate-500 transition-colors ${isLight ? 'group-hover:fill-blue-600' : 'group-hover:fill-blue-400'}`} />
+    </g>
+  );
+};
 
 export const ServiceArea = ({ data, fullContent, isLight }) => {
   const mapVariant = React.useMemo(() => {
@@ -250,9 +364,19 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
                   <circle cx="2" cy="2" r="1" fill="currentColor" fillOpacity="0.2" />
                 </pattern>
                 <linearGradient id="mapGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="var(--accent-from)" stopOpacity="0.2" />
-                  <stop offset="100%" stopColor="var(--accent-to)" stopOpacity="0.1" />
+                  <stop offset="0%" stopColor="currentColor" stopOpacity="0.2" />
+                  <stop offset="100%" stopColor="currentColor" stopOpacity="0.05" />
                 </linearGradient>
+                <linearGradient id="isoBarGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                  <stop offset="0%" stopColor="currentColor" stopOpacity="0.8" />
+                  <stop offset="100%" stopColor="currentColor" stopOpacity="0.2" />
+                </linearGradient>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                  <polygon points="0 0, 10 3.5, 0 7" fill="currentColor" />
+                </marker>
+                <marker id="arrowhead-rev" markerWidth="10" markerHeight="7" refX="1" refY="3.5" orient="auto">
+                  <polygon points="10 0, 0 3.5, 10 7" fill="currentColor" />
+                </marker>
                 <radialGradient id="heatGradient">
                   <stop offset="0%" stopColor="currentColor" stopOpacity="0.8" />
                   <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
@@ -267,6 +391,24 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
                 </radialGradient>
               </defs>
               <rect width="100%" height="100%" fill="url(#dotPattern)" />
+
+              <style>{`
+                @keyframes grow-y {
+                  from { transform: scaleY(0); }
+                  to { transform: scaleY(1); }
+                }
+                .animate-grow-y {
+                  animation: grow-y 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+                }
+                @keyframes slow-fade {
+                  0% { opacity: 0.1; }
+                  50% { opacity: 0.3; }
+                  100% { opacity: 0.1; }
+                }
+                .animate-slow-fade {
+                  animation: slow-fade 4s ease-in-out infinite;
+                }
+              `}</style>
 
               {/* Элементы карты, специфичные для варианта */}
               <VariantComponent isLight={isLight} />
