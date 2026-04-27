@@ -164,14 +164,33 @@ const PulseVariant = ({ isLight }) => {
   );
 };
 
-const HeatmapVariant = () => (
-  <g className="animate-slow-fade">
-    <circle cx="200" cy="200" r="80" fill="url(#heatGradient)" opacity="0.6" />
-    <circle cx="250" cy="120" r="50" fill="url(#heatGradient)" opacity="0.4" />
-    <circle cx="300" cy="180" r="40" fill="url(#heatGradient)" opacity="0.3" />
-    <circle cx="120" cy="280" r="60" fill="url(#heatGradient)" opacity="0.4" />
-  </g>
-);
+const HeatmapVariant = ({ isLight }) => {
+  const spots = [
+    { x: 200, y: 200, r: 80, d: '0s' },
+    { x: 250, y: 120, r: 50, d: '1.5s' },
+    { x: 300, y: 180, r: 40, d: '3s' },
+    { x: 120, y: 280, r: 60, d: '0.8s' },
+    { x: 150, y: 150, r: 35, d: '2.2s' }
+  ];
+
+  const colorClass = isLight ? 'text-indigo-500' : 'text-orange-500';
+
+  return (
+    <g className={colorClass}>
+      {spots.map((spot, i) => (
+        <circle
+          key={i}
+          cx={spot.x}
+          cy={spot.y}
+          r={spot.r}
+          fill="url(#heatGradient)"
+          className="animate-breathe"
+          style={{ animationDelay: spot.d }}
+        />
+      ))}
+    </g>
+  );
+};
 
 const IsometricVariant = ({ isLight }) => {
   const nodes = [
@@ -237,20 +256,59 @@ const IsometricVariant = ({ isLight }) => {
   );
 };
 
-const DigitalVariant = () => (
-  <g className="opacity-20 animate-pulse">
-    {[...Array(12)].map((_, i) => (
-      <rect
-        key={i}
-        x={50 + (i % 4) * 80}
-        y={50 + Math.floor(i / 4) * 80}
-        width="2"
-        height="2"
-        fill="currentColor"
-      />
-    ))}
-  </g>
-);
+const DigitalVariant = ({ isLight }) => {
+  const hexRadius = 12;
+  const hexWidth = hexRadius * 2;
+  const hexHeight = Math.sqrt(3) * hexRadius;
+  const rows = 12;
+  const cols = 12;
+
+  const colorClass = isLight ? 'text-slate-400' : 'text-emerald-500';
+  const accentClass = isLight ? 'text-blue-500' : 'text-cyan-400';
+
+  const getHexPath = (cx, cy, r) => {
+    const points = [];
+    for (let i = 0; i < 6; i++) {
+      const angle = (Math.PI / 3) * i;
+      points.push(`${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`);
+    }
+    return `M ${points.join(' L ')} Z`;
+  };
+
+  return (
+    <g className={colorClass}>
+      {[...Array(rows)].map((_, row) => (
+        [...Array(cols)].map((_, col) => {
+          const cx = col * hexWidth * 0.75 + 50;
+          const cy = row * hexHeight + (col % 2 ? hexHeight / 2 : 0) + 50;
+
+          // Проверка вхождения в примерную область (упрощенно)
+          if (cx < 50 || cx > 350 || cy < 50 || cy > 350) return null;
+
+          const isAccent = Math.random() > 0.8;
+          const delay = Math.random() * 5;
+          const duration = 1 + Math.random() * 3;
+
+          return (
+            <path
+              key={`${row}-${col}`}
+              d={getHexPath(cx, cy, hexRadius - 2)}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="0.5"
+              className={`${isAccent ? accentClass : ''} animate-flicker`}
+              style={{
+                animationDelay: `${delay}s`,
+                animationDuration: `${duration}s`,
+                opacity: isAccent ? 0.6 : 0.2
+              }}
+            />
+          );
+        })
+      ))}
+    </g>
+  );
+};
 
 const BlueprintVariant = ({ isLight }) => (
   <g>
@@ -457,6 +515,21 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
                 }
                 .animate-pulse-flow {
                   animation: pulse-flow 3s linear infinite;
+                }
+                @keyframes breathe {
+                  0%, 100% { transform: scale(1); opacity: 0.3; }
+                  50% { transform: scale(1.1); opacity: 0.6; }
+                }
+                .animate-breathe {
+                  animation: breathe 5s ease-in-out infinite;
+                  transform-origin: center;
+                }
+                @keyframes flicker {
+                  0%, 100% { opacity: 0.2; }
+                  50% { opacity: 1; }
+                }
+                .animate-flicker {
+                  animation: flicker 3s ease-in-out infinite;
                 }
               `}</style>
 
