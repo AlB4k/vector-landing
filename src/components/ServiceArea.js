@@ -102,40 +102,67 @@ const MeshVariant = ({ isLight }) => {
   );
 };
 
-const TopologyVariant = () => (
-  <g opacity="0.15" className="animate-slow-fade">
+const TopologyVariant = ({ isLight }) => (
+  <g className="transition-all duration-1000">
     {[...Array(6)].map((_, i) => (
       <path
         key={i}
-        d={`M${50 + i * 10},${100 + i * 20} Q150,${50 + i * 10} 350,${100 + i * 20}`}
+        d={`M${80 + i * 5},${160 + i * 5} C${120 - i * 2},${80 - i * 5} ${280 + i * 5},${100 - i * 2} ${320 - i * 5},${180 + i * 5} S${260 + i * 5},${300 + i * 5} ${180 + i * 2},${340 - i * 5} S${80 + i * 5},${260 + i * 5} ${80 + i * 5},${160 + i * 5}`}
         fill="none"
         stroke="currentColor"
-        strokeWidth="0.5"
-        strokeDasharray={i % 2 === 0 ? "5 5" : "none"}
-      />
-    ))}
-    {[...Array(6)].map((_, i) => (
-      <path
-        key={i + 6}
-        d={`M${50 + i * 20},${350 - i * 10} Q200,${300 - i * 20} 350,${350 - i * 10}`}
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="0.5"
+        strokeWidth="0.8"
+        opacity={isLight ? 0.1 + i * 0.02 : 0.15 + i * 0.03}
+        className="animate-morph-slow"
+        style={{
+          animationDelay: `${i * 0.5}s`,
+          filter: !isLight ? 'drop-shadow(0 0 3px currentColor)' : 'none'
+        }}
       />
     ))}
   </g>
 );
 
-const PulseVariant = () => (
-  <g className="animate-slow-fade">
-    <circle cx="200" cy="200" r="180" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.05" />
-    <circle cx="200" cy="200" r="140" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.1" />
-    <circle cx="200" cy="200" r="100" fill="none" stroke="currentColor" strokeWidth="1" opacity="0.15" className="animate-ping" />
-    <circle cx="200" cy="200" r="60" fill="none" stroke="currentColor" strokeWidth="0.5" opacity="0.2" strokeDasharray="4 4" className="animate-spin" style={{ animationDuration: '20s' }} />
-    <line x1="200" y1="20" x2="200" y2="380" stroke="currentColor" strokeWidth="0.5" opacity="0.1" />
-    <line x1="20" y1="200" x2="380" y2="200" stroke="currentColor" strokeWidth="0.5" opacity="0.1" />
-  </g>
-);
+const PulseVariant = ({ isLight }) => {
+  const nodes = [
+    { x: 250, y: 120 },
+    { x: 300, y: 180 },
+    { x: 120, y: 280 }
+  ];
+
+  return (
+    <g>
+      {/* Расширяющиеся волны из центра (Воронеж) */}
+      {[...Array(3)].map((_, i) => (
+        <circle
+          key={`ripple-${i}`}
+          cx="200"
+          cy="200"
+          r="0"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth={isLight ? "1" : "2"}
+          className="animate-ripple"
+          style={{ animationDelay: `${i * 1.3}s` }}
+        />
+      ))}
+
+      {/* Пульсирующие линии связи */}
+      {nodes.map((node, i) => (
+        <path
+          key={`link-${i}`}
+          d={`M200,200 Q${(200 + node.x) / 2 + 15},${(200 + node.y) / 2 - 15} ${node.x},${node.y}`}
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="0.5"
+          strokeDasharray="4 4"
+          className="animate-pulse-flow"
+          opacity={isLight ? "0.3" : "0.5"}
+          style={{ animationDelay: `${i * 0.4}s` }}
+        />
+      ))}
+    </g>
+  );
+};
 
 const HeatmapVariant = () => (
   <g className="animate-slow-fade">
@@ -407,6 +434,29 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
                 }
                 .animate-slow-fade {
                   animation: slow-fade 4s ease-in-out infinite;
+                }
+                @keyframes morph {
+                  0%, 100% { transform: scale(1) rotate(0deg); }
+                  50% { transform: scale(1.05) rotate(1deg); }
+                }
+                .animate-morph-slow {
+                  animation: morph 10s ease-in-out infinite;
+                  transform-origin: center;
+                }
+                @keyframes ripple {
+                  0% { r: 0; opacity: 0; }
+                  20% { opacity: 0.4; }
+                  100% { r: 250; opacity: 0; }
+                }
+                .animate-ripple {
+                  animation: ripple 4s cubic-bezier(0.2, 0.4, 0.6, 1) infinite;
+                }
+                @keyframes pulse-flow {
+                  0% { stroke-dashoffset: 24; }
+                  100% { stroke-dashoffset: 0; }
+                }
+                .animate-pulse-flow {
+                  animation: pulse-flow 3s linear infinite;
                 }
               `}</style>
 
