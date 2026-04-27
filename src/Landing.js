@@ -183,7 +183,7 @@ export default function Landing({ content, theme, setTheme }) {
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-slow-fade">
           <div className={`w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-2xl border border-white/10 p-8 md:p-12 shadow-2xl relative ${isLight ? 'bg-white text-slate-900' : 'bg-slate-900 text-white'}`}>
             <button onClick={() => setActiveModal(null)} className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors"><X size={24} /></button>
-            {activeModal === 'success' && (
+            {activeModal === 'success' && content.modals?.success && (
               <div className="text-center py-8">
                 <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-8 text-white shadow-lg"><Check size={40} /></div>
                 <h3 className="text-3xl font-bold mb-4">{content.modals.success.title}</h3>
@@ -259,17 +259,19 @@ export default function Landing({ content, theme, setTheme }) {
           <div className="col-span-1 text-center md:text-left flex flex-col items-center md:items-start">
             <Logo light={isLight} variant="small" customScale={content.logoScaleFooter} tagline={interpolate(content.companyTagline, content)} text={interpolate(content.logoText, content)} />
             <p className="mt-6 md:mt-8 text-[11px] md:text-xs leading-relaxed font-medium opacity-60 max-w-sm">{interpolate(content.footer.description, content)}</p>
-            {content.ui?.showSocials && (
-              <div className="flex items-center gap-3 mt-8 md:mt-10">
-                <a href={`mailto:${content.email}`} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-90"><Mail size={18}/></a>
-                {(content.socialsList || []).map((social, i) => (
-                  <a key={i} href={social.url} target="_blank" rel="noreferrer" title={interpolate(social.label, content)} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-90">
-                    <LogoIcon name={social.icon} size={18} />
-                  </a>
-                ))}
-                <button onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { altKey: true, shiftKey: true, key: 'C' }))} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-slate-500/10 transition-all opacity-20 hover:opacity-100"><Lock size={14}/></button>
-              </div>
-            )}
+            <div className="flex items-center gap-3 mt-8 md:mt-10">
+              {content.ui?.showSocials && (
+                <>
+                  <a href={`mailto:${content.email}`} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-90"><Mail size={18}/></a>
+                  {(content.socialsList || []).map((social, i) => (
+                    <a key={i} href={social.url} target="_blank" rel="noreferrer" title={interpolate(social.label, content)} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-blue-500 hover:text-white transition-all opacity-90">
+                      <LogoIcon name={social.icon} size={18} />
+                    </a>
+                  ))}
+                </>
+              )}
+              <button onClick={() => window.dispatchEvent(new KeyboardEvent('keydown', { altKey: true, shiftKey: true, key: 'C' }))} className="w-10 h-10 rounded-lg border border-soft flex items-center justify-center hover:bg-slate-500/10 transition-all opacity-20 hover:opacity-100"><Lock size={14}/></button>
+            </div>
           </div>
           <div className="text-center md:text-left">
             <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">{interpolate(content.footer?.headers?.nav, content) || 'Навигация'}</h4>
@@ -282,9 +284,9 @@ export default function Landing({ content, theme, setTheme }) {
           <div className="text-center md:text-left">
             <h4 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-6 md:mb-8 text-blue-500">{interpolate(content.footer?.headers?.legal, content) || 'Правовая информация'}</h4>
             <ul className="space-y-3 md:space-y-4 text-[10px] md:text-xs font-bold uppercase tracking-widest opacity-80">
-              <li><Link to="/privacy" className="hover:text-blue-500 transition-colors">{interpolate(content.pages.privacy.title, content)}</Link></li>
-              <li><Link to="/requisites" className="hover:text-blue-500 transition-colors">{interpolate(content.pages.requisites.title, content)}</Link></li>
-              <li><Link to="/oferta" className="hover:text-blue-500 transition-colors">{interpolate(content.pages.oferta.title, content)}</Link></li>
+              <li><Link to="/privacy" className="hover:text-blue-500 transition-colors">{interpolate(content.pages?.privacy?.title, content) || 'Политика конфиденциальности'}</Link></li>
+              <li><Link to="/requisites" className="hover:text-blue-500 transition-colors">{interpolate(content.pages?.requisites?.title, content) || 'Реквизиты организации'}</Link></li>
+              <li><Link to="/oferta" className="hover:text-blue-500 transition-colors">{interpolate(content.pages?.oferta?.title, content) || 'Оферта и условия'}</Link></li>
             </ul>
           </div>
           <div className="text-center md:text-left">

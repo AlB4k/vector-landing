@@ -126,8 +126,19 @@ const INITIAL_CONTENT = {
     "placeholderMessage": "Расскажите о вашей задаче...",
     "consentAgreement": "С Политикой конфиденциальности ознакомлен(а)",
     "regLabel": "Рег.",
-    "orderLabel": "Приказ"
+    "orderLabel": "Приказ",
+    "showSocials": false,
+    "socialsTitle": "Наши соцсети"
   },
+  "cookieBanner": {
+    "title": "Управление Cookie",
+    "description": "Мы используем cookie для корректной работы сайта. Технические cookie необходимы. Аналитические требуют вашего согласия в соответствии с ФЗ-152.",
+    "btnAll": "Принять все",
+    "btnEssential": "Только необходимые"
+  },
+  "loaderDelay": 2000,
+  "logoScaleHeader": 2.2,
+  "logoScaleFooter": 2,
   "ceoLabel": "Генеральный директор",
   "address": "394014, г. Воронеж, ул. Лебедева, д. 4, пом. IV",
   "phone": "+7 (930) 409-27-00",

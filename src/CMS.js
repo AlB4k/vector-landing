@@ -169,7 +169,7 @@ export default function CMS({ content, setContent, onLogout }) {
           </div>
           <div className="flex flex-col">
             <span className="font-black tracking-tighter text-white text-xl leading-none">CMS</span>
-            <span className="text-[8px] font-bold text-blue-500 uppercase tracking-widest mt-1">v{localContent.legal.version}</span>
+            <span className="text-[8px] font-bold text-blue-500 uppercase tracking-widest mt-1">v{localContent.legal?.version || '2.0.0'}</span>
           </div>
         </div>
         <nav className="flex-1 p-5 space-y-1.5 overflow-y-auto custom-scrollbar">
@@ -418,23 +418,23 @@ export default function CMS({ content, setContent, onLogout }) {
               <div className="space-y-8">
                 <SectionCard title="Главный экран (Hero)" icon={<LayoutDashboard size={18}/>}>
                   <div className="space-y-2">
-                    <InputField label="Верхний бейдж" value={localContent.hero.badge} onChange={(val) => updateNested('hero.badge', val)} />
-                    <InputField label="Lucide Icon (Badge)" value={localContent.hero.badgeIcon} onChange={(val) => updateNested('hero.badgeIcon', val)} />
-                    <InputField label="Основной заголовок (строка 1)" value={localContent.hero.title1} onChange={(val) => updateNested('hero.title1', val)} />
-                    <InputField label="Градиентный акцент заголовка" value={localContent.hero.titleGradient} onChange={(val) => updateNested('hero.titleGradient', val)} />
+                    <InputField label="Верхний бейдж" value={localContent.hero?.badge} onChange={(val) => updateNested('hero.badge', val)} />
+                    <InputField label="Lucide Icon (Badge)" value={localContent.hero?.badgeIcon} onChange={(val) => updateNested('hero.badgeIcon', val)} />
+                    <InputField label="Основной заголовок (строка 1)" value={localContent.hero?.title1} onChange={(val) => updateNested('hero.title1', val)} />
+                    <InputField label="Градиентный акцент заголовка" value={localContent.hero?.titleGradient} onChange={(val) => updateNested('hero.titleGradient', val)} />
                     <div className="grid grid-cols-2 gap-8">
-                      <InputField label="Метка горячей линии" value={localContent.hero.hotlineLabel} onChange={(val) => updateNested('hero.hotlineLabel', val)} />
-                      <InputField label="Lucide Icon (Hotline)" value={localContent.hero.hotlineIcon} onChange={(val) => updateNested('hero.hotlineIcon', val)} />
+                      <InputField label="Метка горячей линии" value={localContent.hero?.hotlineLabel} onChange={(val) => updateNested('hero.hotlineLabel', val)} />
+                      <InputField label="Lucide Icon (Hotline)" value={localContent.hero?.hotlineIcon} onChange={(val) => updateNested('hero.hotlineIcon', val)} />
                     </div>
-                    <InputField label="Номер горячей линии" value={localContent.hero.hotlinePhone} onChange={(val) => updateNested('hero.hotlinePhone', val)} />
+                    <InputField label="Номер горячей линии" value={localContent.hero?.hotlinePhone} onChange={(val) => updateNested('hero.hotlinePhone', val)} />
                     <div className="grid grid-cols-2 gap-8">
-                      <InputField label="Текст кнопки 1 (Основная)" value={localContent.hero.btnPrimary} onChange={(val) => updateNested('hero.btnPrimary', val)} />
-                      <InputField label="Текст кнопки 2 (Вторичная)" value={localContent.hero.btnSecondary} onChange={(val) => updateNested('hero.btnSecondary', val)} />
+                      <InputField label="Текст кнопки 1 (Основная)" value={localContent.hero?.btnPrimary} onChange={(val) => updateNested('hero.btnPrimary', val)} />
+                      <InputField label="Текст кнопки 2 (Вторичная)" value={localContent.hero?.btnSecondary} onChange={(val) => updateNested('hero.btnSecondary', val)} />
                     </div>
                     <div className="mb-6">
                       <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Описание (Subtitle)</label>
                       <textarea
-                        value={localContent.hero.subtitle}
+                        value={localContent.hero?.subtitle}
                         onChange={(e) => updateNested('hero.subtitle', e.target.value)}
                         className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all text-sm font-medium h-40 resize-none shadow-inner"
                       />
@@ -446,7 +446,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50 mb-6">
                     <input
                       type="checkbox"
-                      checked={localContent.hotlineConfig.showBadge}
+                      checked={localContent.hotlineConfig?.showBadge}
                       onChange={(e) => updateNested('hotlineConfig.showBadge', e.target.checked)}
                       className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
                     />
@@ -455,19 +455,19 @@ export default function CMS({ content, setContent, onLogout }) {
                   <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50 mb-6">
                     <input
                       type="checkbox"
-                      checked={localContent.hotlineConfig.scheduleEnabled}
+                      checked={localContent.hotlineConfig?.scheduleEnabled}
                       onChange={(e) => updateNested('hotlineConfig.scheduleEnabled', e.target.checked)}
                       className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
                     />
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Автоматический график (Прямая линия)</label>
                   </div>
                   <div className="grid grid-cols-2 gap-8">
-                    <InputField label="Начало работы (час, 0-23)" type="number" value={localContent.hotlineConfig.startHour} onChange={(val) => updateNested('hotlineConfig.startHour', parseInt(val))} />
-                    <InputField label="Конец работы (час, 0-23)" type="number" value={localContent.hotlineConfig.endHour} onChange={(val) => updateNested('hotlineConfig.endHour', parseInt(val))} />
+                    <InputField label="Начало работы (час, 0-23)" type="number" value={localContent.hotlineConfig?.startHour} onChange={(val) => updateNested('hotlineConfig.startHour', parseInt(val))} />
+                    <InputField label="Конец работы (час, 0-23)" type="number" value={localContent.hotlineConfig?.endHour} onChange={(val) => updateNested('hotlineConfig.endHour', parseInt(val))} />
                   </div>
                   <div className="grid grid-cols-2 gap-8">
-                    <InputField label="Текст статуса (Онлайн)" value={localContent.hotlineConfig.statusOnline} onChange={(val) => updateNested('hotlineConfig.statusOnline', val)} />
-                    <InputField label="Текст статуса (Офлайн)" value={localContent.hotlineConfig.statusOffline} onChange={(val) => updateNested('hotlineConfig.statusOffline', val)} />
+                    <InputField label="Текст статуса (Онлайн)" value={localContent.hotlineConfig?.statusOnline} onChange={(val) => updateNested('hotlineConfig.statusOnline', val)} />
+                    <InputField label="Текст статуса (Офлайн)" value={localContent.hotlineConfig?.statusOffline} onChange={(val) => updateNested('hotlineConfig.statusOffline', val)} />
                   </div>
                   <div className="mt-4">
                     <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Рабочие дни (1=Пн, 0=Вс)</label>
@@ -476,11 +476,11 @@ export default function CMS({ content, setContent, onLogout }) {
                         <button
                           key={day}
                           onClick={() => {
-                            const current = localContent.hotlineConfig.workDays;
+                            const current = localContent.hotlineConfig?.workDays || [];
                             const next = current.includes(day) ? current.filter(d => d !== day) : [...current, day].sort();
                             updateNested('hotlineConfig.workDays', next);
                           }}
-                          className={`w-10 h-10 rounded-xl font-bold text-xs flex items-center justify-center transition-all ${localContent.hotlineConfig.workDays.includes(day) ? 'gradient-bg text-white shadow-lg' : 'bg-slate-900 text-slate-500 border border-slate-800 hover:text-slate-300'}`}
+                          className={`w-10 h-10 rounded-xl font-bold text-xs flex items-center justify-center transition-all ${localContent.hotlineConfig?.workDays?.includes(day) ? 'gradient-bg text-white shadow-lg' : 'bg-slate-900 text-slate-500 border border-slate-800 hover:text-slate-300'}`}
                         >
                           {['Вс','Пн','Вт','Ср','Чт','Пт','Сб'][day]}
                         </button>
@@ -495,15 +495,15 @@ export default function CMS({ content, setContent, onLogout }) {
               <div className="space-y-6">
                 <SectionCard title="Заголовки секции" icon={<FileText size={18}/>}>
                   <div className="grid grid-cols-2 gap-8">
-                    <InputField label="Заголовок" value={localContent.features.title} onChange={(val) => updateNested('features.title', val)} />
-                    <InputField label="Акцентное слово" value={localContent.features.accent} onChange={(val) => updateNested('features.accent', val)} />
+                    <InputField label="Заголовок" value={localContent.features?.title} onChange={(val) => updateNested('features.title', val)} />
+                    <InputField label="Акцентное слово" value={localContent.features?.accent} onChange={(val) => updateNested('features.accent', val)} />
                   </div>
-                  <InputField label="Подзаголовок секции" value={localContent.features.subtitle} onChange={(val) => updateNested('features.subtitle', val)} />
+                  <InputField label="Подзаголовок секции" value={localContent.features?.subtitle} onChange={(val) => updateNested('features.subtitle', val)} />
                 </SectionCard>
                 <div className="mb-6 ml-2">
                   <h4 className="text-lg font-black text-white mb-1 tracking-tight uppercase tracking-widest text-xs">Список преимуществ</h4>
                 </div>
-                {localContent.features.items.map((feat, idx) => (
+                {(localContent.features?.items || []).map((feat, idx) => (
                   <div key={idx} className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 relative group mb-4">
                     <button onClick={() => {
                       const newItems = [...localContent.features.items];
@@ -515,7 +515,7 @@ export default function CMS({ content, setContent, onLogout }) {
                         const newItems = localContent.features.items.map((item, i) => i === idx ? { ...item, icon: val } : item);
                         updateNested('features.items', newItems);
                       }} />
-                      <InputField label="Заголовок карточки" value={feat.title} onChange={(val) => {
+                      <InputField label="Заголовок карточки" value={feat?.title} onChange={(val) => {
                         const newItems = localContent.features.items.map((item, i) => i === idx ? { ...item, title: val } : item);
                         updateNested('features.items', newItems);
                       }} />
@@ -529,13 +529,13 @@ export default function CMS({ content, setContent, onLogout }) {
                     </div>
                   </div>
                 ))}
-                <button onClick={() => updateNested('features.items', [...localContent.features.items, { icon: 'Check', title: 'Новое преимущество', desc: 'Описание...' }])} className="w-full py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 hover:bg-blue-500/5 font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3"><Plus size={20}/> Добавить преимущество</button>
+                <button onClick={() => updateNested('features.items', [...(localContent.features?.items || []), { icon: 'Check', title: 'Новое преимущество', desc: 'Описание...' }])} className="w-full py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 hover:bg-blue-500/5 font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3"><Plus size={20}/> Добавить преимущество</button>
               </div>
             )}
 
             {activeTab === 'stats' && (
               <div className="grid grid-cols-2 gap-6">
-                {localContent.stats.map((stat, idx) => (
+                {(localContent.stats || []).map((stat, idx) => (
                   <div key={idx} className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 relative group">
                     <button onClick={() => {
                       const newS = [...localContent.stats];
@@ -563,7 +563,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   }} />
                   </div>
                 ))}
-                <button onClick={() => updateNested('stats', [...localContent.stats, { val: 0, prefix: '', suffix: '', label: 'Новый показатель' }])} className="col-span-2 py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 hover:bg-blue-500/5 font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3"><Plus size={20}/></button>
+                <button onClick={() => updateNested('stats', [...(localContent.stats || []), { val: 0, prefix: '', suffix: '', label: 'Новый показатель' }])} className="col-span-2 py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 hover:bg-blue-500/5 font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3"><Plus size={20}/></button>
               </div>
             )}
 
@@ -571,15 +571,15 @@ export default function CMS({ content, setContent, onLogout }) {
               <div className="space-y-6">
                 <SectionCard title="Заголовки секции" icon={<Zap size={18}/>}>
                   <div className="grid grid-cols-2 gap-8">
-                    <InputField label="Заголовок" value={localContent.process.title} onChange={(val) => updateNested('process.title', val)} />
-                    <InputField label="Акцентное слово" value={localContent.process.accent} onChange={(val) => updateNested('process.accent', val)} />
+                    <InputField label="Заголовок" value={localContent.process?.title} onChange={(val) => updateNested('process.title', val)} />
+                    <InputField label="Акцентное слово" value={localContent.process?.accent} onChange={(val) => updateNested('process.accent', val)} />
                   </div>
                   <div className="grid grid-cols-2 gap-8">
-                    <InputField label="Подзаголовок" value={localContent.process.subtitle} onChange={(val) => updateNested('process.subtitle', val)} />
-                    <InputField label="Префикс шага (Шаг, Step)" value={localContent.process.stepLabel} onChange={(val) => updateNested('process.stepLabel', val)} />
+                    <InputField label="Подзаголовок" value={localContent.process?.subtitle} onChange={(val) => updateNested('process.subtitle', val)} />
+                    <InputField label="Префикс шага (Шаг, Step)" value={localContent.process?.stepLabel} onChange={(val) => updateNested('process.stepLabel', val)} />
                   </div>
                 </SectionCard>
-                {localContent.process.steps.map((step, idx) => (
+                {(localContent.process?.steps || []).map((step, idx) => (
                   <div key={idx} className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 relative group mb-4">
                     <button onClick={() => {
                       const newS = [...localContent.process.steps];
@@ -591,7 +591,7 @@ export default function CMS({ content, setContent, onLogout }) {
                         const newS = localContent.process.steps.map((s, i) => i === idx ? { ...s, step: val } : s);
                         updateNested('process.steps', newS);
                       }} />
-                      <InputField label="Заголовок шага" value={step.title} onChange={(val) => {
+                      <InputField label="Заголовок шага" value={step?.title} onChange={(val) => {
                         const newS = localContent.process.steps.map((s, i) => i === idx ? { ...s, title: val } : s);
                         updateNested('process.steps', newS);
                       }} />
@@ -611,13 +611,13 @@ export default function CMS({ content, setContent, onLogout }) {
               <div className="space-y-6">
                 <SectionCard title="Заголовки секции" icon={<Phone size={18}/>}>
                   <div className="grid grid-cols-2 gap-8">
-                    <InputField label="Заголовок" value={localContent.services.title} onChange={(val) => updateNested('services.title', val)} />
-                    <InputField label="Акцентное слово" value={localContent.services.accent} onChange={(val) => updateNested('services.accent', val)} />
+                    <InputField label="Заголовок" value={localContent.services?.title} onChange={(val) => updateNested('services.title', val)} />
+                    <InputField label="Акцентное слово" value={localContent.services?.accent} onChange={(val) => updateNested('services.accent', val)} />
                   </div>
-                  <InputField label="Подзаголовок" value={localContent.services.subtitle} onChange={(val) => updateNested('services.subtitle', val)} />
-                  <InputField label="Текст кнопки (по умолчанию)" value={localContent.services.btnLabel} onChange={(val) => updateNested('services.btnLabel', val)} />
+                  <InputField label="Подзаголовок" value={localContent.services?.subtitle} onChange={(val) => updateNested('services.subtitle', val)} />
+                  <InputField label="Текст кнопки (по умолчанию)" value={localContent.services?.btnLabel} onChange={(val) => updateNested('services.btnLabel', val)} />
                 </SectionCard>
-                {localContent.services.list.map((srv, idx) => (
+                {(localContent.services?.list || []).map((srv, idx) => (
                   <div key={idx} className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 space-y-6 relative mb-6">
                     <button onClick={() => {
                       const newL = [...localContent.services.list];
@@ -625,7 +625,7 @@ export default function CMS({ content, setContent, onLogout }) {
                       updateNested('services.list', newL);
                     }} className="absolute top-6 right-6 p-2 text-slate-700 hover:text-red-500 transition-colors"><Trash2 size={18}/></button>
                     <div className="grid grid-cols-2 gap-8">
-                      <InputField label="Название услуги / Тарифа" value={srv.title} onChange={(val) => {
+                      <InputField label="Название услуги / Тарифа" value={srv?.title} onChange={(val) => {
                         const newL = localContent.services.list.map((s, i) => i === idx ? { ...s, title: val } : s);
                         updateNested('services.list', newL);
                       }} />
@@ -675,7 +675,7 @@ export default function CMS({ content, setContent, onLogout }) {
                     }} />
                     <div className="space-y-3">
                       <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Список особенностей / функций</label>
-                      {srv.features.map((f, fIdx) => (
+                      {(srv.features || []).map((f, fIdx) => (
                         <div key={fIdx} className="flex gap-3">
                           <input
                             value={f}
@@ -707,7 +707,7 @@ export default function CMS({ content, setContent, onLogout }) {
                       <button onClick={() => {
                         const newL = localContent.services.list.map((s, i) => {
                           if (i === idx) {
-                            return { ...s, features: [...s.features, ''] };
+                            return { ...s, features: [...(s.features || []), ''] };
                           }
                           return s;
                         });
@@ -718,7 +718,7 @@ export default function CMS({ content, setContent, onLogout }) {
                     </div>
                   </div>
                 ))}
-                <button onClick={() => updateNested('services.list', [...localContent.services.list, { title: 'Новая услуга', badge: 'Тариф', features: [], button: 'Заказать', popular: false }])} className="w-full py-6 border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 font-black text-[10px] uppercase tracking-[0.3em] transition-all rounded-3xl flex items-center justify-center gap-3"><Plus size={20}/> Добавить услугу</button>
+                <button onClick={() => updateNested('services.list', [...(localContent.services?.list || []), { title: 'Новая услуга', badge: 'Тариф', features: [], button: 'Заказать', popular: false }])} className="w-full py-6 border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 font-black text-[10px] uppercase tracking-[0.3em] transition-all rounded-3xl flex items-center justify-center gap-3"><Plus size={20}/> Добавить услугу</button>
               </div>
             )}
 
@@ -726,38 +726,45 @@ export default function CMS({ content, setContent, onLogout }) {
               <div className="space-y-6">
                 <SectionCard title="Зона покрытия и география" icon={<MapPin size={18}/>}>
                   <div className="grid grid-cols-2 gap-8">
-                    <InputField label="Основной заголовок" value={localContent.serviceArea.title} onChange={(val) => updateNested('serviceArea.title', val)} />
-                    <InputField label="Акцент заголовка" value={localContent.serviceArea.accent} onChange={(val) => updateNested('serviceArea.accent', val)} />
+                    <InputField label="Основной заголовок" value={localContent.serviceArea?.title} onChange={(val) => updateNested('serviceArea.title', val)} />
+                    <InputField label="Акцент заголовка" value={localContent.serviceArea?.accent} onChange={(val) => updateNested('serviceArea.accent', val)} />
                   </div>
-                  <InputField label="Подзаголовок" value={localContent.serviceArea.subtitle} onChange={(val) => updateNested('serviceArea.subtitle', val)} />
-                  <InputField label="Заметка о собственной сети" value={localContent.serviceArea.ownNetworkNote} onChange={(val) => updateNested('serviceArea.ownNetworkNote', val)} />
+                  <InputField label="Подзаголовок" value={localContent.serviceArea?.subtitle} onChange={(val) => updateNested('serviceArea.subtitle', val)} />
+                  <InputField label="Заметка о собственной сети" value={localContent.serviceArea?.ownNetworkNote} onChange={(val) => updateNested('serviceArea.ownNetworkNote', val)} />
 
                   <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50 mb-6">
                     <input
                       type="checkbox"
-                      checked={localContent.serviceArea.randomMapVariant}
+                      checked={localContent.serviceArea?.randomMapVariant}
                       onChange={(e) => updateNested('serviceArea.randomMapVariant', e.target.checked)}
                       className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600 focus:ring-blue-500/20"
                     />
                     <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Случайный стиль при загрузке страницы</label>
                   </div>
 
-                  {!localContent.serviceArea.randomMapVariant && (
+                  {!localContent.serviceArea?.randomMapVariant && (
                     <div className="mb-4 animate-slow-fade">
                       <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Вариант карты (Визуализация)</label>
                       <select
-                        value={localContent.serviceArea.mapVariant || 'default'}
+                        value={localContent.serviceArea?.mapVariant || 'default'}
                         onChange={(e) => updateNested('serviceArea.mapVariant', e.target.value)}
                         className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm font-medium"
                       >
                         <option value="default">Default (Abstract)</option>
-                        <option value="radar">Radar Scan</option>
-                        <option value="mesh">Mesh Grid</option>
-                        <option value="blueprint">Blueprint Design</option>
-                        <option value="isometric">Isometric Nodes</option>
-                        <option value="topology">Topology Curves</option>
-                        <option value="pulse">Network Pulse</option>
-                        <option value="heatmap">Heatmap</option>
+                        <option value="radar">Radar Scan (Dark)</option>
+                        <option value="radar-light">Radar Scan (Light)</option>
+                        <option value="mesh">Mesh Grid (Dark)</option>
+                        <option value="mesh-light">Mesh Grid (Light)</option>
+                        <option value="blueprint">Blueprint Design (Dark)</option>
+                        <option value="blueprint-light">Blueprint Design (Light)</option>
+                        <option value="isometric">Isometric Nodes (Dark)</option>
+                        <option value="isometric-light">Isometric Nodes (Light)</option>
+                        <option value="topology">Topology Curves (Dark)</option>
+                        <option value="topology-light">Topology Curves (Light)</option>
+                        <option value="pulse">Network Pulse (Dark)</option>
+                        <option value="pulse-light">Network Pulse (Light)</option>
+                        <option value="digital">Digital Data (Dark)</option>
+                        <option value="digital-light">Digital Data (Light)</option>
                       </select>
                     </div>
                   )}
@@ -768,7 +775,7 @@ export default function CMS({ content, setContent, onLogout }) {
                 </div>
 
                 <div className="grid grid-cols-2 gap-6">
-                  {localContent.serviceArea.locations.map((loc, idx) => (
+                  {(localContent.serviceArea?.locations || []).map((loc, idx) => (
                     <div key={idx} className="bg-slate-950/40 p-6 rounded-2xl border border-slate-800 relative group">
                       <button onClick={() => {
                         const newL = localContent.serviceArea.locations.filter((_, i) => i !== idx);
@@ -794,7 +801,7 @@ export default function CMS({ content, setContent, onLogout }) {
                       }} />
                     </div>
                   ))}
-                  <button onClick={() => updateNested('serviceArea.locations', [...localContent.serviceArea.locations, { name: 'Новый город', type: 'По графику', status: '24ч', freq: 'Ежедневно' }])} className="col-span-2 py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 hover:bg-blue-500/5 font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3"><Plus size={20}/> Добавить локацию</button>
+                  <button onClick={() => updateNested('serviceArea.locations', [...(localContent.serviceArea?.locations || []), { name: 'Новый город', type: 'По графику', status: '24ч', freq: 'Ежедневно' }])} className="col-span-2 py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 hover:bg-blue-500/5 font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3"><Plus size={20}/> Добавить локацию</button>
                 </div>
               </div>
             )}
@@ -803,20 +810,20 @@ export default function CMS({ content, setContent, onLogout }) {
               <div className="space-y-6">
                 <SectionCard title="Бесконвертное Почтовое Отправление (БПО)" icon={<FileText size={18}/>}>
                   <div className="grid grid-cols-2 gap-8">
-                    <InputField label="Заголовок" value={localContent.bpo.title} onChange={(val) => updateNested('bpo.title', val)} />
-                    <InputField label="Акцентное слово" value={localContent.bpo.accent} onChange={(val) => updateNested('bpo.accent', val)} />
+                    <InputField label="Заголовок" value={localContent.bpo?.title} onChange={(val) => updateNested('bpo.title', val)} />
+                    <InputField label="Акцентное слово" value={localContent.bpo?.accent} onChange={(val) => updateNested('bpo.accent', val)} />
                   </div>
-                  <InputField label="Подзаголовок" value={localContent.bpo.subtitle} onChange={(val) => updateNested('bpo.subtitle', val)} />
-                  <InputField label="Юридическая сноска" value={localContent.bpo.legalNote} onChange={(val) => updateNested('bpo.legalNote', val)} />
+                  <InputField label="Подзаголовок" value={localContent.bpo?.subtitle} onChange={(val) => updateNested('bpo.subtitle', val)} />
+                  <InputField label="Юридическая сноска" value={localContent.bpo?.legalNote} onChange={(val) => updateNested('bpo.legalNote', val)} />
                 </SectionCard>
 
                 <div className="mb-6 ml-2">
                   <h4 className="text-lg font-black text-white mb-1 tracking-tight uppercase tracking-widest text-xs">Технологические этапы</h4>
                 </div>
-                {localContent.bpo.steps.map((step, idx) => (
+                {(localContent.bpo?.steps || []).map((step, idx) => (
                   <div key={idx} className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 relative group mb-4">
                     <button onClick={() => {
-                      const newS = [...localContent.bpo.steps];
+                      const newS = [...(localContent.bpo?.steps || [])];
                       newS.splice(idx, 1);
                       updateNested('bpo.steps', newS);
                     }} className="absolute top-6 right-6 p-2 text-slate-700 hover:text-red-500 transition-colors"><Trash2 size={18}/></button>
@@ -828,7 +835,7 @@ export default function CMS({ content, setContent, onLogout }) {
                         }} />
                       </div>
                       <div className="col-span-3">
-                        <InputField label="Название этапа" value={step.title} onChange={(val) => {
+                        <InputField label="Название этапа" value={step?.title} onChange={(val) => {
                           const newS = localContent.bpo.steps.map((s, i) => i === idx ? { ...s, title: val } : s);
                           updateNested('bpo.steps', newS);
                         }} />
@@ -840,10 +847,10 @@ export default function CMS({ content, setContent, onLogout }) {
                     }} />
                   </div>
                 ))}
-                <button onClick={() => updateNested('bpo.steps', [...localContent.bpo.steps, { num: '0' + (localContent.bpo.steps.length + 1), title: 'Новый этап', desc: 'Описание этапа БПО...' }])} className="w-full py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 transition-all flex items-center justify-center gap-3 mb-8"><Plus size={20}/> Добавить этап БПО</button>
+                <button onClick={() => updateNested('bpo.steps', [...(localContent.bpo?.steps || []), { num: '0' + ((localContent.bpo?.steps?.length || 0) + 1), title: 'Новый этап', desc: 'Описание этапа БПО...' }])} className="w-full py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 transition-all flex items-center justify-center gap-3 mb-8"><Plus size={20}/> Добавить этап БПО</button>
 
                 <SectionCard title="Преимущества БПО" icon={<Check size={18}/>}>
-                  {localContent.bpo.advantages.map((adv, idx) => (
+                  {(localContent.bpo?.advantages || []).map((adv, idx) => (
                     <div key={idx} className="flex gap-3 mb-3">
                       <input
                         value={adv}
@@ -859,7 +866,7 @@ export default function CMS({ content, setContent, onLogout }) {
                       }} className="text-slate-700 hover:text-red-500 transition-colors"><Trash2 size={16}/></button>
                     </div>
                   ))}
-                  <button onClick={() => updateNested('bpo.advantages', [...localContent.bpo.advantages, 'Новое преимущество БПО']) } className="text-[9px] font-black text-blue-500 uppercase tracking-[0.2em] hover:text-blue-400 transition-colors pt-2 flex items-center gap-2"><Plus size={14} /> Добавить преимущество</button>
+                  <button onClick={() => updateNested('bpo.advantages', [...(localContent.bpo?.advantages || []), 'Новое преимущество БПО']) } className="text-[9px] font-black text-blue-500 uppercase tracking-[0.2em] hover:text-blue-400 transition-colors pt-2 flex items-center gap-2"><Plus size={14} /> Добавить преимущество</button>
                 </SectionCard>
               </div>
             )}
@@ -868,15 +875,15 @@ export default function CMS({ content, setContent, onLogout }) {
               <div className="space-y-6">
                 <SectionCard title="Новости и события" icon={<Send size={18}/>}>
                   <div className="grid grid-cols-2 gap-8">
-                    <InputField label="Заголовок" value={localContent.news.title} onChange={(val) => updateNested('news.title', val)} />
-                    <InputField label="Акцентное слово" value={localContent.news.accent} onChange={(val) => updateNested('news.accent', val)} />
+                    <InputField label="Заголовок" value={localContent.news?.title} onChange={(val) => updateNested('news.title', val)} />
+                    <InputField label="Акцентное слово" value={localContent.news?.accent} onChange={(val) => updateNested('news.accent', val)} />
                   </div>
                 </SectionCard>
 
-                {localContent.news.items.map((item, idx) => (
+                {(localContent.news?.items || []).map((item, idx) => (
                   <div key={idx} className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 relative group mb-4">
                     <button onClick={() => {
-                      const newI = [...localContent.news.items];
+                      const newI = [...(localContent.news?.items || [])];
                       newI.splice(idx, 1);
                       updateNested('news.items', newI);
                     }} className="absolute top-6 right-6 p-2 text-slate-700 hover:text-red-500 transition-colors"><Trash2 size={18}/></button>
@@ -890,7 +897,7 @@ export default function CMS({ content, setContent, onLogout }) {
                         updateNested('news.items', newI);
                       }} />
                     </div>
-                    <InputField label="Заголовок новости" value={item.title} onChange={(val) => {
+                    <InputField label="Заголовок новости" value={item?.title} onChange={(val) => {
                       const newI = localContent.news.items.map((it, i) => i === idx ? { ...it, title: val } : it);
                       updateNested('news.items', newI);
                     }} />
@@ -901,26 +908,26 @@ export default function CMS({ content, setContent, onLogout }) {
                     }} className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white text-sm font-medium h-24 resize-none" />
                   </div>
                 ))}
-                <button onClick={() => updateNested('news.items', [{ date: new Date().toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' }), tag: 'СОБЫТИЕ', title: 'Новое событие', desc: 'Описание события...' }, ...localContent.news.items])} className="w-full py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 transition-all flex items-center justify-center gap-3"><Plus size={20}/> Добавить новость</button>
+                <button onClick={() => updateNested('news.items', [{ date: new Date().toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' }), tag: 'СОБЫТИЕ', title: 'Новое событие', desc: 'Описание события...' }, ...(localContent.news?.items || [])])} className="w-full py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 transition-all flex items-center justify-center gap-3"><Plus size={20}/> Добавить новость</button>
               </div>
             )}
 
             {activeTab === 'contact' && (
               <SectionCard title="Секция контактов и форма" icon={<Mail size={18}/>}>
                 <div className="grid grid-cols-2 gap-8">
-                  <InputField label="Основной заголовок" value={localContent.contact.title} onChange={(val) => updateNested('contact.title', val)} />
-                  <InputField label="Акцент заголовка" value={localContent.contact.accent} onChange={(val) => updateNested('contact.accent', val)} />
+                  <InputField label="Основной заголовок" value={localContent.contact?.title} onChange={(val) => updateNested('contact.title', val)} />
+                  <InputField label="Акцент заголовка" value={localContent.contact?.accent} onChange={(val) => updateNested('contact.accent', val)} />
                 </div>
-                <InputField label="Подзаголовок описания" value={localContent.contact.subtitle} onChange={(val) => updateNested('contact.subtitle', val)} />
+                <InputField label="Подзаголовок описания" value={localContent.contact?.subtitle} onChange={(val) => updateNested('contact.subtitle', val)} />
                 <div className="mb-8 p-6 bg-slate-900/30 rounded-2xl border border-slate-800/50">
                   <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-6">Названия полей формы (Placeholders)</h4>
                   <div className="grid grid-cols-2 gap-x-8">
-                    <InputField label="Поле: Ваше имя" value={localContent.contact.formName} onChange={(val) => updateNested('contact.formName', val)} />
-                    <InputField label="Поле: Телефон" value={localContent.contact.formPhone} onChange={(val) => updateNested('contact.formPhone', val)} />
-                    <InputField label="Поле: Email" value={localContent.contact.formEmail} onChange={(val) => updateNested('contact.formEmail', val)} />
-                    <InputField label="Поле: Сообщение" value={localContent.contact.formMessage} onChange={(val) => updateNested('contact.formMessage', val)} />
+                    <InputField label="Поле: Ваше имя" value={localContent.contact?.formName} onChange={(val) => updateNested('contact.formName', val)} />
+                    <InputField label="Поле: Телефон" value={localContent.contact?.formPhone} onChange={(val) => updateNested('contact.formPhone', val)} />
+                    <InputField label="Поле: Email" value={localContent.contact?.formEmail} onChange={(val) => updateNested('contact.formEmail', val)} />
+                    <InputField label="Поле: Сообщение" value={localContent.contact?.formMessage} onChange={(val) => updateNested('contact.formMessage', val)} />
                   </div>
-                  <InputField label="Текст на кнопке отправки" value={localContent.contact.formButton} onChange={(val) => updateNested('contact.formButton', val)} />
+                  <InputField label="Текст на кнопке отправки" value={localContent.contact?.formButton} onChange={(val) => updateNested('contact.formButton', val)} />
                 </div>
               </SectionCard>
             )}
@@ -932,13 +939,13 @@ export default function CMS({ content, setContent, onLogout }) {
                     Этот список используется в подвале сайта и в блоке контактов. Вы можете добавлять новые сети, менять их иконки (Lucide) и порядок.
                   </p>
                   <div className="space-y-4">
-                    {localContent.socialsList?.map((social, idx) => (
+                    {(localContent.socialsList || []).map((social, idx) => (
                       <div key={idx} className="bg-slate-950/40 p-6 rounded-2xl border border-slate-800 relative group">
                         <div className="absolute top-4 right-4 flex gap-2">
                           <button onClick={() => moveItem('socialsList', idx, -1)} className="p-2 text-slate-700 hover:text-blue-500 disabled:opacity-10" disabled={idx === 0}><ArrowUp size={16}/></button>
-                          <button onClick={() => moveItem('socialsList', idx, 1)} className="p-2 text-slate-700 hover:text-blue-500 disabled:opacity-10" disabled={idx === localContent.socialsList.length - 1}><ArrowDown size={16}/></button>
+                          <button onClick={() => moveItem('socialsList', idx, 1)} className="p-2 text-slate-700 hover:text-blue-500 disabled:opacity-10" disabled={idx === (localContent.socialsList?.length || 0) - 1}><ArrowDown size={16}/></button>
                           <button onClick={() => {
-                            const newS = [...localContent.socialsList];
+                            const newS = [...(localContent.socialsList || [])];
                             newS.splice(idx, 1);
                             updateNested('socialsList', newS);
                           }} className="p-2 text-slate-700 hover:text-red-500 transition-colors"><Trash2 size={16}/></button>
@@ -989,11 +996,11 @@ export default function CMS({ content, setContent, onLogout }) {
                       <h4 className="text-lg font-black text-white mb-1 tracking-tight uppercase tracking-widest text-xs">Разделы политики</h4>
                     </div>
 
-                    {localContent.pages?.privacy?.sections?.map((sec, idx) => (
+                    {(localContent.pages?.privacy?.sections || []).map((sec, idx) => (
                       <div key={idx} className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 relative group mb-6">
                         <div className="absolute top-6 right-6 flex gap-2">
                           <button onClick={() => moveItem('pages.privacy.sections', idx, -1)} className="p-2 text-slate-700 hover:text-blue-500 disabled:opacity-10" disabled={idx === 0}><ArrowUp size={16}/></button>
-                          <button onClick={() => moveItem('pages.privacy.sections', idx, 1)} className="p-2 text-slate-700 hover:text-blue-500 disabled:opacity-10" disabled={idx === localContent.pages.privacy.sections.length - 1}><ArrowDown size={16}/></button>
+                          <button onClick={() => moveItem('pages.privacy.sections', idx, 1)} className="p-2 text-slate-700 hover:text-blue-500 disabled:opacity-10" disabled={idx === (localContent.pages?.privacy?.sections?.length || 0) - 1}><ArrowDown size={16}/></button>
                           <button onClick={() => {
                             const newS = localContent.pages.privacy.sections.filter((_, i) => i !== idx);
                             updateNested('pages.privacy.sections', newS);
@@ -1004,7 +1011,7 @@ export default function CMS({ content, setContent, onLogout }) {
                             const newS = localContent.pages.privacy.sections.map((s, i) => i === idx ? { ...s, id: val } : s);
                             updateNested('pages.privacy.sections', newS);
                           }} />
-                          <InputField label="Заголовок раздела" value={sec.title} onChange={(val) => {
+                          <InputField label="Заголовок раздела" value={sec?.title} onChange={(val) => {
                             const newS = localContent.pages.privacy.sections.map((s, i) => i === idx ? { ...s, title: val } : s);
                             updateNested('pages.privacy.sections', newS);
                           }} />
@@ -1047,14 +1054,14 @@ export default function CMS({ content, setContent, onLogout }) {
             {activeTab === 'modals' && (
               <div className="space-y-8">
                 <SectionCard title="Модальное окно: Успех" icon={<Check size={18}/>}>
-                  <InputField label="Главный заголовок" value={localContent.modals.success.title} onChange={(val) => updateNested('modals.success.title', val)} />
-                  <InputField label="Подзаголовок / Текст" value={localContent.modals.success.subtitle} onChange={(val) => updateNested('modals.success.subtitle', val)} />
-                  <InputField label="Текст кнопки закрытия" value={localContent.modals.success.button} onChange={(val) => updateNested('modals.success.button', val)} />
+                  <InputField label="Главный заголовок" value={localContent.modals?.success?.title} onChange={(val) => updateNested('modals.success.title', val)} />
+                  <InputField label="Подзаголовок / Текст" value={localContent.modals?.success?.subtitle} onChange={(val) => updateNested('modals.success.subtitle', val)} />
+                  <InputField label="Текст кнопки закрытия" value={localContent.modals?.success?.button} onChange={(val) => updateNested('modals.success.button', val)} />
                 </SectionCard>
                 <SectionCard title="Юридическая информация" icon={<FileText size={18}/>}>
                   <div className="grid grid-cols-2 gap-8">
-                    <InputField label="Метка статуса (напр. Свидетельство)" value={localContent.legal.statusLabel} onChange={(val) => updateNested('legal.statusLabel', val)} />
-                    <InputField label="Значение статуса" value={localContent.legal.statusValue} onChange={(val) => updateNested('legal.statusValue', val)} />
+                    <InputField label="Метка статуса (напр. Свидетельство)" value={localContent.legal?.statusLabel} onChange={(val) => updateNested('legal.statusLabel', val)} />
+                    <InputField label="Значение статуса" value={localContent.legal?.statusValue} onChange={(val) => updateNested('legal.statusValue', val)} />
                   </div>
                 </SectionCard>
               </div>
@@ -1063,10 +1070,10 @@ export default function CMS({ content, setContent, onLogout }) {
             {activeTab === 'footer' && (
               <div className="space-y-8">
                 <SectionCard title="Настройки подвала (Footer)" icon={<MapPin size={18}/>}>
-                  <InputField label="Краткое описание под логотипом" value={localContent.footer.description} onChange={(val) => updateNested('footer.description', val)} />
+                  <InputField label="Краткое описание под логотипом" value={localContent.footer?.description} onChange={(val) => updateNested('footer.description', val)} />
                   <div className="grid grid-cols-2 gap-8">
-                    <InputField label="Текст ссылки оферты" value={localContent.footer.offerLabel} onChange={(val) => updateNested('footer.offerLabel', val)} />
-                    <InputField label="URL документа оферты" value={localContent.footer.offerLink} onChange={(val) => updateNested('footer.offerLink', val)} />
+                    <InputField label="Текст ссылки оферты" value={localContent.footer?.offerLabel} onChange={(val) => updateNested('footer.offerLabel', val)} />
+                    <InputField label="URL документа оферты" value={localContent.footer?.offerLink} onChange={(val) => updateNested('footer.offerLink', val)} />
                   </div>
                 </SectionCard>
 
@@ -1088,7 +1095,7 @@ export default function CMS({ content, setContent, onLogout }) {
                       <div>
                         <InputField
                           label="Версия системы"
-                          value={localContent.legal.version}
+                          value={localContent.legal?.version}
                           onChange={(val) => updateNested('legal.version', val)}
                         />
                         <p className="text-[10px] text-slate-500 font-medium leading-relaxed -mt-2 ml-1">
@@ -1167,8 +1174,8 @@ export default function CMS({ content, setContent, onLogout }) {
                 </SectionCard>
 
                 <SectionCard title="Формы и уведомления" icon={<Send size={18}/>}>
-                  <InputField label="Тема письма (Subject)" value={localContent.integrations.formSubject} onChange={(val) => updateNested('integrations.formSubject', val)} />
-                  <InputField label="Formspree ID (для реальных заявок)" value={localContent.integrations.formspreeId} onChange={(val) => updateNested('integrations.formspreeId', val)} />
+                  <InputField label="Тема письма (Subject)" value={localContent.integrations?.formSubject} onChange={(val) => updateNested('integrations.formSubject', val)} />
+                  <InputField label="Formspree ID (для реальных заявок)" value={localContent.integrations?.formspreeId} onChange={(val) => updateNested('integrations.formspreeId', val)} />
                   <p className="text-[10px] text-slate-500 font-medium leading-relaxed -mt-2 ml-1 max-w-md">
                     Если поле ID пустое, форма работает в демо-режиме (имитация отправки).
                   </p>
@@ -1176,9 +1183,9 @@ export default function CMS({ content, setContent, onLogout }) {
 
                 <SectionCard title="Аналитика и пиксели" icon={<BarChart3 size={18}/>}>
                   <div className="space-y-4">
-                    <InputField label="Yandex Metrica ID" value={localContent.analytics.yandexMetrica} onChange={(val) => updateNested('analytics.yandexMetrica', val)} />
-                    <InputField label="Google Analytics ID (G-XXXXX)" value={localContent.analytics.googleAnalytics} onChange={(val) => updateNested('analytics.googleAnalytics', val)} />
-                    <InputField label="Facebook Pixel ID" value={localContent.analytics.pixelId} onChange={(val) => updateNested('analytics.pixelId', val)} />
+                    <InputField label="Yandex Metrica ID" value={localContent.analytics?.yandexMetrica} onChange={(val) => updateNested('analytics.yandexMetrica', val)} />
+                    <InputField label="Google Analytics ID (G-XXXXX)" value={localContent.analytics?.googleAnalytics} onChange={(val) => updateNested('analytics.googleAnalytics', val)} />
+                    <InputField label="Facebook Pixel ID" value={localContent.analytics?.pixelId} onChange={(val) => updateNested('analytics.pixelId', val)} />
                   </div>
                   <div className="mt-8 p-6 bg-blue-500/5 border border-blue-500/10 rounded-2xl">
                     <p className="text-[10px] text-blue-400 font-bold uppercase tracking-widest mb-2">Инструкция</p>
@@ -1189,18 +1196,18 @@ export default function CMS({ content, setContent, onLogout }) {
                 </SectionCard>
 
                 <SectionCard title="Настройки Cookie Banner" icon={<FileText size={18}/>}>
-                  <InputField label="Заголовок баннера" value={localContent.cookieBanner.title} onChange={(val) => updateNested('cookieBanner.title', val)} />
+                  <InputField label="Заголовок баннера" value={localContent.cookieBanner?.title} onChange={(val) => updateNested('cookieBanner.title', val)} />
                   <div className="mb-6">
                     <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Описание (Текст согласия)</label>
                     <textarea
-                      value={localContent.cookieBanner.description}
+                      value={localContent.cookieBanner?.description}
                       onChange={(e) => updateNested('cookieBanner.description', e.target.value)}
                       className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white text-sm font-medium h-24 resize-none"
                     />
                   </div>
                   <div className="grid grid-cols-2 gap-8">
-                    <InputField label="Кнопка: Принять все" value={localContent.cookieBanner.btnAll} onChange={(val) => updateNested('cookieBanner.btnAll', val)} />
-                    <InputField label="Кнопка: Только нужные" value={localContent.cookieBanner.btnEssential} onChange={(val) => updateNested('cookieBanner.btnEssential', val)} />
+                    <InputField label="Кнопка: Принять все" value={localContent.cookieBanner?.btnAll} onChange={(val) => updateNested('cookieBanner.btnAll', val)} />
+                    <InputField label="Кнопка: Только нужные" value={localContent.cookieBanner?.btnEssential} onChange={(val) => updateNested('cookieBanner.btnEssential', val)} />
                   </div>
                 </SectionCard>
               </div>
@@ -1210,14 +1217,14 @@ export default function CMS({ content, setContent, onLogout }) {
               <div className="space-y-6">
                 <SectionCard title="Заголовки секции FAQ" icon={<HelpCircle size={18}/>}>
                   <div className="grid grid-cols-2 gap-8">
-                    <InputField label="Заголовок" value={localContent.faq.title} onChange={(val) => updateNested('faq.title', val)} />
-                    <InputField label="Акцентное слово" value={localContent.faq.accent} onChange={(val) => updateNested('faq.accent', val)} />
+                    <InputField label="Заголовок" value={localContent.faq?.title} onChange={(val) => updateNested('faq.title', val)} />
+                    <InputField label="Акцентное слово" value={localContent.faq?.accent} onChange={(val) => updateNested('faq.accent', val)} />
                   </div>
                 </SectionCard>
-                {localContent.faq.items.map((item, idx) => (
+                {(localContent.faq?.items || []).map((item, idx) => (
                   <div key={idx} className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 relative group mb-4">
                     <button onClick={() => {
-                      const newI = [...localContent.faq.items];
+                      const newI = [...(localContent.faq?.items || [])];
                       newI.splice(idx, 1);
                       updateNested('faq.items', newI);
                     }} className="absolute top-6 right-6 p-2 text-slate-700 hover:text-red-500 transition-colors"><Trash2 size={18}/></button>
@@ -1232,7 +1239,7 @@ export default function CMS({ content, setContent, onLogout }) {
                     }} className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white text-sm font-medium h-32 resize-none" />
                   </div>
                 ))}
-                <button onClick={() => updateNested('faq.items', [...localContent.faq.items, { q: 'Новый вопрос?', a: 'Ответ на вопрос...' }])} className="w-full py-6 border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 font-black text-[10px] uppercase tracking-[0.3em] transition-all rounded-3xl flex items-center justify-center gap-3"><Plus size={20}/> Добавить вопрос</button>
+                <button onClick={() => updateNested('faq.items', [...(localContent.faq?.items || []), { q: 'Новый вопрос?', a: 'Ответ на вопрос...' }])} className="w-full py-6 border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 font-black text-[10px] uppercase tracking-[0.3em] transition-all rounded-3xl flex items-center justify-center gap-3"><Plus size={20}/> Добавить вопрос</button>
               </div>
             )}
           </div>

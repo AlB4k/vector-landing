@@ -164,34 +164,6 @@ const PulseVariant = ({ isLight }) => {
   );
 };
 
-const HeatmapVariant = ({ isLight }) => {
-  const spots = [
-    { x: 200, y: 200, r: 80, d: '0s' },
-    { x: 250, y: 120, r: 50, d: '1.5s' },
-    { x: 300, y: 180, r: 40, d: '3s' },
-    { x: 120, y: 280, r: 60, d: '0.8s' },
-    { x: 150, y: 150, r: 35, d: '2.2s' }
-  ];
-
-  const colorClass = isLight ? 'text-indigo-600' : 'text-orange-500';
-
-  return (
-    <g className={colorClass}>
-      {spots.map((spot, i) => (
-        <circle
-          key={i}
-          cx={spot.x}
-          cy={spot.y}
-          r={spot.r}
-          fill="url(#heatGradient)"
-          className="animate-breathe"
-          style={{ animationDelay: spot.d, opacity: isLight ? 0.7 : 1 }}
-        />
-      ))}
-    </g>
-  );
-};
-
 const IsometricVariant = ({ isLight }) => {
   const nodes = [
     { x: 200, y: 200, h: 60, delay: '0s' },
@@ -365,17 +337,32 @@ const BlueprintVariant = ({ isLight }) => (
 
 const MAP_VARIANTS = {
   radar: RadarVariant,
+  'radar-light': (props) => <RadarVariant {...props} isLight={true} />,
   mesh: MeshVariant,
+  'mesh-light': (props) => <MeshVariant {...props} isLight={true} />,
   topology: TopologyVariant,
+  'topology-light': (props) => <TopologyVariant {...props} isLight={true} />,
   pulse: PulseVariant,
-  heatmap: HeatmapVariant,
+  'pulse-light': (props) => <PulseVariant {...props} isLight={true} />,
   isometric: IsometricVariant,
+  'isometric-light': (props) => <IsometricVariant {...props} isLight={true} />,
   digital: DigitalVariant,
+  'digital-light': (props) => <DigitalVariant {...props} isLight={true} />,
   blueprint: BlueprintVariant,
+  'blueprint-light': (props) => <BlueprintVariant {...props} isLight={true} />,
   default: () => null
 };
 
-const MAP_OPTIONS = ['radar', 'mesh', 'blueprint', 'isometric', 'topology', 'pulse', 'heatmap', 'digital', 'default'];
+const MAP_OPTIONS = [
+  'radar', 'radar-light',
+  'mesh', 'mesh-light',
+  'blueprint', 'blueprint-light',
+  'isometric', 'isometric-light',
+  'topology', 'topology-light',
+  'pulse', 'pulse-light',
+  'digital', 'digital-light',
+  'default'
+];
 
 const BaseLayer = ({ variant, isLight }) => {
   const isIsometric = variant === 'isometric';
@@ -426,6 +413,7 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
 
   if (!data || !data.locations) return null;
 
+  const isForcedLight = mapVariant.endsWith('-light');
   const VariantComponent = MAP_VARIANTS[mapVariant] || MAP_VARIANTS.default;
 
   return (
@@ -434,11 +422,11 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
         {/* Лево: Интерактивная карта */}
         <div className="relative aspect-[4/3] sm:aspect-square max-w-lg mx-auto lg:mx-0 group w-full">
           <div className={`absolute inset-0 rounded-3xl md:rounded-[3rem] blur-2xl transition-all duration-1000 ${
-            isLight ? 'bg-blue-600/10 group-hover:bg-blue-600/20' : 'bg-blue-500/10 group-hover:bg-blue-500/20'
+            isLight || isForcedLight ? 'bg-blue-600/10 group-hover:bg-blue-600/20' : 'bg-blue-500/10 group-hover:bg-blue-500/20'
           }`}></div>
 
           <div className={`relative h-full w-full backdrop-blur-xl border rounded-3xl md:rounded-[3rem] p-4 md:p-8 flex items-center justify-center overflow-hidden transition-colors duration-500 ${
-            isLight
+            isLight || isForcedLight
               ? 'bg-white/40 border-slate-200 text-blue-600'
               : 'bg-slate-900/40 border-white/10 text-blue-500'
           }`}>
@@ -462,10 +450,6 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
                 <marker id="arrowhead-rev" markerWidth="10" markerHeight="7" refX="1" refY="3.5" orient="auto">
                   <polygon points="10 0, 0 3.5, 10 7" fill="currentColor" />
                 </marker>
-                <radialGradient id="heatGradient">
-                  <stop offset="0%" stopColor="currentColor" stopOpacity="0.8" />
-                  <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
-                </radialGradient>
                 <linearGradient id="radarGradient" x1="0%" y1="0%" x2="100%" y2="100%">
                   <stop offset="0%" stopColor="currentColor" stopOpacity="0.5" />
                   <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
@@ -516,14 +500,6 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
                 .animate-pulse-flow {
                   animation: pulse-flow 3s linear infinite;
                 }
-                @keyframes breathe {
-                  0%, 100% { transform: scale(1); opacity: 0.3; }
-                  50% { transform: scale(1.1); opacity: 0.6; }
-                }
-                .animate-breathe {
-                  animation: breathe 5s ease-in-out infinite;
-                  transform-origin: center;
-                }
                 @keyframes flicker {
                   0%, 100% { opacity: 0.2; }
                   50% { opacity: 1; }
@@ -534,10 +510,10 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
               `}</style>
 
               {/* Элементы карты, специфичные для варианта */}
-              <VariantComponent isLight={isLight} />
+              <VariantComponent isLight={isLight || isForcedLight} />
 
               {/* Общий базовый слой */}
-              <BaseLayer variant={mapVariant} isLight={isLight} />
+              <BaseLayer variant={mapVariant} isLight={isLight || isForcedLight} />
             </svg>
 
             {/* Промышленные информационные метки */}
