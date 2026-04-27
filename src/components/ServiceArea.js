@@ -3,7 +3,7 @@ import { MapPin, Shield, CheckCircle2 } from 'lucide-react';
 import { SectionWrapper } from './Shared';
 import { interpolate } from '../utils/content';
 
-// --- Modular SVG Variants ---
+// --- Модульные SVG-варианты ---
 
 const RadarVariant = () => (
   <g className="animate-pulse">
@@ -85,7 +85,7 @@ const DigitalVariant = () => (
   </g>
 );
 
-const BlueprintVariant = () => null; // Handled as base-layer override
+const BlueprintVariant = () => null; // Обрабатывается как переопределение базового слоя
 
 const MAP_VARIANTS = {
   radar: RadarVariant,
@@ -99,9 +99,11 @@ const MAP_VARIANTS = {
   default: () => null
 };
 
+const MAP_OPTIONS = ['radar', 'mesh', 'blueprint', 'isometric', 'topology', 'pulse', 'heatmap', 'digital', 'default'];
+
 const BaseLayer = ({ variant, isLight }) => (
   <>
-    {/* Abstract Voronezh Region Shape */}
+    {/* Абстрактная форма Воронежской области */}
     <path
       d="M100,150 L150,100 L250,120 L300,180 L280,280 L180,320 L120,280 Z"
       fill={variant === 'blueprint' ? 'url(#mapGradient)' : 'none'}
@@ -111,7 +113,7 @@ const BaseLayer = ({ variant, isLight }) => (
       className={`${isLight ? 'text-blue-600' : 'text-blue-500'} will-change-transform`}
     />
 
-    {/* Animated Connection Lines */}
+    {/* Анимированные линии связи */}
     <path
       d="M200,200 L250,120 M200,200 L300,180 M200,200 L120,280"
       stroke="currentColor"
@@ -119,11 +121,11 @@ const BaseLayer = ({ variant, isLight }) => (
       className={`${isLight ? 'text-blue-500/30' : 'text-blue-400/30'} animate-pulse will-change-opacity`}
     />
 
-    {/* Main City Point */}
+    {/* Главная точка города */}
     <circle cx="200" cy="200" r="6" className={`${isLight ? 'fill-blue-600' : 'fill-blue-500'} shadow-xl`} />
     <circle cx="200" cy="200" r="12" className={`fill-none animate-ping will-change-transform ${isLight ? 'stroke-blue-600/50' : 'stroke-blue-500/50'}`} />
 
-    {/* Regional Points */}
+    {/* Региональные точки */}
     <circle cx="250" cy="120" r="4" className={`fill-slate-500 transition-colors ${isLight ? 'group-hover:fill-blue-600' : 'group-hover:fill-blue-400'}`} />
     <circle cx="300" cy="180" r="4" className={`fill-slate-500 transition-colors ${isLight ? 'group-hover:fill-blue-600' : 'group-hover:fill-blue-400'}`} />
     <circle cx="120" cy="280" r="4" className={`fill-slate-500 transition-colors ${isLight ? 'group-hover:fill-blue-600' : 'group-hover:fill-blue-400'}`} />
@@ -131,15 +133,13 @@ const BaseLayer = ({ variant, isLight }) => (
 );
 
 export const ServiceArea = ({ data, fullContent, isLight }) => {
-  const variants = ['radar', 'mesh', 'blueprint', 'isometric', 'topology', 'pulse', 'heatmap', 'digital', 'default'];
-
   const mapVariant = React.useMemo(() => {
     if (!data) return 'default';
     if (data.randomMapVariant) {
-      return variants[Math.floor(Math.random() * variants.length)];
+      return MAP_OPTIONS[Math.floor(Math.random() * MAP_OPTIONS.length)];
     }
     return data.mapVariant || 'default';
-  }, [data, variants]);
+  }, [data]);
 
   if (!data || !data.locations) return null;
 
@@ -148,7 +148,7 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
   return (
     <SectionWrapper id="geography" className="max-w-7xl mx-auto" pattern="mesh">
       <div className="grid lg:grid-cols-2 gap-10 md:gap-16 items-center">
-        {/* Left: Interactive Map Visual */}
+        {/* Лево: Интерактивная карта */}
         <div className="relative aspect-[4/3] sm:aspect-square max-w-lg mx-auto lg:mx-0 group w-full">
           <div className={`absolute inset-0 rounded-3xl md:rounded-[3rem] blur-2xl transition-all duration-1000 ${
             isLight ? 'bg-blue-600/10 group-hover:bg-blue-600/20' : 'bg-blue-500/10 group-hover:bg-blue-500/20'
@@ -159,7 +159,7 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
               ? 'bg-white/40 border-slate-200 text-blue-600'
               : 'bg-slate-900/40 border-white/10 text-blue-500'
           }`}>
-            {/* Stylized SVG Map Overlay */}
+            {/* Стилизованное SVG-наложение карты */}
             <svg viewBox="0 0 400 400" className="w-full h-full opacity-40 group-hover:opacity-60 transition-opacity duration-1000">
               <defs>
                 <pattern id="dotPattern" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse">
@@ -176,14 +176,14 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
               </defs>
               <rect width="100%" height="100%" fill="url(#dotPattern)" />
 
-              {/* Variant-specific Map Elements */}
+              {/* Элементы карты, специфичные для варианта */}
               <VariantComponent isLight={isLight} />
 
-              {/* Shared Base Layer */}
+              {/* Общий базовый слой */}
               <BaseLayer variant={mapVariant} isLight={isLight} />
             </svg>
 
-            {/* Industrial Overlay Labels */}
+            {/* Промышленные информационные метки */}
             <div className={`absolute top-6 left-6 md:top-10 md:left-10 p-2.5 md:p-3 border rounded-lg text-[7px] md:text-[8px] font-mono uppercase tracking-widest leading-none ${
               isLight ? 'bg-white/80 border-slate-200 text-blue-600' : 'bg-black/40 border-white/10 text-blue-500'
             }`}>
@@ -205,7 +205,7 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
           </div>
         </div>
 
-        {/* Right: Textual Content */}
+        {/* Право: Текстовый контент */}
         <div className="space-y-8 md:space-y-10 px-2 md:px-0">
           <div>
             <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-md border mb-6 ${
