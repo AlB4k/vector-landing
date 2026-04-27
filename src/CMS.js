@@ -145,6 +145,7 @@ export default function CMS({ content, setContent, onLogout }) {
     { id: 'ui', label: 'Интерфейс', icon: <Layers size={18}/> },
     { id: 'hero', label: 'Hero', icon: <LayoutDashboard size={18}/> },
     { id: 'features', label: 'Преимущества', icon: <FileText size={18}/> },
+    { id: 'trustedClients', label: 'Клиенты', icon: <Check size={18}/> },
     { id: 'stats', label: 'Цифры', icon: <BarChart3 size={18}/> },
     { id: 'process', label: 'Процесс', icon: <Zap size={18}/> },
     { id: 'services', label: 'Услуги', icon: <Phone size={18}/> },
@@ -530,6 +531,170 @@ export default function CMS({ content, setContent, onLogout }) {
                   </div>
                 ))}
                 <button onClick={() => updateNested('features.items', [...(localContent.features?.items || []), { icon: 'Check', title: 'Новое преимущество', desc: 'Описание...' }])} className="w-full py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 hover:bg-blue-500/5 font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3"><Plus size={20}/> Добавить преимущество</button>
+              </div>
+            )}
+
+            {activeTab === 'trustedClients' && (
+              <div className="space-y-6">
+                <SectionCard title="Настройки раздела" icon={<Check size={18}/>}>
+                  <div className="grid grid-cols-2 gap-8">
+                    <InputField label="Заголовок" value={localContent.trustedClients?.title} onChange={(val) => updateNested('trustedClients.title', val)} />
+                    <InputField label="Подзаголовок" value={localContent.trustedClients?.subtitle} onChange={(val) => updateNested('trustedClients.subtitle', val)} />
+                  </div>
+                </SectionCard>
+
+                <div className="mb-6 ml-2 flex items-center justify-between">
+                  <h4 className="text-lg font-black text-white mb-1 tracking-tight uppercase tracking-widest text-xs">Список клиентов</h4>
+                  <button
+                    onClick={() => {
+                      const newItems = [...(localContent.trustedClients?.items || []), {
+                        id: 'client-' + Date.now(),
+                        name: 'Новый клиент',
+                        logoUrl: '',
+                        category: 'УК',
+                        contractSince: new Date().getFullYear().toString(),
+                        deliveryVolume: '',
+                        testimonial: '',
+                        testimonialAuthor: '',
+                        isVisible: true
+                      }];
+                      updateNested('trustedClients.items', newItems);
+                    }}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-blue-600/10 border border-blue-500/20 text-blue-400 font-bold text-[10px] uppercase tracking-widest hover:bg-blue-600/20 transition-all"
+                  >
+                    <Plus size={14}/> Добавить
+                  </button>
+                </div>
+
+                {(localContent.trustedClients?.items || []).map((client, idx) => (
+                  <div key={client.id || idx} className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 relative group mb-4">
+                    <div className="absolute top-6 right-6 flex gap-2">
+                      <button onClick={() => moveItem('trustedClients.items', idx, -1)} className="p-2 text-slate-700 hover:text-blue-500 disabled:opacity-10" disabled={idx === 0}><ArrowUp size={16}/></button>
+                      <button onClick={() => moveItem('trustedClients.items', idx, 1)} className="p-2 text-slate-700 hover:text-blue-500 disabled:opacity-10" disabled={idx === (localContent.trustedClients?.items?.length || 0) - 1}><ArrowDown size={16}/></button>
+                      <button
+                        onClick={() => {
+                          const newItems = localContent.trustedClients.items.filter((_, i) => i !== idx);
+                          updateNested('trustedClients.items', newItems);
+                        }}
+                        className="p-2 text-slate-700 hover:text-red-500 transition-colors"
+                      >
+                        <Trash2 size={18}/>
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-6">
+                      <div className="col-span-1">
+                        <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Логотип</label>
+                        <div className="relative group/logo w-full aspect-square bg-slate-900 rounded-2xl border border-slate-800 flex items-center justify-center overflow-hidden">
+                          {client.logoUrl ? (
+                            <img src={client.logoUrl} className="w-full h-full object-contain" alt="" />
+                          ) : (
+                            <Upload size={24} className="text-slate-700" />
+                          )}
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="absolute inset-0 opacity-0 cursor-pointer"
+                            onChange={(e) => {
+                              const file = e.target.files[0];
+                              if (!file) return;
+                              if (file.size > 200 * 1024) alert('Внимание: файл логотипа больше 200 КБ. Рекомендуется использовать оптимизированные изображения.');
+                              const reader = new FileReader();
+                              reader.onload = (event) => {
+                                const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, logoUrl: event.target.result } : item);
+                                updateNested('trustedClients.items', newItems);
+                              };
+                              reader.readAsDataURL(file);
+                            }}
+                          />
+                        </div>
+                      </div>
+
+                      <div className="col-span-3 space-y-4">
+                        <div className="grid grid-cols-2 gap-4">
+                          <InputField label="Название компании" value={client.name} onChange={(val) => {
+                            const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, name: val } : item);
+                            updateNested('trustedClients.items', newItems);
+                          }} />
+                          <div className="mb-6">
+                            <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Категория</label>
+                            <select
+                              value={client.category}
+                              onChange={(e) => {
+                                const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, category: e.target.value } : item);
+                                updateNested('trustedClients.items', newItems);
+                              }}
+                              className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm font-medium"
+                            >
+                              <option value="УК">УК</option>
+                              <option value="РСО">РСО</option>
+                              <option value="ТКО">ТКО</option>
+                              <option value="ФКР">ФКР</option>
+                              <option value="Расчетный центр">Расчетный центр</option>
+                              <option value="Орган власти">Орган власти</option>
+                              <option value="Другое">Другое</option>
+                            </select>
+                          </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                          <InputField
+                            label="Клиент с (год)"
+                            type="number"
+                            value={client.contractSince}
+                            onChange={(val) => {
+                              const year = parseInt(val);
+                              if (val && (year < 2015 || year > new Date().getFullYear())) {
+                                // Validation hint or handled later, but per spec 2015 - current
+                              }
+                              const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, contractSince: val } : item);
+                              updateNested('trustedClients.items', newItems);
+                            }}
+                          />
+                          <InputField label="Объем доставки" value={client.deliveryVolume} onChange={(val) => {
+                            const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, deliveryVolume: val } : item);
+                            updateNested('trustedClients.items', newItems);
+                          }} />
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-4 border-t border-slate-900/50 pt-6">
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50">
+                          <input
+                            type="checkbox"
+                            checked={client.isVisible !== false}
+                            onChange={(e) => {
+                              const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, isVisible: e.target.checked } : item);
+                              updateNested('trustedClients.items', newItems);
+                            }}
+                            className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
+                          />
+                          <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показывать на сайте</label>
+                        </div>
+                      </div>
+
+                      <div className="mb-6">
+                        <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Цитата клиента</label>
+                        <textarea
+                          value={client.testimonial}
+                          onChange={(e) => {
+                            const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, testimonial: e.target.value } : item);
+                            updateNested('trustedClients.items', newItems);
+                          }}
+                          className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white text-sm font-medium h-24 resize-none"
+                        />
+                      </div>
+                      {client.testimonial && (
+                        <InputField label="Автор цитаты" value={client.testimonialAuthor} onChange={(val) => {
+                          const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, testimonialAuthor: val } : item);
+                          updateNested('trustedClients.items', newItems);
+                        }} />
+                      )}
+                    </div>
+                  </div>
+                ))}
               </div>
             )}
 

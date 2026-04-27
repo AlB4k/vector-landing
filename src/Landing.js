@@ -24,6 +24,7 @@ import { Services } from './components/Services';
 import { FAQ } from './components/FAQ';
 import { News } from './components/News';
 import { ServiceArea } from './components/ServiceArea';
+import { TrustedClients } from './components/TrustedClients';
 import { Contact } from './components/Contact';
 import { BPO } from './components/BPO';
 import { CookieBanner } from './components/CookieBanner';
@@ -139,6 +140,7 @@ export default function Landing({ content, theme, setTheme }) {
     switch (section.id) {
       case 'hero': return <Hero key={section.id} data={content.hero} config={content.hotlineConfig} isLight={isLight} fullContent={content} />;
       case 'features': return <Features key={section.id} data={content.features} isLight={isLight} fullContent={content} />;
+      case 'trustedClients': return <TrustedClients key={section.id} data={content.trustedClients} isLight={isLight} fullContent={content} />;
       case 'stats': return <Stats key={section.id} data={content.stats} isLight={isLight} fullContent={content} />;
       case 'process': return <Process key={section.id} data={content.process} isLight={isLight} fullContent={content} />;
       case 'services': return <Services key={section.id} data={content.services} isLight={isLight} fullContent={content} />;

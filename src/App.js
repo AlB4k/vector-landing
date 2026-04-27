@@ -193,6 +193,11 @@ const INITIAL_CONTENT = {
       "label": "Преимущества"
     },
     {
+      "id": "trustedClients",
+      "enabled": true,
+      "label": "Нам доверяют"
+    },
+    {
       "id": "process",
       "enabled": true,
       "label": "Процесс работы"
@@ -666,6 +671,45 @@ const INITIAL_CONTENT = {
         "tag": "БЕЗОПАСНОСТЬ",
         "title": "Успешная аттестация Роскомнадзора",
         "desc": "Компания подтвердила статус оператора персональных данных, успешно пройдя плановую проверку соответствия техническим регламентам ФЗ-152."
+      }
+    ]
+  },
+  "trustedClients": {
+    "title": "Нам доверяют",
+    "subtitle": "Компании, которые выбрали надёжную доставку",
+    "items": [
+      {
+        "id": "client-1",
+        "name": "УК ЖилУют",
+        "logoUrl": "",
+        "category": "УК",
+        "contractSince": "2024",
+        "deliveryVolume": "50 000 квитанций/мес",
+        "testimonial": "Перешли на БПО и забыли о жалобах на открытые данные. Все четко и в срок.",
+        "testimonialAuthor": "Алексей С., тех. директор",
+        "isVisible": true
+      },
+      {
+        "id": "client-2",
+        "name": "РСО Энерго",
+        "logoUrl": "",
+        "category": "РСО",
+        "contractSince": "2024",
+        "deliveryVolume": "120 000 квитанций/мес",
+        "testimonial": "Профессиональный подход к логистике. Фотофиксация реально помогает контролировать курьеров.",
+        "testimonialAuthor": "Мария И., руководитель службы сбыта",
+        "isVisible": true
+      },
+      {
+        "id": "client-3",
+        "name": "ЕРЦ Центр",
+        "logoUrl": "",
+        "category": "Расчетный центр",
+        "contractSince": "2025",
+        "deliveryVolume": "300 000 квитанций/мес",
+        "testimonial": "Самый быстрый запуск тиража в моей практике. Верификация по ФИАС сэкономила нам бюджет.",
+        "testimonialAuthor": "Сергей В., зам. директора",
+        "isVisible": true
       }
     ]
   }
