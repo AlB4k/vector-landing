@@ -709,7 +709,9 @@ const INITIAL_CONTENT = {
   },
   "trustedClients": {
     "title": "Нам доверяют",
-    "subtitle": "Компании, которые выбрали надёжную доставку",
+    "subtitle": "Крупнейшие организации ЖКХ Воронежской области",
+    "subtitleVisible": true,
+    "showCount": false,
     "ctaText": "Присоединиться к нашим клиентам",
     "ctaVisible": true,
     "items": [
@@ -717,28 +719,28 @@ const INITIAL_CONTENT = {
         "id": "client-1",
         "name": "АО «ЕПСС ЖКХ ВО»",
         "logoUrl": "",
-        "url": "epss-vrn.ru",
+        "website": "https://epss-vrn.ru",
         "isVisible": true
       },
       {
         "id": "client-2",
         "name": "Фонд капитального ремонта МКД Воронежской области",
         "logoUrl": "",
-        "url": "fkr36.ru",
+        "website": "https://fkr36.ru",
         "isVisible": true
       },
       {
         "id": "client-3",
         "name": "Филиал АО «РИР Энерго» — «Воронежская генерация»",
         "logoUrl": "/logos/rir-energo.png",
-        "url": "voronezh.rirenergy.ru",
+        "website": "https://voronezh.rirenergy.ru",
         "isVisible": true
       },
       {
         "id": "client-4",
         "name": "ООО «РВК-Воронеж»",
         "logoUrl": "/logos/rvk.svg",
-        "url": "voronezh.rosvodokanal.ru",
+        "website": "https://voronezh.rosvodokanal.ru",
         "isVisible": true
       }
     ]

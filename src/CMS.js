@@ -558,6 +558,15 @@ export default function CMS({ content, setContent, onLogout }) {
                     <InputField label="Заголовок" value={localContent.trustedClients?.title} onChange={(val) => updateNested('trustedClients.title', val)} />
                     <InputField label="Подзаголовок" value={localContent.trustedClients?.subtitle} onChange={(val) => updateNested('trustedClients.subtitle', val)} />
                   </div>
+                  <div className="flex items-center gap-3 bg-slate-900/30 px-4 py-3 rounded-xl border border-slate-800/50 mb-6">
+                    <input
+                      type="checkbox"
+                      checked={localContent.trustedClients?.subtitleVisible}
+                      onChange={(e) => updateNested('trustedClients.subtitleVisible', e.target.checked)}
+                      className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
+                    />
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показать подзаголовок</label>
+                  </div>
                   <div className="mt-8 pt-8 border-t border-slate-900/50">
                     <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-6 flex items-center gap-2">
                       <Zap size={14} /> Кнопка призыва (CTA)
@@ -650,52 +659,13 @@ export default function CMS({ content, setContent, onLogout }) {
                             const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, name: val } : item);
                             updateNested('trustedClients.items', newItems);
                           }} />
-                          <div className="mb-6">
-                            <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Категория</label>
-                            <select
-                              value={client.category}
-                              onChange={(e) => {
-                                const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, category: e.target.value } : item);
-                                updateNested('trustedClients.items', newItems);
-                              }}
-                              className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm font-medium"
-                            >
-                              <option value="УК">УК</option>
-                              <option value="РСО">РСО</option>
-                              <option value="ТКО">ТКО</option>
-                              <option value="ФКР">ФКР</option>
-                              <option value="Расчетный центр">Расчетный центр</option>
-                              <option value="Орган власти">Орган власти</option>
-                              <option value="Другое">Другое</option>
-                            </select>
-                          </div>
-                        </div>
-
-                        <div className="grid grid-cols-2 gap-4">
-                          <InputField
-                            label="Клиент с (год)"
-                            type="number"
-                            value={client.contractSince}
-                            onChange={(val) => {
-                              const year = parseInt(val);
-                              if (val && (year < 2015 || year > new Date().getFullYear())) {
-                                // Validation hint or handled later, but per spec 2015 - current
-                              }
-                              const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, contractSince: val } : item);
-                              updateNested('trustedClients.items', newItems);
-                            }}
-                          />
-                          <InputField label="Объем доставки" value={client.deliveryVolume} onChange={(val) => {
-                            const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, deliveryVolume: val } : item);
+                          <InputField label="Сайт (https://...)" value={client.website} onChange={(val) => {
+                            const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, website: val } : item);
                             updateNested('trustedClients.items', newItems);
                           }} />
                         </div>
-                      </div>
-                    </div>
 
-                    <div className="space-y-4 border-t border-slate-900/50 pt-6">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50">
+                        <div className="flex items-center gap-3 bg-slate-900/30 px-4 py-3 rounded-xl border border-slate-800/50">
                           <input
                             type="checkbox"
                             checked={client.isVisible !== false}
@@ -708,24 +678,6 @@ export default function CMS({ content, setContent, onLogout }) {
                           <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показывать на сайте</label>
                         </div>
                       </div>
-
-                      <div className="mb-6">
-                        <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Цитата клиента</label>
-                        <textarea
-                          value={client.testimonial}
-                          onChange={(e) => {
-                            const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, testimonial: e.target.value } : item);
-                            updateNested('trustedClients.items', newItems);
-                          }}
-                          className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white text-sm font-medium h-24 resize-none"
-                        />
-                      </div>
-                      {client.testimonial && (
-                        <InputField label="Автор цитаты" value={client.testimonialAuthor} onChange={(val) => {
-                          const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, testimonialAuthor: val } : item);
-                          updateNested('trustedClients.items', newItems);
-                        }} />
-                      )}
                     </div>
                   </div>
                 ))}
