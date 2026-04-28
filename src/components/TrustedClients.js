@@ -20,6 +20,9 @@ const getInitials = (name) => {
 const ClientCard = ({ client, isLight, fullContent }) => {
   const initials = useMemo(() => getInitials(client.name), [client.name]);
 
+  const rawUrl = client.url || client.website || '';
+  const finalUrl = rawUrl ? (rawUrl.startsWith('http') ? rawUrl : `https://${rawUrl}`) : '#';
+
   const renderLogo = () => {
     if (client.logoUrl) {
       return (
@@ -40,7 +43,7 @@ const ClientCard = ({ client, isLight, fullContent }) => {
 
   return (
     <a
-      href={client.website || '#'}
+      href={finalUrl}
       target="_blank"
       rel="noopener noreferrer"
       className="flex flex-col p-6 rounded-2xl border border-[var(--border)] transition-all duration-300 hover:border-blue-500 group shrink-0"
@@ -57,10 +60,10 @@ const ClientCard = ({ client, isLight, fullContent }) => {
         <h4 className="font-bold text-sm text-[var(--text-main)] leading-snug line-clamp-3 overflow-hidden" style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>
           {interpolate(client.name, fullContent)}
         </h4>
-        {client.website && (
+        {rawUrl && (
           <div className="flex items-center justify-between mt-2">
             <span className="text-[10px] text-blue-500 font-bold uppercase tracking-widest truncate max-w-[80%]">
-              {client.website.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+              {rawUrl.replace(/^https?:\/\//, '').replace(/\/$/, '')}
             </span>
             <span className="text-blue-500 opacity-0 group-hover:opacity-100 transition-opacity ml-2">↗</span>
           </div>

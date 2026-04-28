@@ -91,7 +91,7 @@ export const SectionWrapper = ({ children, className = "", id, pattern = "" }) =
   const patternClass = pattern === 'grid' ? 'bg-grid-pattern' : pattern === 'dots' ? 'bg-dot-pattern' : '';
 
   return (
-    <section id={id} ref={ref} className={`reveal py-16 md:py-24 px-6 relative overflow-hidden ${className}`}>
+    <section id={id} ref={ref} className={`reveal py-10 md:py-14 px-6 relative overflow-hidden scroll-mt-24 md:scroll-mt-32 ${className}`}>
       {patternClass && <div className={`absolute inset-0 opacity-[0.05] md:opacity-[0.08] pointer-events-none ${patternClass}`}></div>}
       <div className="relative z-10">
         {children}

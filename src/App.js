@@ -183,19 +183,24 @@ const INITIAL_CONTENT = {
       "label": "Hero Секция"
     },
     {
-      "id": "stats",
-      "enabled": true,
-      "label": "Статистика"
-    },
-    {
       "id": "features",
       "enabled": true,
       "label": "Преимущества"
     },
     {
-      "id": "trustedClients",
+      "id": "stats",
       "enabled": true,
-      "label": "Нам доверяют"
+      "label": "Статистика"
+    },
+    {
+      "id": "services",
+      "enabled": true,
+      "label": "Услуги"
+    },
+    {
+      "id": "geography",
+      "enabled": true,
+      "label": "ОХВАТ"
     },
     {
       "id": "process",
@@ -208,17 +213,6 @@ const INITIAL_CONTENT = {
       "label": "Что такое БПО"
     },
     {
-      "id": "services",
-      "enabled": true,
-      "label": "Услуги"
-    },
-    {
-      "id": "geography", // id="geography", label="ОХВАТ" — не дублировать
-      // переключатель SVG-тем — внутри ServiceArea.js
-      "enabled": true,
-      "label": "ОХВАТ"
-    },
-    {
       "id": "faq",
       "enabled": true,
       "label": "FAQ"
@@ -227,6 +221,11 @@ const INITIAL_CONTENT = {
       "id": "news",
       "enabled": true,
       "label": "Новости"
+    },
+    {
+      "id": "trustedClients",
+      "enabled": true,
+      "label": "Нам доверяют"
     },
     {
       "id": "contact",
@@ -719,28 +718,28 @@ const INITIAL_CONTENT = {
         "id": "client-1",
         "name": "АО «ЕПСС ЖКХ ВО»",
         "logoUrl": "",
-        "website": "https://epss-vrn.ru",
+        "url": "https://epss-vrn.ru",
         "isVisible": true
       },
       {
         "id": "client-2",
         "name": "Фонд капитального ремонта МКД Воронежской области",
         "logoUrl": "",
-        "website": "https://fkr36.ru",
+        "url": "https://fkr36.ru",
         "isVisible": true
       },
       {
         "id": "client-3",
         "name": "Филиал АО «РИР Энерго» — «Воронежская генерация»",
         "logoUrl": "/logos/rir-energo.png",
-        "website": "https://voronezh.rirenergy.ru",
+        "url": "https://voronezh.rirenergy.ru",
         "isVisible": true
       },
       {
         "id": "client-4",
         "name": "ООО «РВК-Воронеж»",
         "logoUrl": "/logos/rvk.svg",
-        "website": "https://voronezh.rosvodokanal.ru",
+        "url": "https://voronezh.rosvodokanal.ru",
         "isVisible": true
       }
     ]

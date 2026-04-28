@@ -200,7 +200,9 @@ export default function Landing({ content, theme, setTheme }) {
       {/* Navbar */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 py-4 ${isScrolled ? 'backdrop-blur-md border-b border-[var(--border)]' : 'bg-transparent'}`} style={{ backgroundColor: isScrolled ? 'var(--nav-bg)' : 'transparent' }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <Logo light={isLight} customScale={content.logoScaleHeader} tagline={content.companyTagline} text={content.logoText} />
+          <div onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="cursor-pointer">
+            <Logo light={isLight} customScale={content.logoScaleHeader} tagline={content.companyTagline} text={content.logoText} />
+          </div>
           <div className="hidden md:flex items-center gap-8 text-[10px] font-bold uppercase tracking-[0.15em] opacity-80">
             {content.sections.filter(s => s.enabled && s.id !== 'hero').map((s) => (
               <a key={s.id} href={`#${s.id}`} className="hover:text-blue-500 transition-colors">{interpolate(s.label, content)}</a>
@@ -222,7 +224,9 @@ export default function Landing({ content, theme, setTheme }) {
       <div className={`fixed inset-0 z-[60] bg-[#08080f]/98 backdrop-blur-2xl transition-all duration-500 ${mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
         <div className="p-8 flex flex-col h-full">
           <div className="flex justify-between items-center mb-16">
-            <Logo light={false} variant="small" customScale={content.logoScaleFooter} tagline={interpolate(content.companyTagline, content)} text={interpolate(content.logoText, content)} />
+            <div onClick={() => { setMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="cursor-pointer">
+              <Logo light={false} variant="small" customScale={content.logoScaleFooter} tagline={interpolate(content.companyTagline, content)} text={interpolate(content.logoText, content)} />
+            </div>
             <button onClick={() => setMobileMenuOpen(false)} className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white border border-white/10 active:scale-90 transition-all" aria-label={interpolate(content.ui?.closeMenu, content) || "Закрыть мобильное меню"}>
               <X size={24} aria-hidden="true" />
             </button>
@@ -256,10 +260,12 @@ export default function Landing({ content, theme, setTheme }) {
       {content.sections.map(section => renderSection(section))}
 
       {/* Footer */}
-      <footer className="px-4 md:px-6 py-12 md:py-16 border-t border-[var(--border)]" style={{ backgroundColor: 'var(--bg-primary)' }}>
+      <footer className="px-4 md:px-6 py-8 md:py-10 border-t border-[var(--border)]" style={{ backgroundColor: 'var(--bg-primary)' }}>
         <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 md:gap-12 mb-12 md:mb-16">
           <div className="col-span-1 text-center md:text-left flex flex-col items-center md:items-start">
-            <Logo light={isLight} variant="small" customScale={content.logoScaleFooter} tagline={interpolate(content.companyTagline, content)} text={interpolate(content.logoText, content)} />
+            <div onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="cursor-pointer">
+              <Logo light={isLight} variant="small" customScale={content.logoScaleFooter} tagline={interpolate(content.companyTagline, content)} text={interpolate(content.logoText, content)} />
+            </div>
             <p className="mt-6 md:mt-8 text-[11px] md:text-xs leading-relaxed font-medium opacity-60 max-w-sm">{interpolate(content.footer.description, content)}</p>
             <div className="flex items-center gap-3 mt-8 md:mt-10">
               {content.ui?.showSocials && (

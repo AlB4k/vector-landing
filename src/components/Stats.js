@@ -10,7 +10,7 @@ export const Stats = ({ data, fullContent, isLight }) => {
   if (activeStats.length === 0) return null;
 
   return (
-    <SectionWrapper id="stats" className="py-12 md:py-16 border-y border-[var(--border)]" style={{ backgroundColor: 'var(--bg-secondary)' }} pattern="dots">
+    <SectionWrapper id="stats" className="py-8 md:py-10 border-y border-[var(--border)]" style={{ backgroundColor: 'var(--bg-secondary)' }} pattern="dots">
       <div className="max-w-7xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-x-4 md:gap-x-8 gap-y-10 md:gap-y-12">
         {activeStats.map((stat, i) => (
           <div key={i} className={`relative group pl-6 border-l transition-colors ${

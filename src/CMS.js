@@ -659,8 +659,8 @@ export default function CMS({ content, setContent, onLogout }) {
                             const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, name: val } : item);
                             updateNested('trustedClients.items', newItems);
                           }} />
-                          <InputField label="Сайт (https://...)" value={client.website} onChange={(val) => {
-                            const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, website: val } : item);
+                          <InputField label="Сайт (https://...)" value={client.url || client.website || ''} onChange={(val) => {
+                            const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, url: val } : item);
                             updateNested('trustedClients.items', newItems);
                           }} />
                         </div>
