@@ -58,6 +58,19 @@ export default function CMS({ content, setContent, onLogout }) {
   const [activeTab, setActiveTab] = useState('structure');
   const [legalSubTab, setLegalSubTab] = useState('privacy');
   const [localContent, setLocalContent] = useState(content);
+  const [deliveryConfig, setDeliveryConfig] = useState(() => {
+    try {
+      const stored = localStorage.getItem('vector_delivery_config');
+      return stored ? JSON.parse(stored) : (content.contact?.form?.delivery || {});
+    } catch {
+      return content.contact?.form?.delivery || {};
+    }
+  });
+
+  const saveDeliveryConfig = (newConfig) => {
+    setDeliveryConfig(newConfig);
+    localStorage.setItem('vector_delivery_config', JSON.stringify(newConfig));
+  };
 
   // Глубокое сравнение для активации кнопки сохранения
   const hasChanges = React.useMemo(() => {
@@ -1225,16 +1238,253 @@ export default function CMS({ content, setContent, onLogout }) {
                   <InputField label="Акцент заголовка" value={localContent.contact?.accent} onChange={(val) => updateNested('contact.accent', val)} />
                 </div>
                 <InputField label="Подзаголовок описания" value={localContent.contact?.subtitle} onChange={(val) => updateNested('contact.subtitle', val)} />
-                <div className="mb-8 p-6 bg-slate-900/30 rounded-2xl border border-slate-800/50">
-                  <h4 className="text-[10px] font-black text-slate-500 uppercase tracking-widest mb-6">Названия полей формы (Placeholders)</h4>
-                  <div className="grid grid-cols-2 gap-x-8">
-                    <InputField label="Поле: Ваше имя" value={localContent.contact?.formName} onChange={(val) => updateNested('contact.formName', val)} />
-                    <InputField label="Поле: Телефон" value={localContent.contact?.formPhone} onChange={(val) => updateNested('contact.formPhone', val)} />
-                    <InputField label="Поле: Email" value={localContent.contact?.formEmail} onChange={(val) => updateNested('contact.formEmail', val)} />
-                    <InputField label="Поле: Сообщение" value={localContent.contact?.formMessage} onChange={(val) => updateNested('contact.formMessage', val)} />
+                {/* Управление формой */}
+                <div className="mb-12 space-y-12">
+                  {/* 1. Поля формы */}
+                  <div className="p-8 bg-slate-900/30 rounded-[2rem] border border-slate-800/50">
+                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
+                      <Layers size={16} className="text-blue-500" /> Управление полями формы
+                    </h4>
+                    <div className="space-y-6">
+                      {(localContent.contact?.form?.fields || []).map((field, idx) => (
+                        <div key={field.id} className="p-6 bg-slate-950/40 rounded-2xl border border-slate-800/50 relative group">
+                          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <div className="md:col-span-2">
+                              <InputField
+                                label={`Заголовок поля (${field.id})`}
+                                value={field.label}
+                                onChange={(val) => {
+                                  const newFields = localContent.contact.form.fields.map((f, i) => i === idx ? { ...f, label: val } : f);
+                                  updateNested('contact.form.fields', newFields);
+                                }}
+                              />
+                              <InputField
+                                label="Placeholder (подсказка)"
+                                value={field.placeholder}
+                                onChange={(val) => {
+                                  const newFields = localContent.contact.form.fields.map((f, i) => i === idx ? { ...f, placeholder: val } : f);
+                                  updateNested('contact.form.fields', newFields);
+                                }}
+                              />
+                            </div>
+                            <div className="space-y-4">
+                              <div className="flex items-center justify-between p-4 bg-slate-900/50 rounded-xl border border-slate-800">
+                                <span className="text-[10px] font-bold text-slate-500 uppercase">Видимость</span>
+                                <input
+                                  type="checkbox"
+                                  checked={field.visible}
+                                  onChange={(e) => {
+                                    const newFields = localContent.contact.form.fields.map((f, i) => i === idx ? { ...f, visible: e.target.checked } : f);
+                                    updateNested('contact.form.fields', newFields);
+                                  }}
+                                  className="w-5 h-5 rounded bg-slate-800 border-slate-700 text-blue-600"
+                                />
+                              </div>
+                              <div className="flex items-center justify-between p-4 bg-slate-900/50 rounded-xl border border-slate-800">
+                                <span className="text-[10px] font-bold text-slate-500 uppercase">Обязательно</span>
+                                <input
+                                  type="checkbox"
+                                  checked={field.required}
+                                  onChange={(e) => {
+                                    const newFields = localContent.contact.form.fields.map((f, i) => i === idx ? { ...f, required: e.target.checked } : f);
+                                    updateNested('contact.form.fields', newFields);
+                                  }}
+                                  className="w-5 h-5 rounded bg-slate-800 border-slate-700 text-blue-600"
+                                />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
                   </div>
-                  <InputField label="Текст на кнопке отправки" value={localContent.contact?.formButton} onChange={(val) => updateNested('contact.formButton', val)} />
-                  <InputField label="Текст согласия (Consent)" value={localContent.contact?.formConsent} onChange={(val) => updateNested('contact.formConsent', val)} />
+
+                  {/* 2. Защита от спама */}
+                  <div className="p-8 bg-slate-900/30 rounded-[2rem] border border-slate-800/50">
+                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
+                      <Shield size={16} className="text-blue-500" /> Защита от спама
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                      <div className="flex items-center gap-4 p-5 bg-slate-900/50 rounded-2xl border border-slate-800">
+                        <div className="p-3 rounded-xl bg-blue-500/10 text-blue-400">
+                          <Sparkles size={20} />
+                        </div>
+                        <div className="flex-1">
+                          <p className="text-[10px] font-black text-white uppercase tracking-widest mb-1">Honeypot</p>
+                          <p className="text-[9px] text-slate-500 font-medium">Скрытое поле для ботов</p>
+                        </div>
+                        <input
+                          type="checkbox"
+                          checked={localContent.contact?.form?.spamProtection?.honeypot}
+                          onChange={(e) => updateNested('contact.form.spamProtection.honeypot', e.target.checked)}
+                          className="w-6 h-6 rounded-lg bg-slate-800 border-slate-700 text-blue-600"
+                        />
+                      </div>
+                      <div className="p-5 bg-slate-900/50 rounded-2xl border border-slate-800">
+                        <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-3 ml-1">Мин. время отправки (сек)</label>
+                        <div className="flex items-center gap-4">
+                          <input
+                            type="number"
+                            min="1"
+                            max="30"
+                            value={localContent.contact?.form?.spamProtection?.minSubmitTime}
+                            onChange={(e) => updateNested('contact.form.spamProtection.minSubmitTime', parseInt(e.target.value))}
+                            className="w-20 bg-slate-950 border border-slate-800 rounded-xl px-4 py-2 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm font-bold"
+                          />
+                          <p className="text-[9px] text-slate-500 font-medium leading-tight">Защита от мгновенного заполнения ботами</p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* 3. Доставка заявок */}
+                  <div className="p-8 bg-blue-500/5 rounded-[2rem] border border-blue-500/10 relative overflow-hidden">
+                    <div className="absolute top-0 right-0 p-8 opacity-5">
+                      <Send size={120} />
+                    </div>
+                    <h4 className="text-xs font-black text-blue-400 uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
+                      <Send size={16} /> Настройка доставки заявок
+                    </h4>
+
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+                      {['emailjs', 'smtp', 'telegram'].map(method => (
+                        <button
+                          key={method}
+                          onClick={() => {
+                            const newConfig = { ...deliveryConfig, method };
+                            saveDeliveryConfig(newConfig);
+                            updateNested('contact.form.delivery.method', method);
+                          }}
+                          className={`p-5 rounded-2xl border transition-all flex flex-col items-center gap-3 ${
+                            deliveryConfig.method === method
+                              ? 'bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/20'
+                              : 'bg-slate-900/50 border-slate-800 text-slate-500 hover:border-slate-700'
+                          }`}
+                        >
+                          <div className={`p-3 rounded-xl ${deliveryConfig.method === method ? 'bg-white/20' : 'bg-slate-800'}`}>
+                            {method === 'emailjs' && <Zap size={20} />}
+                            {method === 'smtp' && <Mail size={20} />}
+                            {method === 'telegram' && <Send size={20} />}
+                          </div>
+                          <span className="text-[10px] font-black uppercase tracking-widest">{method.toUpperCase()}</span>
+                        </button>
+                      ))}
+                    </div>
+
+                    <div className="space-y-8 animate-slow-fade">
+                      {deliveryConfig.method === 'emailjs' && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 bg-slate-900/40 p-6 rounded-2xl border border-slate-800/50">
+                          <InputField
+                            label="Email получателя (To Email)"
+                            value={deliveryConfig.emailjs?.recipientEmail}
+                            onChange={(val) => saveDeliveryConfig({ ...deliveryConfig, emailjs: { ...deliveryConfig.emailjs, recipientEmail: val } })}
+                          />
+                          <InputField
+                            label="Public Key (User ID)"
+                            value={deliveryConfig.emailjs?.publicKey}
+                            onChange={(val) => saveDeliveryConfig({ ...deliveryConfig, emailjs: { ...deliveryConfig.emailjs, publicKey: val } })}
+                          />
+                          <InputField
+                            label="Service ID"
+                            value={deliveryConfig.emailjs?.serviceId}
+                            onChange={(val) => saveDeliveryConfig({ ...deliveryConfig, emailjs: { ...deliveryConfig.emailjs, serviceId: val } })}
+                          />
+                          <InputField
+                            label="Template ID"
+                            value={deliveryConfig.emailjs?.templateId}
+                            onChange={(val) => saveDeliveryConfig({ ...deliveryConfig, emailjs: { ...deliveryConfig.emailjs, templateId: val } })}
+                          />
+                          <div className="md:col-span-2">
+                            <p className="text-[9px] text-slate-500 italic flex items-center gap-2">
+                              <HelpCircle size={12} /> Данные EmailJS сохраняются только в вашем браузере и не попадают в публичный репозиторий.
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {deliveryConfig.method === 'smtp' && (
+                        <div className="space-y-6 bg-slate-900/40 p-6 rounded-2xl border border-slate-800/50">
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+                            <InputField
+                              label="Email получателя"
+                              value={deliveryConfig.smtp?.recipientEmail}
+                              onChange={(val) => saveDeliveryConfig({ ...deliveryConfig, smtp: { ...deliveryConfig.smtp, recipientEmail: val } })}
+                            />
+                            <InputField
+                              label="Имя отправителя"
+                              value={deliveryConfig.smtp?.senderName}
+                              onChange={(val) => saveDeliveryConfig({ ...deliveryConfig, smtp: { ...deliveryConfig.smtp, senderName: val } })}
+                            />
+                          </div>
+                          <div className="p-4 bg-blue-500/10 rounded-xl border border-blue-500/20">
+                            <p className="text-[10px] text-blue-300 font-medium flex items-center gap-3">
+                              <Zap size={16} /> Для SMTP требуется настроенный бэкенд обработчик на /api/send-mail
+                            </p>
+                          </div>
+                        </div>
+                      )}
+
+                      {deliveryConfig.method === 'telegram' && (
+                        <div className="space-y-8 bg-slate-900/40 p-6 rounded-2xl border border-slate-800/50">
+                          <InputField
+                            type="password"
+                            label="Bot Token (от @BotFather)"
+                            value={deliveryConfig.telegram?.botToken}
+                            onChange={(val) => saveDeliveryConfig({ ...deliveryConfig, telegram: { ...deliveryConfig.telegram, botToken: val } })}
+                          />
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className={`p-5 rounded-2xl border cursor-pointer transition-all ${deliveryConfig.telegram?.target === 'chat' ? 'bg-blue-600/10 border-blue-500/50 text-white' : 'bg-slate-950/50 border-slate-800 text-slate-500'}`}
+                                 onClick={() => saveDeliveryConfig({ ...deliveryConfig, telegram: { ...deliveryConfig.telegram, target: 'chat' } })}>
+                              <p className="text-[10px] font-black uppercase mb-2">Личный чат / Группа</p>
+                              <InputField
+                                label="Chat ID"
+                                value={deliveryConfig.telegram?.chatId}
+                                onChange={(val) => saveDeliveryConfig({ ...deliveryConfig, telegram: { ...deliveryConfig.telegram, chatId: val } })}
+                              />
+                            </div>
+                            <div className={`p-5 rounded-2xl border cursor-pointer transition-all ${deliveryConfig.telegram?.target === 'channel' ? 'bg-blue-600/10 border-blue-500/50 text-white' : 'bg-slate-950/50 border-slate-800 text-slate-500'}`}
+                                 onClick={() => saveDeliveryConfig({ ...deliveryConfig, telegram: { ...deliveryConfig.telegram, target: 'channel' } })}>
+                              <p className="text-[10px] font-black uppercase mb-2">Канал (публичный/приватный)</p>
+                              <InputField
+                                label="Channel ID / @name"
+                                value={deliveryConfig.telegram?.channelId}
+                                onChange={(val) => saveDeliveryConfig({ ...deliveryConfig, telegram: { ...deliveryConfig.telegram, channelId: val } })}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* 4. Тексты и сообщения */}
+                  <div className="p-8 bg-slate-900/30 rounded-[2rem] border border-slate-800/50">
+                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
+                      <FileText size={16} className="text-blue-500" /> Тексты и уведомления
+                    </h4>
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8">
+                      <InputField label="Текст кнопки отправки" value={localContent.contact?.form?.submitText} onChange={(val) => updateNested('contact.form.submitText', val)} />
+                      <InputField label="Текст согласия (Consent)" value={localContent.contact?.form?.consentText} onChange={(val) => updateNested('contact.form.consentText', val)} />
+                      <div className="md:col-span-2 space-y-6">
+                        <div>
+                          <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Сообщение при успехе</label>
+                          <textarea
+                            value={localContent.contact?.form?.successMessage}
+                            onChange={(e) => updateNested('contact.form.successMessage', e.target.value)}
+                            className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-sm font-medium h-24 resize-none shadow-inner"
+                          />
+                        </div>
+                        <div>
+                          <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Сообщение при ошибке</label>
+                          <textarea
+                            value={localContent.contact?.form?.errorMessage}
+                            onChange={(e) => updateNested('contact.form.errorMessage', e.target.value)}
+                            className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-sm font-medium h-24 resize-none shadow-inner"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
 
                 <div className="mt-8 p-6 bg-blue-500/5 rounded-2xl border border-blue-500/10">

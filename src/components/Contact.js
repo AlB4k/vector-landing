@@ -1,81 +1,80 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, Send, MessageCircle, ArrowRight, Loader2, ShieldCheck } from 'lucide-react';
 import { SectionWrapper, DynamicIcon as LogoIcon } from './Shared';
 import { interpolate } from '../utils/content';
+import { sendForm } from '../utils/formSender';
 
 export const Contact = ({ data, fullContent, companyInfo, socials, integrations, handleFormSubmit, emailValue, setEmailValue, isLight }) => {
-  const [formData, setFormData] = useState({ name: '', phone: '', message: '' });
-  if (!data || !companyInfo) return null;
-  const [isSending, setIsSending] = useState(false);
+  const [fields, setFields] = useState({});
+  const [honeypot, setHoneypot] = useState('');
   const [consent, setConsent] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState('');
+  const [phoneError, setPhoneError] = useState('');
+  const formOpenTime = useRef(Date.now());
 
-  const validate = () => {
-    const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'ERROR: MISSING_NAME';
-    if (!emailValue.trim() && !formData.phone.trim()) {
-      newErrors.email = 'ERROR: CONTACT_REQUIRED';
-      newErrors.phone = 'ERROR: CONTACT_REQUIRED';
-    }
+  if (!data || !companyInfo) return null;
 
-    if (emailValue.trim() && !/\S+@\S+\.\S+/.test(emailValue)) {
-      newErrors.email = 'ERROR: INVALID_FORMAT';
-    }
-
-    const phoneDigits = formData.phone.replace(/\D/g, '');
-    if (formData.phone.trim() && phoneDigits.length < 10) {
-      newErrors.phone = 'ERROR: SEQ_TOO_SHORT';
-    }
-
-    if (!consent) newErrors.consent = 'ERROR: CONSENT_REQUIRED';
-
-    return newErrors;
-  };
-
-  const onSubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const newErrors = validate();
-    if (Object.keys(newErrors).length > 0) {
-      if (!consent) newErrors.consent = 'ACTION_REJECTED: ACCEPT_TERMS_TO_PROCEED';
-      setErrors(newErrors);
+    // 1. Honeypot
+    if (honeypot !== '') {
+      setSuccess(true);
+      setFields({});
+      setConsent(false);
       return;
     }
 
-    setErrors({});
-    setIsSending(true);
-
-    if (integrations?.formspreeId) {
-      try {
-        const response = await fetch(`https://formspree.io/f/${integrations.formspreeId}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            fullName: formData.name,
-            email: emailValue,
-            phone: formData.phone,
-            message: formData.message,
-            _subject: `${integrations.formSubject || 'Новая заявка от'} ${formData.name}`,
-            consent_granted: "Yes"
-          })
-        });
-        if (!response.ok) throw new Error('Failed to send');
-      } catch (err) {
-        // Бесшумная обработка ошибок для продакшена, пользователь получает обратную связь через errors.submit
-        setErrors({ submit: 'Ошибка отправки. Попробуйте позже.' });
-        setIsSending(false);
-        return;
-      }
-    } else {
-      await new Promise(resolve => setTimeout(resolve, 1500));
+    // 2. Временная метка
+    const elapsed = (Date.now() - formOpenTime.current) / 1000;
+    const minTime = data.form?.spamProtection?.minSubmitTime || 3;
+    if (elapsed < minTime) {
+      setSuccess(true);
+      setFields({});
+      setConsent(false);
+      return;
     }
 
-    handleFormSubmit(e);
-    setIsSending(false);
-    setFormData({ name: '', phone: '', message: '' });
-    setConsent(false);
+    // 3. Валидация телефона
+    const phoneDigits = (fields.phone || '').replace(/\D/g, '');
+    if (phoneDigits.length < 10) {
+      setPhoneError('Введите корректный номер телефона');
+      return;
+    }
+    setPhoneError('');
+
+    // 4. Отправка
+    setLoading(true);
+    setError('');
+
+    // Читаем delivery config из localStorage
+    let deliveryConfig;
+    try {
+      const stored = localStorage.getItem('vector_delivery_config');
+      deliveryConfig = stored
+        ? JSON.parse(stored)
+        : data.form?.delivery;
+    } catch {
+      deliveryConfig = data.form?.delivery;
+    }
+
+    const result = await sendForm(fields, deliveryConfig);
+
+    setLoading(false);
+    if (result.success) {
+      setSuccess(true);
+      setFields({});
+      setConsent(false);
+      formOpenTime.current = Date.now();
+    } else {
+      setError(data.form?.errorMessage || 'Ошибка отправки. Пожалуйста, попробуйте позже.');
+    }
   };
+
+  const formConfig = data.form || { fields: [] };
 
   return (
     <SectionWrapper id="contact" className="max-w-7xl mx-auto">
@@ -174,112 +173,129 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
         {/* Право: Форма */}
         <div className="relative">
           <div className={`absolute -inset-4 rounded-[2.5rem] blur-2xl ${isLight ? 'bg-blue-600/5' : 'bg-blue-500/5'}`}></div>
-          <form
-            onSubmit={onSubmit}
-            noValidate
-            className="relative backdrop-blur-xl border border-[var(--border)] p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl space-y-6 text-left transition-colors duration-500"
-            style={{ background: 'var(--card-bg)' }}
-          >
-            <div className="grid md:grid-cols-2 gap-6">
-              <div className="space-y-2 text-left">
-                <label htmlFor="fullName" className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{interpolate(data.formName, fullContent)}</label>
-                <input
-                  type="text"
-                  id="fullName"
-                  name="fullName"
-                  autoComplete="name"
-                  value={formData.name}
-                  onChange={(e) => {
-                    setFormData({ ...formData, name: e.target.value });
-                    if (errors.name) setErrors({ ...errors, name: null });
-                  }}
-                  className={`w-full bg-white/5 border ${errors.name ? 'border-red-500/50' : 'border-slate-300 dark:border-white/10'} rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium text-[var(--text-main)] shadow-sm`}
-                  placeholder={interpolate(data.formName, fullContent) || interpolate(fullContent.ui?.placeholderName, fullContent) || "Иван Иванов"}
-                />
-                {errors.name && <p className="text-[10px] text-red-400 font-bold ml-1 uppercase tracking-widest">{errors.name}</p>}
-              </div>
-              <div className="space-y-2 text-left">
-                <label htmlFor="phone" className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{interpolate(data.formPhone, fullContent)}</label>
-                <input
-                  type="tel"
-                  id="phone"
-                  name="phone"
-                  autoComplete="tel"
-                  value={formData.phone}
-                  onChange={(e) => {
-                    setFormData({ ...formData, phone: e.target.value });
-                    if (errors.phone) setErrors({ ...errors, phone: null });
-                  }}
-                  className={`w-full bg-white/5 border ${errors.phone ? 'border-red-500/50' : 'border-slate-300 dark:border-white/10'} rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium text-[var(--text-main)] shadow-sm`}
-                  placeholder={interpolate(data.formPhone, fullContent) || interpolate(fullContent.ui?.placeholderPhone, fullContent) || "+7 (999) 000-00-00"}
-                />
-                {errors.phone && <p className="text-[10px] text-red-400 font-bold ml-1 uppercase tracking-widest">{errors.phone}</p>}
-              </div>
-            </div>
-            <div className="space-y-2 text-left">
-              <label htmlFor="email" className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{interpolate(data.formEmail, fullContent)}</label>
-              <input
-                type="email"
-                id="email"
-                name="email"
-                autoComplete="email"
-                value={emailValue}
-                onChange={(e) => {
-                  setEmailValue(e.target.value);
-                  if (errors.email) setErrors({ ...errors, email: null });
-                }}
-                className={`w-full bg-white/5 border ${errors.email ? 'border-red-500/50' : 'border-slate-300 dark:border-white/10'} rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium text-[var(--text-main)] shadow-sm`}
-                placeholder={interpolate(data.formEmail, fullContent) || interpolate(fullContent.ui?.placeholderEmail, fullContent) || "example@mail.ru"}
-              />
-              {errors.email && <p className="text-[10px] text-red-400 font-bold ml-1 uppercase tracking-widest">{errors.email}</p>}
-            </div>
-            <div className="space-y-2 text-left">
-              <label htmlFor="message" className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">{interpolate(data.formMessage, fullContent)}</label>
-              <textarea
-                id="message"
-                name="message"
-                value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                className="w-full bg-white/5 border border-slate-300 dark:border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium h-32 resize-none text-[var(--text-main)] shadow-sm"
-                placeholder={interpolate(data.formMessage, fullContent) || interpolate(fullContent.ui?.placeholderMessage, fullContent) || "Расскажите о вашей задаче..."}
-              ></textarea>
-            </div>
 
-            <div className="space-y-4 pt-2">
-              <div className="flex items-start gap-3">
-                <input
-                  type="checkbox"
-                  id="consent"
-                  checked={consent}
-                  onChange={(e) => {
-                    setConsent(e.target.checked);
-                    if (errors.consent) setErrors({ ...errors, consent: null });
-                  }}
-                  className={`mt-1 w-5 h-5 rounded border-white/10 bg-white/5 text-blue-600 focus:ring-blue-500/50 transition-all cursor-pointer ${errors.consent ? 'ring-2 ring-red-500/50' : ''}`}
-                />
-                <label htmlFor="consent" className="text-[10px] leading-relaxed text-slate-500 dark:text-slate-400 font-medium cursor-pointer">
-                  {interpolate(data.formConsent, { ...fullContent, ...companyInfo, logoText: data.accent })}
-                </label>
-              </div>
-              {errors.consent && <p className="text-[9px] text-red-400 font-bold ml-8 uppercase tracking-widest">{errors.consent}</p>}
-            </div>
-
-            <button
-              type="submit"
-              disabled={isSending}
-              aria-label={interpolate(data.formButton, fullContent)}
-              className={`w-full py-5 rounded-2xl gradient-bg text-white font-black text-sm uppercase tracking-[0.2em] shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 mt-4 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed ${!consent ? 'brightness-75' : ''}`}
+          {success ? (
+            <div
+              className="relative backdrop-blur-xl border border-[var(--border)] p-12 rounded-[2.5rem] shadow-2xl text-center transition-all duration-500 flex flex-col items-center justify-center min-h-[400px]"
+              style={{ background: 'var(--card-bg)' }}
             >
-              {isSending ? <Loader2 className="animate-spin" size={20} aria-hidden="true" /> : <>{interpolate(data.formButton, fullContent)} <ArrowRight size={20} aria-hidden="true" /></>}
-            </button>
+              <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mb-8 text-green-500 border border-green-500/20">
+                <Send size={40} />
+              </div>
+              <h3 className="text-2xl font-black mb-4 text-[var(--text-main)]">Готово!</h3>
+              <p className="text-slate-500 font-medium leading-relaxed">
+                {formConfig.successMessage}
+              </p>
+              <button
+                onClick={() => setSuccess(false)}
+                className="mt-10 px-8 py-3 rounded-xl gradient-bg text-white font-bold text-xs uppercase tracking-widest hover:scale-105 transition-all"
+              >
+                Вернуться к форме
+              </button>
+            </div>
+          ) : (
+            <form
+              onSubmit={handleSubmit}
+              noValidate
+              className="relative backdrop-blur-xl border border-[var(--border)] p-6 md:p-12 rounded-[2rem] md:rounded-[2.5rem] shadow-2xl space-y-6 text-left transition-colors duration-500"
+              style={{ background: 'var(--card-bg)' }}
+            >
+              <div className="space-y-6">
+                {(formConfig.fields || [])
+                  .filter(f => f.visible)
+                  .map(field => (
+                    <div key={field.id} className="space-y-2 text-left">
+                      <label htmlFor={field.id} className="text-[10px] font-bold uppercase tracking-widest opacity-60 ml-1">
+                        {field.label} {field.required && <span className="text-blue-500">*</span>}
+                      </label>
+                      {field.type === 'textarea' ? (
+                        <textarea
+                          id={field.id}
+                          placeholder={field.placeholder}
+                          required={field.required}
+                          value={fields[field.id] || ''}
+                          onChange={e => setFields({ ...fields, [field.id]: e.target.value })}
+                          className="w-full bg-white/5 border border-slate-300 dark:border-white/10 rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium h-32 resize-none text-[var(--text-main)] shadow-sm"
+                        />
+                      ) : (
+                        <input
+                          type={field.type}
+                          id={field.id}
+                          placeholder={field.placeholder}
+                          required={field.required}
+                          value={fields[field.id] || ''}
+                          onChange={e => {
+                            setFields({ ...fields, [field.id]: e.target.value });
+                            if (field.id === 'phone') setPhoneError('');
+                          }}
+                          className={`w-full bg-white/5 border ${field.id === 'phone' && phoneError ? 'border-red-500/50' : 'border-slate-300 dark:border-white/10'} rounded-2xl px-6 py-4 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-base font-medium text-[var(--text-main)] shadow-sm`}
+                        />
+                      )}
+                      {field.id === 'phone' && phoneError && (
+                        <p className="text-[10px] text-red-400 font-bold ml-1 uppercase tracking-widest">{phoneError}</p>
+                      )}
+                    </div>
+                  ))
+                }
+              </div>
 
-            <p className="text-[9px] text-center opacity-50 font-bold uppercase tracking-widest text-[var(--text-muted)]">
-              {interpolate(fullContent.ui?.consentAgreement, fullContent) || 'С Политикой конфиденциальности ознакомлен(а)'}
-            </p>
-            {errors.submit && <p className="text-xs text-red-400 font-bold text-center mt-4">{errors.submit}</p>}
-          </form>
+              {/* Honeypot защита */}
+              <input
+                type="text"
+                name="website"
+                value={honeypot}
+                onChange={e => setHoneypot(e.target.value)}
+                style={{
+                  position: 'absolute',
+                  left: '-9999px',
+                  top: '-9999px',
+                  width: '1px',
+                  height: '1px',
+                  opacity: 0,
+                  tabIndex: -1
+                }}
+                aria-hidden="true"
+                autoComplete="off"
+              />
+
+              <div className="space-y-4 pt-2">
+                <div className="flex items-start gap-3">
+                  <input
+                    type="checkbox"
+                    id="consent"
+                    checked={consent}
+                    onChange={(e) => setConsent(e.target.checked)}
+                    required
+                    className="mt-1 w-5 h-5 rounded border-white/10 bg-white/5 text-blue-600 focus:ring-blue-500/50 transition-all cursor-pointer"
+                  />
+                  <label htmlFor="consent" className="text-[10px] leading-relaxed text-slate-500 dark:text-slate-400 font-medium cursor-pointer">
+                    {formConfig.consentText} *
+                  </label>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className={`w-full py-5 rounded-2xl gradient-bg text-white font-black text-sm uppercase tracking-[0.2em] shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 mt-4 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed ${!consent ? 'brightness-75' : ''}`}
+              >
+                {loading ? (
+                  <Loader2 className="animate-spin" size={20} />
+                ) : (
+                  <>{formConfig.submitText} <ArrowRight size={20} /></>
+                )}
+              </button>
+
+              {error && (
+                <p className="text-xs text-red-400 font-bold text-center mt-4">
+                  {error}
+                </p>
+              )}
+            </form>
+          )}
         </div>
       </div>
     </SectionWrapper>
   );
 };
+

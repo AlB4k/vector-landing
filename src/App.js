@@ -533,18 +533,85 @@ const INITIAL_CONTENT = {
     "title": "Связаться",
     "accent": "с нами",
     "subtitle": "Оставьте заявку — эксперт подготовит индивидуальное коммерческое предложение",
-    "formName": "Ваше имя",
-    "formEmail": "Электронная почта",
-    "formPhone": "Телефон ",
-    "formMessage": "Тираж (кол-во квитанций), район доставки, дата начала",
-    "formButton": "Отправить запрос",
-    "formConsent": "Я даю согласие на обработку персональных данных в соответствии с Политикой конфиденциальности {content.companyName} (ФЗ-152)",
     "infoTitle": "Контактная информация",
     "infoDesc": "Принимаем заявки в рабочие дни с 8:00 до 18:00. Ответ — в течение 1 часа.",
     "secondPhone": "",
     "secondPhoneVisible": false,
     "regionBadgeVisible": false,
-    "regionBadgeText": "📍 Воронеж — головной офис · 🗺 Приём заявок из всех регионов России"
+    "regionBadgeText": "📍 Воронеж — головной офис · 🗺 Приём заявок из всех регионов России",
+    "form": {
+      "fields": [
+        {
+          "id": "name",
+          "label": "Ваше имя",
+          "placeholder": "Иван Иванов",
+          "type": "text",
+          "required": true,
+          "visible": true
+        },
+        {
+          "id": "organization",
+          "label": "Название организации",
+          "placeholder": "ООО «Название»",
+          "type": "text",
+          "required": true,
+          "visible": true
+        },
+        {
+          "id": "phone",
+          "label": "Телефон",
+          "placeholder": "+7 (999) 000-00-00",
+          "type": "tel",
+          "required": true,
+          "visible": true
+        },
+        {
+          "id": "email",
+          "label": "Электронная почта",
+          "placeholder": "example@mail.ru",
+          "type": "email",
+          "required": false,
+          "visible": true
+        },
+        {
+          "id": "message",
+          "label": "Тираж (кол-во квитанций), район доставки, дата начала",
+          "placeholder": "Тираж, география, вопрос",
+          "type": "textarea",
+          "required": false,
+          "visible": true
+        }
+      ],
+      "submitText": "Отправить заявку",
+      "successMessage": "Заявка принята! Мы свяжемся с вами в ближайшее время.",
+      "errorMessage": "Ошибка отправки. Пожалуйста, попробуйте позже или позвоните нам.",
+      "consentText": "С Политикой конфиденциальности ознакомлен(а)",
+      "spamProtection": {
+        "honeypot": true,
+        "minSubmitTime": 3
+      },
+      "delivery": {
+        "method": "emailjs",
+        "emailjs": {
+          "serviceId": "",
+          "templateId": "",
+          "publicKey": "",
+          "recipientEmail": ""
+        },
+        "smtp": {
+          "enabled": false,
+          "recipientEmail": "",
+          "senderName": "Сайт ВЕКТОР"
+        },
+        "telegram": {
+          "enabled": false,
+          "botToken": "",
+          "chatId": "",
+          "channelId": "",
+          "target": "chat"
+        }
+      }
+    }
   },
   "modals": {
     "success": {
