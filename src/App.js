@@ -576,6 +576,17 @@ const INITIAL_CONTENT = {
     "formspreeId": "",
     "formSubject": "Новая заявка от"
   },
+  "backgroundAnimation": {
+    "enabled": true,
+    "variant": "envelopes",
+    "intensity": "subtle",
+    "variants": [
+      { "id": "envelopes", "label": "Конверты" },
+      { "id": "routes",    "label": "Маршруты" },
+      { "id": "documents", "label": "Документопоток" },
+      { "id": "network",   "label": "Сеть" }
+    ]
+  },
   "socials": [
     { "icon": "Send", "url": "https://t.me/vektor_logistics", "label": "Telegram" },
     { "icon": "MessageCircle", "url": "", "label": "WhatsApp" }

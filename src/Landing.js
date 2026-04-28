@@ -28,6 +28,7 @@ import { TrustedClients } from './components/TrustedClients';
 import { Contact } from './components/Contact';
 import { BPO } from './components/BPO';
 import { CookieBanner } from './components/CookieBanner';
+import BackgroundAnimation from './components/BackgroundAnimation';
 import { interpolate } from './utils/content';
 
 // --- STYLES ---
@@ -154,7 +155,8 @@ export default function Landing({ content, theme, setTheme }) {
   };
 
   return (
-    <div style={{ ...themeStyles, backgroundColor: 'var(--bg-primary)', color: 'var(--text-main)', minHeight: '100vh' }} className="font-sans transition-colors duration-500 overflow-x-hidden text-left">
+    <div style={{ ...themeStyles, backgroundColor: 'var(--bg-primary)', color: 'var(--text-main)', minHeight: '100vh' }} className="font-sans transition-colors duration-500 overflow-x-hidden text-left relative">
+      <BackgroundAnimation config={content.backgroundAnimation} isLight={isLight} />
       <style>{animations}</style>
 
       <CookieBanner data={content.cookieBanner} fullContent={content} />

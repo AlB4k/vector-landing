@@ -27,7 +27,8 @@ import {
   RefreshCcw,
   Copy,
   Check,
-  Shield
+  Shield,
+  Sparkles
 } from 'lucide-react';
 
 const InputField = ({ label, value, onChange, type = "text" }) => (
@@ -142,6 +143,7 @@ export default function CMS({ content, setContent, onLogout }) {
     { id: 'structure', label: 'Структура', icon: <Layers size={18}/> },
     { id: 'general', label: 'Основные', icon: <Settings size={18}/> },
     { id: 'theme', label: 'Оформление', icon: <Palette size={18}/> },
+    { id: 'animation', label: 'Анимация', icon: <Sparkles size={18}/> },
     { id: 'ui', label: 'Интерфейс', icon: <Layers size={18}/> },
     { id: 'hero', label: 'Hero', icon: <LayoutDashboard size={18}/> },
     { id: 'features', label: 'Преимущества', icon: <FileText size={18}/> },
@@ -370,6 +372,74 @@ export default function CMS({ content, setContent, onLogout }) {
                       <option value="light">Светлая тема</option>
                       <option value="system">Системная (как в ОС)</option>
                     </select>
+                  </div>
+                </SectionCard>
+              </div>
+            )}
+
+            {activeTab === 'animation' && (
+              <div className="space-y-8 animate-slow-fade">
+                <div className="mb-8 ml-2">
+                  <h4 className="text-xl font-black text-white mb-2 tracking-tight">Фоновые анимации</h4>
+                  <p className="text-xs text-slate-500 font-medium tracking-wide">Настройка визуальных эффектов на заднем плане сайта</p>
+                </div>
+
+                <SectionCard title="Фоновая анимация" icon={<Sparkles size={18}/>}>
+                  <div className="space-y-8">
+                    <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50">
+                      <input
+                        type="checkbox"
+                        checked={localContent.backgroundAnimation?.enabled}
+                        onChange={(e) => updateNested('backgroundAnimation.enabled', e.target.checked)}
+                        className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
+                      />
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Включить фоновую анимацию</label>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-8 pt-4 border-t border-slate-900/50">
+                      <div>
+                        <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Вариант анимации</label>
+                        <select
+                          value={localContent.backgroundAnimation?.variant || 'envelopes'}
+                          onChange={(e) => updateNested('backgroundAnimation.variant', e.target.value)}
+                          className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm font-medium"
+                        >
+                          <option value="random">🎲 Случайный</option>
+                          <option value="envelopes">✉️ Конверты</option>
+                          <option value="routes">🛣️ Маршруты</option>
+                          <option value="documents">📄 Документопоток</option>
+                          <option value="network">🌐 Сеть</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Интенсивность</label>
+                        <div className="flex p-1 bg-slate-900 rounded-xl border border-slate-800">
+                          <button
+                            onClick={() => updateNested('backgroundAnimation.intensity', 'subtle')}
+                            className={`flex-1 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${localContent.backgroundAnimation?.intensity === 'subtle' ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+                          >
+                            Едва заметная
+                          </button>
+                          <button
+                            onClick={() => updateNested('backgroundAnimation.intensity', 'moderate')}
+                            className={`flex-1 py-2.5 rounded-lg text-[10px] font-black uppercase tracking-widest transition-all ${localContent.backgroundAnimation?.intensity === 'moderate' ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+                          >
+                            Мягкая
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="p-6 rounded-2xl bg-blue-500/5 border border-blue-500/10">
+                      <div className="flex items-start gap-4">
+                        <HelpCircle size={18} className="text-blue-500 mt-0.5 shrink-0" />
+                        <div>
+                          <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-2">Предпросмотр</h4>
+                          <p className="text-xs text-slate-400 leading-relaxed">Изменения анимации применяются после сохранения настроек и обновления страницы.</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </SectionCard>
               </div>
