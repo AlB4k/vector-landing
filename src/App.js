@@ -1019,14 +1019,28 @@ export default function App() {
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.altKey && e.shiftKey && e.key === 'C') {
-        setView(isAuth ? 'cms' : 'login');
+        window.location.href = '/cms';
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isAuth]);
+  }, []);
 
-  if (view === 'login') return <LoginScreen onLogin={() => { setIsAuth(true); setView('cms'); }} companyName={content.companyName} />;
+  const handleLogin = () => {
+    setIsAuth(true);
+    localStorage.setItem('vector_auth', 'true');
+  };
+
+  const handleLogout = () => {
+    setIsAuth(false);
+    localStorage.removeItem('vector_auth');
+    window.location.href = '/';
+  };
+
+  useEffect(() => {
+    const auth = localStorage.getItem('vector_auth');
+    if (auth === 'true') setIsAuth(true);
+  }, []);
 
   return (
     <ErrorBoundary>
@@ -1034,11 +1048,12 @@ export default function App() {
         <ScrollToTop />
         <Suspense fallback={<PageLoader />}>
           <Routes>
-            <Route path="/" element={
-              view === 'cms' ? (
-                <CMS content={content} setContent={handleUpdateContent} onLogout={() => { setIsAuth(false); setView('landing'); }} />
+            <Route path="/" element={<Landing content={content} theme={theme} setTheme={setTheme} />} />
+            <Route path="/cms" element={
+              isAuth ? (
+                <CMS content={content} setContent={handleUpdateContent} onLogout={handleLogout} />
               ) : (
-                <Landing content={content} theme={theme} setTheme={setTheme} />
+                <LoginScreen onLogin={handleLogin} companyName={content.companyName} />
               )
             } />
             <Route path="/privacy" element={<PrivacyPolicy content={content} theme={theme} />} />
