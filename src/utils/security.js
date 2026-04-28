@@ -77,5 +77,10 @@ export const validateContent = (data) => {
     }
   }
 
+  // Принудительная миграция: удаляем устаревшие ID разделов
+  if (Array.isArray(sanitized.sections)) {
+    sanitized.sections = sanitized.sections.filter(s => s.id !== 'serviceArea');
+  }
+
   return sanitized;
 };

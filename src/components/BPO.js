@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Printer, Package, CheckCircle2 } from 'lucide-react';
+import { ShieldCheck, Printer, Package, CheckCircle2, ArrowRight } from 'lucide-react';
 import { SectionWrapper } from './Shared';
 import { interpolate } from '../utils/content';
 
@@ -45,6 +45,14 @@ export const BPO = ({ data, fullContent, isLight }) => {
               </div>
             ))}
           </div>
+
+          {data.ctaVisible && data.ctaText && (
+            <div className="pt-8">
+              <a href="#contact" className="inline-flex px-10 py-4 rounded-xl gradient-bg text-white font-bold text-sm shadow-xl hover:scale-105 transition-all items-center gap-3">
+                {interpolate(data.ctaText, fullContent)} <ArrowRight size={18} />
+              </a>
+            </div>
+          )}
         </div>
 
         {/* Правая сторона: Юридическая справка и преимущества */}

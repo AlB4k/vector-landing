@@ -1,5 +1,5 @@
 import React from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ArrowRight } from 'lucide-react';
 import { SectionWrapper } from './Shared';
 import { interpolate } from '../utils/content';
 
@@ -33,6 +33,14 @@ export const FAQ = ({ data, fullContent, isLight }) => {
         </details>
       ))}
     </div>
+
+    {data.ctaVisible && data.ctaText && (
+      <div className="mt-12 flex justify-center">
+        <a href="#contact" className="group flex items-center gap-2 text-sm font-bold text-blue-500 hover:text-blue-400 transition-colors uppercase tracking-widest">
+          {interpolate(data.ctaText, fullContent)} <ArrowRight size={16} className="group-hover:translate-x-1 transition-transform" />
+        </a>
+      </div>
+    )}
   </SectionWrapper>
   );
 };

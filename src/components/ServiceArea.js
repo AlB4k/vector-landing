@@ -1,5 +1,5 @@
-import React from 'react';
-import { MapPin, Shield, CheckCircle2 } from 'lucide-react';
+import React, { useState } from 'react';
+import { MapPin, Shield, CheckCircle2, Sun, Moon } from 'lucide-react';
 import { SectionWrapper } from './Shared';
 import { interpolate } from '../utils/content';
 
@@ -402,14 +402,35 @@ const BaseLayer = ({ variant, isLight }) => {
   );
 };
 
-export const ServiceArea = ({ data, fullContent, isLight }) => {
+export const ServiceArea = ({ data, fullContent, isLight: globalIsLight }) => {
+  const [localTheme, setLocalTheme] = useState(null); // null = use global, 'light', 'dark'
+  const isLight = localTheme === 'light' || (localTheme === null && globalIsLight);
+
   const mapVariant = React.useMemo(() => {
     if (!data) return 'default';
     if (data.randomMapVariant) {
-      return MAP_OPTIONS[Math.floor(Math.random() * MAP_OPTIONS.length)];
+      const variants = MAP_OPTIONS.filter(v => v !== 'default');
+      return variants[Math.floor(Math.random() * variants.length)];
     }
-    return data.mapVariant || 'default';
-  }, [data]);
+
+    // Если есть локальная тема, пытаемся найти соответствующий вариант
+    let base = data.mapVariant || 'default';
+    if (base.endsWith('-light')) base = base.replace('-light', '');
+
+    const result = isLight ? `${base}-light` : base;
+    return MAP_VARIANTS[result] ? result : base;
+  }, [data, isLight]);
+
+  const getStatusInfo = (status) => {
+    switch (status) {
+      case 'works': return { label: 'Работаем', color: 'bg-green-500/10 text-green-600 border-green-600/20', dot: 'bg-green-500' };
+      case 'inProgress': return { label: 'В проработке', color: 'bg-yellow-500/10 text-yellow-600 border-yellow-600/20', dot: 'bg-yellow-500' };
+      case 'setup': return { label: 'Настраиваем', color: 'bg-blue-500/10 text-blue-600 border-blue-600/20', dot: 'bg-blue-500' };
+      case 'partner': return { label: 'Ищем партнёров', color: 'bg-slate-500/10 text-slate-600 border-slate-600/20', dot: 'bg-slate-500' };
+      case 'soon': return { label: 'Скоро запуск', color: 'bg-purple-500/10 text-purple-600 border-purple-600/20', dot: 'bg-purple-500' };
+      default: return null;
+    }
+  };
 
   if (!data || !data.locations) return null;
 
@@ -421,6 +442,21 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
       <div className="grid lg:grid-cols-2 gap-10 md:gap-16 items-center">
         {/* Лево: Интерактивная карта */}
         <div className="relative aspect-[4/3] sm:aspect-square max-w-lg mx-auto lg:mx-0 group w-full">
+          {/* Локальный переключатель темы карты — перенесен из навигации (баг 28.04.2026) */}
+          <div className="absolute top-4 right-4 z-20 flex gap-2">
+            <button
+              onClick={() => setLocalTheme(isLight ? 'dark' : 'light')}
+              className={`p-2.5 rounded-xl border backdrop-blur-md transition-all shadow-xl ${
+                isLight
+                  ? 'bg-white/80 border-slate-200 text-blue-600 hover:bg-white'
+                  : 'bg-slate-900/80 border-white/10 text-blue-400 hover:bg-slate-800'
+              }`}
+              title="Переключить тему карты"
+            >
+              {isLight ? <Moon size={18} /> : <Sun size={18} />}
+            </button>
+          </div>
+
           <div className={`absolute inset-0 rounded-3xl md:rounded-[3rem] blur-2xl transition-all duration-1000 ${
             isLight || isForcedLight ? 'bg-blue-600/10 group-hover:bg-blue-600/20' : 'bg-blue-500/10 group-hover:bg-blue-500/20'
           }`}></div>
@@ -545,7 +581,7 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
               isLight ? 'border-blue-600/20 bg-blue-600/5' : 'border-blue-500/20 bg-blue-500/5'
             }`}>
               <MapPin size={14} className="text-blue-600 dark:text-blue-400" />
-              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-700 dark:text-blue-300">{interpolate(fullContent.ui?.geographyLabel, fullContent) || 'География работ'}</span>
+              <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-blue-700 dark:text-blue-300">{interpolate(fullContent.ui?.geographyLabel, fullContent) || 'Охват территорий'}</span>
             </div>
             <h2 className="text-3xl md:text-5xl font-black mb-4 md:mb-6 tracking-tight leading-tight text-[var(--text-main)]">
               {interpolate(data.title, fullContent)} <span className="text-blue-600 dark:text-blue-500">{interpolate(data.accent, fullContent)}</span>
@@ -556,40 +592,40 @@ export const ServiceArea = ({ data, fullContent, isLight }) => {
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-            {data.locations.map((loc, i) => (
-              <div key={i} className={`flex items-start gap-4 p-5 rounded-2xl border border-[var(--border)] transition-all group shadow-sm relative overflow-hidden ${
-                isLight ? 'hover:border-blue-600/30' : 'hover:border-blue-500/30'
-              }`} style={{ background: 'var(--card-bg)' }}>
-                <div className={`mt-1 p-2 rounded-lg group-hover:scale-110 transition-transform relative z-10 ${
-                  isLight ? 'bg-blue-600/10 text-blue-600' : 'bg-blue-500/10 text-blue-400'
-                }`}>
-                  <CheckCircle2 size={18} />
-                </div>
-                <div className="relative z-10 flex-1">
-                  <div className="flex justify-between items-start gap-2">
-                    <h4 className="font-bold text-sm mb-1 text-[var(--text-main)]">{interpolate(loc.name, fullContent)}</h4>
-                    {loc.status && (
-                      <span className={`text-[7px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border whitespace-nowrap ${
-                        isLight
-                          ? 'bg-blue-600/10 text-blue-600 border-blue-600/20'
-                          : 'bg-blue-500/10 text-blue-500 border-blue-500/20'
+            {(data.locations || []).filter(loc => loc.isVisible !== false).map((loc, i) => {
+              const statusInfo = getStatusInfo(loc.status);
+              return (
+                <div key={i} className={`flex items-start gap-4 p-5 rounded-2xl border border-[var(--border)] transition-all group shadow-sm relative overflow-hidden ${
+                  isLight ? 'hover:border-blue-600/30' : 'hover:border-blue-500/30'
+                }`} style={{ background: 'var(--card-bg)' }}>
+                  <div className={`mt-1 p-2 rounded-lg group-hover:scale-110 transition-transform relative z-10 ${
+                    isLight ? 'bg-blue-600/10 text-blue-600' : 'bg-blue-500/10 text-blue-400'
+                  }`}>
+                    <CheckCircle2 size={18} />
+                  </div>
+                  <div className="relative z-10 flex-1">
+                    <div className="flex justify-between items-start gap-2">
+                      <h4 className="font-bold text-sm mb-1 text-[var(--text-main)]">{interpolate(loc.name, fullContent)}</h4>
+                      {statusInfo && (
+                        <span className={`text-[7px] font-black uppercase tracking-widest px-2 py-0.5 rounded-full border whitespace-nowrap flex items-center gap-1 ${statusInfo.color}`}>
+                          <span className={`w-1 h-1 rounded-full ${statusInfo.dot}`}></span>
+                          {statusInfo.label}
+                        </span>
+                      )}
+                    </div>
+                    <p className="text-[10px] text-[var(--text-muted)] opacity-70 font-medium uppercase tracking-widest">{interpolate(loc.type, fullContent)}</p>
+                    {loc.freq && (
+                      <p className={`text-[9px] font-bold uppercase tracking-widest mt-2 flex items-center gap-1.5 ${
+                        isLight ? 'text-blue-600/70' : 'text-blue-500/60'
                       }`}>
-                        {interpolate(loc.status, fullContent)}
-                      </span>
+                        <span className={`w-1 h-1 rounded-full ${isLight ? 'bg-blue-600/50' : 'bg-blue-500/40'}`}></span>
+                        {interpolate(loc.freq, fullContent)}
+                      </p>
                     )}
                   </div>
-                  <p className="text-[10px] text-[var(--text-muted)] opacity-70 font-medium uppercase tracking-widest">{interpolate(loc.type, fullContent)}</p>
-                  {loc.freq && (
-                    <p className={`text-[9px] font-bold uppercase tracking-widest mt-2 flex items-center gap-1.5 ${
-                      isLight ? 'text-blue-600/70' : 'text-blue-500/60'
-                    }`}>
-                      <span className={`w-1 h-1 rounded-full ${isLight ? 'bg-blue-600/50' : 'bg-blue-500/40'}`}></span>
-                      {interpolate(loc.freq, fullContent)}
-                    </p>
-                  )}
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
 
           <div className={`p-6 md:p-8 rounded-3xl md:rounded-[2rem] bg-gradient-to-br from-blue-600/10 to-indigo-600/10 border relative overflow-hidden ${

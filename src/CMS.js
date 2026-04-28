@@ -150,7 +150,7 @@ export default function CMS({ content, setContent, onLogout }) {
     { id: 'process', label: 'Процесс', icon: <Zap size={18}/> },
     { id: 'services', label: 'Услуги', icon: <Phone size={18}/> },
     { id: 'bpo', label: 'О БПО', icon: <FileText size={18}/> },
-    { id: 'geography', label: 'География', icon: <MapPin size={18}/> },
+    { id: 'geography', label: 'Охват', icon: <MapPin size={18}/> },
     { id: 'news', label: 'Новости', icon: <Send size={18}/> },
     { id: 'faq', label: 'FAQ', icon: <HelpCircle size={18}/> },
     { id: 'contact', label: 'Контакты', icon: <Mail size={18}/> },
@@ -500,6 +500,23 @@ export default function CMS({ content, setContent, onLogout }) {
                     <InputField label="Акцентное слово" value={localContent.features?.accent} onChange={(val) => updateNested('features.accent', val)} />
                   </div>
                   <InputField label="Подзаголовок секции" value={localContent.features?.subtitle} onChange={(val) => updateNested('features.subtitle', val)} />
+                  <div className="mt-8 pt-8 border-t border-slate-900/50">
+                    <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                      <Zap size={14} /> Кнопка призыва (CTA)
+                    </h4>
+                    <div className="grid grid-cols-2 gap-x-8">
+                      <InputField label="Текст кнопки" value={localContent.features?.ctaText} onChange={(val) => updateNested('features.ctaText', val)} />
+                      <div className="flex items-center gap-3 bg-slate-900/30 px-4 py-3 rounded-xl border border-slate-800/50 mb-6">
+                        <input
+                          type="checkbox"
+                          checked={localContent.features?.ctaVisible}
+                          onChange={(e) => updateNested('features.ctaVisible', e.target.checked)}
+                          className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
+                        />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показать кнопку</label>
+                      </div>
+                    </div>
+                  </div>
                 </SectionCard>
                 <div className="mb-6 ml-2">
                   <h4 className="text-lg font-black text-white mb-1 tracking-tight uppercase tracking-widest text-xs">Список преимуществ</h4>
@@ -540,6 +557,23 @@ export default function CMS({ content, setContent, onLogout }) {
                   <div className="grid grid-cols-2 gap-8">
                     <InputField label="Заголовок" value={localContent.trustedClients?.title} onChange={(val) => updateNested('trustedClients.title', val)} />
                     <InputField label="Подзаголовок" value={localContent.trustedClients?.subtitle} onChange={(val) => updateNested('trustedClients.subtitle', val)} />
+                  </div>
+                  <div className="mt-8 pt-8 border-t border-slate-900/50">
+                    <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                      <Zap size={14} /> Кнопка призыва (CTA)
+                    </h4>
+                    <div className="grid grid-cols-2 gap-x-8">
+                      <InputField label="Текст кнопки" value={localContent.trustedClients?.ctaText} onChange={(val) => updateNested('trustedClients.ctaText', val)} />
+                      <div className="flex items-center gap-3 bg-slate-900/30 px-4 py-3 rounded-xl border border-slate-800/50 mb-6">
+                        <input
+                          type="checkbox"
+                          checked={localContent.trustedClients?.ctaVisible}
+                          onChange={(e) => updateNested('trustedClients.ctaVisible', e.target.checked)}
+                          className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
+                        />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показать кнопку</label>
+                      </div>
+                    </div>
                   </div>
                 </SectionCard>
 
@@ -743,6 +777,23 @@ export default function CMS({ content, setContent, onLogout }) {
                     <InputField label="Подзаголовок" value={localContent.process?.subtitle} onChange={(val) => updateNested('process.subtitle', val)} />
                     <InputField label="Префикс шага (Шаг, Step)" value={localContent.process?.stepLabel} onChange={(val) => updateNested('process.stepLabel', val)} />
                   </div>
+                  <div className="mt-8 pt-8 border-t border-slate-900/50">
+                    <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                      <Zap size={14} /> Кнопка призыва (CTA)
+                    </h4>
+                    <div className="grid grid-cols-2 gap-x-8">
+                      <InputField label="Текст кнопки" value={localContent.process?.ctaText} onChange={(val) => updateNested('process.ctaText', val)} />
+                      <div className="flex items-center gap-3 bg-slate-900/30 px-4 py-3 rounded-xl border border-slate-800/50 mb-6">
+                        <input
+                          type="checkbox"
+                          checked={localContent.process?.ctaVisible}
+                          onChange={(e) => updateNested('process.ctaVisible', e.target.checked)}
+                          className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
+                        />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показать кнопку</label>
+                      </div>
+                    </div>
+                  </div>
                 </SectionCard>
                 {(localContent.process?.steps || []).map((step, idx) => (
                   <div key={idx} className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 relative group mb-4">
@@ -781,6 +832,23 @@ export default function CMS({ content, setContent, onLogout }) {
                   </div>
                   <InputField label="Подзаголовок" value={localContent.services?.subtitle} onChange={(val) => updateNested('services.subtitle', val)} />
                   <InputField label="Текст кнопки (по умолчанию)" value={localContent.services?.btnLabel} onChange={(val) => updateNested('services.btnLabel', val)} />
+                  <div className="mt-8 pt-8 border-t border-slate-900/50">
+                    <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                      <Zap size={14} /> Кнопка призыва (CTA)
+                    </h4>
+                    <div className="grid grid-cols-2 gap-x-8">
+                      <InputField label="Текст кнопки" value={localContent.services?.ctaText} onChange={(val) => updateNested('services.ctaText', val)} />
+                      <div className="flex items-center gap-3 bg-slate-900/30 px-4 py-3 rounded-xl border border-slate-800/50 mb-6">
+                        <input
+                          type="checkbox"
+                          checked={localContent.services?.ctaVisible}
+                          onChange={(e) => updateNested('services.ctaVisible', e.target.checked)}
+                          className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
+                        />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показать кнопку</label>
+                      </div>
+                    </div>
+                  </div>
                 </SectionCard>
                 {(localContent.services?.list || []).map((srv, idx) => (
                   <div key={idx} className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 space-y-6 relative mb-6">
@@ -889,12 +957,19 @@ export default function CMS({ content, setContent, onLogout }) {
 
             {activeTab === 'geography' && (
               <div className="space-y-6">
-                <SectionCard title="Зона покрытия и география" icon={<MapPin size={18}/>}>
+                <SectionCard title="Зона покрытия и Охват" icon={<MapPin size={18}/>}>
                   <div className="grid grid-cols-2 gap-8">
                     <InputField label="Основной заголовок" value={localContent.serviceArea?.title} onChange={(val) => updateNested('serviceArea.title', val)} />
                     <InputField label="Акцент заголовка" value={localContent.serviceArea?.accent} onChange={(val) => updateNested('serviceArea.accent', val)} />
                   </div>
-                  <InputField label="Подзаголовок" value={localContent.serviceArea?.subtitle} onChange={(val) => updateNested('serviceArea.subtitle', val)} />
+                  <div className="mb-6">
+                    <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Подзаголовок раздела</label>
+                    <textarea
+                      value={localContent.serviceArea?.subtitle}
+                      onChange={(e) => updateNested('serviceArea.subtitle', e.target.value)}
+                      className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-sm font-medium h-24 resize-none shadow-inner"
+                    />
+                  </div>
                   <InputField label="Заметка о собственной сети" value={localContent.serviceArea?.ownNetworkNote} onChange={(val) => updateNested('serviceArea.ownNetworkNote', val)} />
 
                   <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50 mb-6">
@@ -951,22 +1026,49 @@ export default function CMS({ content, setContent, onLogout }) {
                         updateNested('serviceArea.locations', newL);
                       }} />
                       <div className="grid grid-cols-2 gap-4">
-                        <InputField label="Статус (напр. 24ч)" value={loc.status} onChange={(val) => {
-                          const newL = localContent.serviceArea.locations.map((l, i) => i === idx ? { ...l, status: val } : l);
+                        <InputField label="Тип покрытия / Текст" value={loc.type} onChange={(val) => {
+                          const newL = localContent.serviceArea.locations.map((l, i) => i === idx ? { ...l, type: val } : l);
                           updateNested('serviceArea.locations', newL);
                         }} />
+                        <div className="mb-6">
+                          <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Статус</label>
+                          <select
+                            value={loc.status || 'works'}
+                            onChange={(e) => {
+                              const newL = localContent.serviceArea.locations.map((l, i) => i === idx ? { ...l, status: e.target.value } : l);
+                              updateNested('serviceArea.locations', newL);
+                            }}
+                            className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm font-medium"
+                          >
+                            <option value="works">Работаем</option>
+                            <option value="inProgress">В проработке</option>
+                            <option value="setup">Настраиваем</option>
+                            <option value="partner">Ищем партнёров</option>
+                            <option value="soon">Скоро запуск</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-2 gap-4">
                         <InputField label="Частота (напр. Ежедневно)" value={loc.freq} onChange={(val) => {
                           const newL = localContent.serviceArea.locations.map((l, i) => i === idx ? { ...l, freq: val } : l);
                           updateNested('serviceArea.locations', newL);
                         }} />
+                        <div className="flex items-center gap-3 bg-slate-900/30 px-4 py-3 rounded-xl border border-slate-800/50 mb-6">
+                          <input
+                            type="checkbox"
+                            checked={loc.isVisible !== false}
+                            onChange={(e) => {
+                              const newL = localContent.serviceArea.locations.map((l, i) => i === idx ? { ...l, isVisible: e.target.checked } : l);
+                              updateNested('serviceArea.locations', newL);
+                            }}
+                            className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
+                          />
+                          <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Видимость</label>
+                        </div>
                       </div>
-                      <InputField label="Тип покрытия (напр. Областной центр)" value={loc.type} onChange={(val) => {
-                        const newL = localContent.serviceArea.locations.map((l, i) => i === idx ? { ...l, type: val } : l);
-                        updateNested('serviceArea.locations', newL);
-                      }} />
                     </div>
                   ))}
-                  <button onClick={() => updateNested('serviceArea.locations', [...(localContent.serviceArea?.locations || []), { name: 'Новый город', type: 'По графику', status: '24ч', freq: 'Ежедневно' }])} className="col-span-2 py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 hover:bg-blue-500/5 font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3"><Plus size={20}/> Добавить локацию</button>
+                  <button onClick={() => updateNested('serviceArea.locations', [...(localContent.serviceArea?.locations || []), { name: 'Новая локация', type: 'Описание', status: 'works', freq: 'Ежедневно', isVisible: true }])} className="col-span-2 py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 hover:bg-blue-500/5 font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3"><Plus size={20}/> Добавить локацию</button>
                 </div>
               </div>
             )}
@@ -980,6 +1082,23 @@ export default function CMS({ content, setContent, onLogout }) {
                   </div>
                   <InputField label="Подзаголовок" value={localContent.bpo?.subtitle} onChange={(val) => updateNested('bpo.subtitle', val)} />
                   <InputField label="Юридическая сноска" value={localContent.bpo?.legalNote} onChange={(val) => updateNested('bpo.legalNote', val)} />
+                  <div className="mt-8 pt-8 border-t border-slate-900/50">
+                    <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                      <Zap size={14} /> Кнопка призыва (CTA)
+                    </h4>
+                    <div className="grid grid-cols-2 gap-x-8">
+                      <InputField label="Текст кнопки" value={localContent.bpo?.ctaText} onChange={(val) => updateNested('bpo.ctaText', val)} />
+                      <div className="flex items-center gap-3 bg-slate-900/30 px-4 py-3 rounded-xl border border-slate-800/50 mb-6">
+                        <input
+                          type="checkbox"
+                          checked={localContent.bpo?.ctaVisible}
+                          onChange={(e) => updateNested('bpo.ctaVisible', e.target.checked)}
+                          className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
+                        />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показать кнопку</label>
+                      </div>
+                    </div>
+                  </div>
                 </SectionCard>
 
                 <div className="mb-6 ml-2">
@@ -1094,6 +1213,41 @@ export default function CMS({ content, setContent, onLogout }) {
                   </div>
                   <InputField label="Текст на кнопке отправки" value={localContent.contact?.formButton} onChange={(val) => updateNested('contact.formButton', val)} />
                   <InputField label="Текст согласия (Consent)" value={localContent.contact?.formConsent} onChange={(val) => updateNested('contact.formConsent', val)} />
+                </div>
+
+                <div className="mt-8 p-6 bg-blue-500/5 rounded-2xl border border-blue-500/10">
+                  <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                    <MapPin size={14} /> Региональные настройки
+                  </h4>
+                  <div className="grid grid-cols-2 gap-x-8">
+                    <InputField label="Второй номер телефона" value={localContent.contact?.secondPhone} onChange={(val) => updateNested('contact.secondPhone', val)} />
+                    <div className="flex items-center gap-3 bg-slate-900/30 px-4 py-3 rounded-xl border border-slate-800/50 mb-6">
+                      <input
+                        type="checkbox"
+                        checked={localContent.contact?.secondPhoneVisible}
+                        onChange={(e) => updateNested('contact.secondPhoneVisible', e.target.checked)}
+                        className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
+                      />
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показать второй номер</label>
+                    </div>
+                  </div>
+                  <div className="mb-6">
+                    <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Текст региональной плашки</label>
+                    <textarea
+                      value={localContent.contact?.regionBadgeText}
+                      onChange={(e) => updateNested('contact.regionBadgeText', e.target.value)}
+                      className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-sm font-medium h-20 resize-none shadow-inner"
+                    />
+                  </div>
+                  <div className="flex items-center gap-3 bg-slate-900/30 px-4 py-3 rounded-xl border border-slate-800/50 mb-6">
+                    <input
+                      type="checkbox"
+                      checked={localContent.contact?.regionBadgeVisible}
+                      onChange={(e) => updateNested('contact.regionBadgeVisible', e.target.checked)}
+                      className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
+                    />
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показать региональную плашку</label>
+                  </div>
                 </div>
               </SectionCard>
             )}
@@ -1385,6 +1539,23 @@ export default function CMS({ content, setContent, onLogout }) {
                   <div className="grid grid-cols-2 gap-8">
                     <InputField label="Заголовок" value={localContent.faq?.title} onChange={(val) => updateNested('faq.title', val)} />
                     <InputField label="Акцентное слово" value={localContent.faq?.accent} onChange={(val) => updateNested('faq.accent', val)} />
+                  </div>
+                  <div className="mt-8 pt-8 border-t border-slate-900/50">
+                    <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-6 flex items-center gap-2">
+                      <Zap size={14} /> Ссылка призыва (CTA)
+                    </h4>
+                    <div className="grid grid-cols-2 gap-x-8">
+                      <InputField label="Текст ссылки" value={localContent.faq?.ctaText} onChange={(val) => updateNested('faq.ctaText', val)} />
+                      <div className="flex items-center gap-3 bg-slate-900/30 px-4 py-3 rounded-xl border border-slate-800/50 mb-6">
+                        <input
+                          type="checkbox"
+                          checked={localContent.faq?.ctaVisible}
+                          onChange={(e) => updateNested('faq.ctaVisible', e.target.checked)}
+                          className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
+                        />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показать ссылку</label>
+                      </div>
+                    </div>
                   </div>
                 </SectionCard>
                 {(localContent.faq?.items || []).map((item, idx) => (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Check } from 'lucide-react';
+import { Check, ArrowRight } from 'lucide-react';
 import { SectionWrapper } from './Shared';
 import { interpolate } from '../utils/content';
 
@@ -80,6 +80,14 @@ export const Services = ({ data, fullContent, isLight }) => {
       );
     })}
   </div>
+
+  {data.ctaVisible && data.ctaText && (
+    <div className="mt-20 flex justify-center">
+      <a href="#contact" className="px-10 py-4 rounded-xl gradient-bg text-white font-bold text-sm shadow-xl hover:scale-105 transition-all flex items-center gap-3">
+        {interpolate(data.ctaText, fullContent)} <ArrowRight size={18} />
+      </a>
+    </div>
+  )}
     </SectionWrapper>
   );
 };

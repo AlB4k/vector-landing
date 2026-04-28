@@ -100,9 +100,22 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
               </div>
               <div>
                 <p className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${isLight ? 'text-blue-600' : 'text-blue-500'}`}>{interpolate(fullContent.ui?.phoneLabel, fullContent) || 'Телефон'}</p>
-                <a href={`tel:${companyInfo.phone}`} className={`text-xl font-bold transition-colors ${isLight ? 'hover:text-blue-600' : 'hover:text-blue-400'}`}>{interpolate(companyInfo.phone, fullContent)}</a>
+                <div className="flex flex-col gap-1">
+                  <a href={`tel:${companyInfo.phone}`} className={`text-xl font-bold transition-colors ${isLight ? 'hover:text-blue-600' : 'hover:text-blue-400'}`}>{interpolate(companyInfo.phone, fullContent)}</a>
+                  {data.secondPhoneVisible && data.secondPhone && (
+                    <div className="flex flex-col">
+                      <a href={`tel:${data.secondPhone}`} className={`text-sm font-bold opacity-80 transition-colors ${isLight ? 'hover:text-blue-600' : 'hover:text-blue-400'}`}>{interpolate(data.secondPhone, fullContent)}</a>
+                      <span className="text-[8px] uppercase font-black opacity-40 tracking-widest">Дополнительный</span>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
+            {data.regionBadgeVisible && data.regionBadgeText && (
+              <div className={`mt-4 p-4 rounded-xl border ${isLight ? 'bg-blue-50 border-blue-100 text-blue-800' : 'bg-blue-500/5 border-blue-500/10 text-blue-300'} text-[10px] font-bold leading-relaxed shadow-inner`}>
+                {interpolate(data.regionBadgeText, fullContent)}
+              </div>
+            )}
             <div className="flex items-start gap-5 group text-left">
               <div className={`w-12 h-12 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform shrink-0 ${
                 isLight ? 'bg-blue-600/10 text-blue-600' : 'bg-blue-500/10 text-blue-400'
