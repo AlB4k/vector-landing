@@ -59,6 +59,6 @@
 - При разрастании контекста предупреди и предложи выполнить /compact
 
 ## Stable Release
-- **Date**: 2026-04-26
-- **Commit**: 7dc78c1
-- **Status**: Stable, verified in production
+- **Date**: 2026-04-29
+- **Commit**: 0f4faee
+- **Status**: Stable, verified in production (protected CMS route, TrustedClients marquee)
