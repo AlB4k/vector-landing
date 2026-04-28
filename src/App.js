@@ -136,9 +136,10 @@ const INITIAL_CONTENT = {
     "btnAll": "Принять все",
     "btnEssential": "Только необходимые"
   },
-  "loaderDelay": 2000,
-  "logoScaleHeader": 2.2,
+  "loaderDelay": 600,
+  "logoScaleHeader": 1.4,
   "logoScaleFooter": 2,
+  "defaultTheme": "light",
   "ceoLabel": "Генеральный директор",
   "address": "394014, г. Воронеж, ул. Лебедева, д. 4, пом. IV",
   "phone": "+7 (930) 409-27-00",
@@ -848,7 +849,7 @@ export default function App() {
   const [view, setView] = useState('landing'); // 'landing', 'login', 'cms'
   const [isAuth, setIsAuth] = useState(false);
   const [content, setContent] = useState(INITIAL_CONTENT);
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState('light');
   const [consentVersion, setConsentVersion] = useState(0);
 
   // Initialize theme based on content settings
