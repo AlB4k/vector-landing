@@ -99,14 +99,22 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
               </div>
               <div>
                 <p className={`text-[10px] font-bold uppercase tracking-widest mb-1 ${isLight ? 'text-blue-600' : 'text-blue-500'}`}>{interpolate(fullContent.ui?.phoneLabel, fullContent) || 'Телефон'}</p>
-                <div className="flex flex-col gap-1">
-                  <a href={`tel:${companyInfo.phone}`} className={`text-xl font-bold transition-colors ${isLight ? 'hover:text-blue-600' : 'hover:text-blue-400'}`}>{interpolate(companyInfo.phone, fullContent)}</a>
-                  {data.secondPhoneVisible && data.secondPhone && (
-                    <div className="flex flex-col">
-                      <a href={`tel:${data.secondPhone}`} className={`text-sm font-bold opacity-80 transition-colors ${isLight ? 'hover:text-blue-600' : 'hover:text-blue-400'}`}>{interpolate(data.secondPhone, fullContent)}</a>
-                      <span className="text-[8px] uppercase font-black opacity-40 tracking-widest">Дополнительный</span>
-                    </div>
-                  )}
+                <div className="flex flex-col gap-3">
+                  {(data.phones || [
+                    { val: companyInfo.phone, label: interpolate(fullContent.ui?.phoneLabel, fullContent) || 'Телефон', visible: true }
+                  ])
+                    .filter(p => p.val && p.visible)
+                    .map((phone, idx) => (
+                      <div key={idx} className="flex flex-col">
+                        <a href={`tel:${phone.val}`} className={`${idx === 0 ? 'text-xl' : 'text-sm opacity-80'} font-bold transition-colors ${isLight ? 'hover:text-blue-600' : 'hover:text-blue-400'}`}>
+                          {interpolate(phone.val, fullContent)}
+                        </a>
+                        {idx > 0 && (
+                          <span className="text-[8px] uppercase font-black opacity-40 tracking-widest">{phone.label}</span>
+                        )}
+                      </div>
+                    ))
+                  }
                 </div>
               </div>
             </div>

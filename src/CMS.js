@@ -527,6 +527,42 @@ export default function CMS({ content, setContent, onLogout }) {
                 </SectionCard>
 
                 <SectionCard title="Настройки горячей линии" icon={<Zap size={18}/>}>
+                  <div className="bg-blue-500/5 p-6 rounded-2xl border border-blue-500/10 mb-8">
+                    <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+                      <MapPin size={14} /> Региональный шилдик (RegionBadge)
+                    </h4>
+                    <div className="space-y-4">
+                      <InputField label="Текст шилдика" value={localContent.regionBadge?.text} onChange={(val) => updateNested('regionBadge.text', val)} />
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="space-y-2">
+                          <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Стиль шилдика</label>
+                          <select
+                            value={localContent.regionBadge?.style || 'outline'}
+                            onChange={(e) => updateNested('regionBadge.style', e.target.value)}
+                            className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm font-medium"
+                          >
+                            <option value="outline">Контурный (Outline)</option>
+                            <option value="solid">Заливка (Solid)</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-3 gap-4 pt-2">
+                        <div className="flex items-center gap-2 bg-slate-900/30 p-3 rounded-xl border border-slate-800/50">
+                          <input type="checkbox" checked={localContent.regionBadge?.visibleNavbar} onChange={(e) => updateNested('regionBadge.visibleNavbar', e.target.checked)} className="w-4 h-4 rounded bg-slate-800 text-blue-600" />
+                          <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">В шапке</label>
+                        </div>
+                        <div className="flex items-center gap-2 bg-slate-900/30 p-3 rounded-xl border border-slate-800/50">
+                          <input type="checkbox" checked={localContent.regionBadge?.visibleHero} onChange={(e) => updateNested('regionBadge.visibleHero', e.target.checked)} className="w-4 h-4 rounded bg-slate-800 text-blue-600" />
+                          <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">В Hero</label>
+                        </div>
+                        <div className="flex items-center gap-2 bg-slate-900/30 p-3 rounded-xl border border-slate-800/50">
+                          <input type="checkbox" checked={localContent.regionBadge?.visibleFooter} onChange={(e) => updateNested('regionBadge.visibleFooter', e.target.checked)} className="w-4 h-4 rounded bg-slate-800 text-blue-600" />
+                          <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">В футере</label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
                   <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50 mb-6">
                     <input
                       type="checkbox"
@@ -1489,36 +1525,60 @@ export default function CMS({ content, setContent, onLogout }) {
 
                 <div className="mt-8 p-6 bg-blue-500/5 rounded-2xl border border-blue-500/10">
                   <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-6 flex items-center gap-2">
-                    <MapPin size={14} /> Региональные настройки
+                    <Phone size={14} /> Список контактных телефонов (до 3-х)
                   </h4>
-                  <div className="grid grid-cols-2 gap-x-8">
-                    <InputField label="Второй номер телефона" value={localContent.contact?.secondPhone} onChange={(val) => updateNested('contact.secondPhone', val)} />
-                    <div className="flex items-center gap-3 bg-slate-900/30 px-4 py-3 rounded-xl border border-slate-800/50 mb-6">
-                      <input
-                        type="checkbox"
-                        checked={localContent.contact?.secondPhoneVisible}
-                        onChange={(e) => updateNested('contact.secondPhoneVisible', e.target.checked)}
-                        className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
-                      />
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показать второй номер</label>
-                    </div>
-                  </div>
-                  <div className="mb-6">
-                    <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Текст региональной плашки</label>
-                    <textarea
-                      value={localContent.contact?.regionBadgeText}
-                      onChange={(e) => updateNested('contact.regionBadgeText', e.target.value)}
-                      className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-sm font-medium h-20 resize-none shadow-inner"
-                    />
-                  </div>
-                  <div className="flex items-center gap-3 bg-slate-900/30 px-4 py-3 rounded-xl border border-slate-800/50 mb-6">
-                    <input
-                      type="checkbox"
-                      checked={localContent.contact?.regionBadgeVisible}
-                      onChange={(e) => updateNested('contact.regionBadgeVisible', e.target.checked)}
-                      className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
-                    />
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показать региональную плашку</label>
+                  <div className="space-y-6">
+                    {(localContent.contact?.phones || []).map((phone, idx) => (
+                      <div key={idx} className="p-5 bg-slate-900/40 rounded-2xl border border-slate-800/50 relative group">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mr-12">
+                          <InputField
+                            label={`Телефон #${idx + 1}`}
+                            value={phone.val}
+                            onChange={(val) => {
+                              const newPhones = localContent.contact.phones.map((p, i) => i === idx ? { ...p, val } : p);
+                              updateNested('contact.phones', newPhones);
+                            }}
+                          />
+                          <InputField
+                            label="Подпись (Label)"
+                            value={phone.label}
+                            onChange={(val) => {
+                              const newPhones = localContent.contact.phones.map((p, i) => i === idx ? { ...p, label: val } : p);
+                              updateNested('contact.phones', newPhones);
+                            }}
+                          />
+                        </div>
+                        <div className="absolute top-6 right-6 flex flex-col gap-4">
+                          <input
+                            type="checkbox"
+                            checked={phone.visible}
+                            onChange={(e) => {
+                              const newPhones = localContent.contact.phones.map((p, i) => i === idx ? { ...p, visible: e.target.checked } : p);
+                              updateNested('contact.phones', newPhones);
+                            }}
+                            className="w-5 h-5 rounded bg-slate-800 text-blue-600"
+                            title="Видимость"
+                          />
+                          <button
+                            onClick={() => {
+                              const newPhones = localContent.contact.phones.filter((_, i) => i !== idx);
+                              updateNested('contact.phones', newPhones);
+                            }}
+                            className="text-slate-700 hover:text-red-500 transition-colors"
+                          >
+                            <Trash2 size={16} />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                    {(localContent.contact?.phones?.length || 0) < 3 && (
+                      <button
+                        onClick={() => updateNested('contact.phones', [...(localContent.contact?.phones || []), { val: '', label: 'Дополнительный', visible: true }])}
+                        className="w-full py-4 border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 font-black text-[9px] uppercase tracking-widest transition-all rounded-2xl flex items-center justify-center gap-2"
+                      >
+                        <Plus size={16} /> Добавить телефон
+                      </button>
+                    )}
                   </div>
                 </div>
               </SectionCard>

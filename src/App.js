@@ -535,10 +535,11 @@ const INITIAL_CONTENT = {
     "subtitle": "Оставьте заявку — эксперт подготовит индивидуальное коммерческое предложение",
     "infoTitle": "Контактная информация",
     "infoDesc": "Принимаем заявки в рабочие дни с 8:00 до 18:00. Ответ — в течение 1 часа.",
-    "secondPhone": "",
-    "secondPhoneVisible": false,
-    "regionBadgeVisible": false,
-    "regionBadgeText": "📍 Воронеж — головной офис · 🗺 Приём заявок из всех регионов России",
+    "phones": [
+      { "val": "+7 (930) 409-27-00", "label": "Основной", "visible": true },
+      { "val": "", "label": "Дополнительный", "visible": false },
+      { "val": "", "label": "Отдел продаж", "visible": false }
+    ],
     "form": {
       "fields": [
         {
@@ -642,6 +643,13 @@ const INITIAL_CONTENT = {
   "integrations": {
     "formspreeId": "",
     "formSubject": "Новая заявка от"
+  },
+  "regionBadge": {
+    "text": "📍 Воронеж — головной офис · 🗺 Приём заявок из всех регионов России",
+    "style": "outline",
+    "visibleNavbar": true,
+    "visibleHero": true,
+    "visibleFooter": true
   },
   "backgroundAnimation": {
     "enabled": true,
