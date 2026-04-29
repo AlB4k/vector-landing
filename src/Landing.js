@@ -221,7 +221,7 @@ export default function Landing({ content, theme, setTheme }) {
             <button onClick={() => setTheme(isLight ? 'dark' : 'light')} className="ml-6 p-2 rounded-lg border border-[var(--border)] hover:bg-slate-500/10 transition-all" aria-label={isLight ? (interpolate(content.ui?.themeToggleDark, content) || "Переключить на темную тему") : (interpolate(content.ui?.themeToggleLight, content) || "Переключить на светлую тему")}>
               {isLight ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}
             </button>
-            <a href={`tel:${content.phone}`} className="hidden lg:flex items-center gap-2 gradient-bg text-white px-6 py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest shadow-xl shadow-blue-900/10 hover:brightness-110 transition-all">
+            <a href={`tel:${content.hero?.hotlinePhone || content.phone}`} className="hidden lg:flex items-center gap-2 gradient-bg text-white px-6 py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest shadow-xl shadow-blue-900/10 hover:brightness-110 transition-all">
               <Phone size={14} aria-hidden="true" /> {interpolate(content.hero.btnPrimary, content)}
             </a>
             <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(true)} aria-label={interpolate(content.ui?.openMenu, content) || "Открыть мобильное меню"}><Menu size={24} aria-hidden="true" /></button>
@@ -265,8 +265,8 @@ export default function Landing({ content, theme, setTheme }) {
 
           <div className="mt-auto pt-12 border-t border-white/5">
             <p className="text-[10px] font-bold uppercase tracking-[0.3em] text-blue-500 mb-6 text-center">{interpolate(content.hero.hotlineLabel, content)}</p>
-            <a href={`tel:${content.phone}`} className="w-full flex justify-center items-center gap-4 gradient-bg py-5 rounded-2xl text-2xl font-black shadow-2xl shadow-blue-500/20 active:scale-95 transition-all text-white">
-              <Phone size={24} /> {interpolate(content.phone, content)}
+            <a href={`tel:${content.hero?.hotlinePhone || content.phone}`} className="w-full flex justify-center items-center gap-4 gradient-bg py-5 rounded-2xl text-2xl font-black shadow-2xl shadow-blue-500/20 active:scale-95 transition-all text-white">
+              <Phone size={24} /> {interpolate(content.hero?.hotlinePhone || content.phone, content)}
             </a>
           </div>
         </div>
