@@ -280,7 +280,7 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
                 className={`w-full py-5 rounded-2xl gradient-bg text-white font-black text-sm uppercase tracking-[0.2em] shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 mt-4 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed ${!consent ? 'brightness-75' : ''}`}
               >
                 {loading ? (
-                  <Loader2 className="animate-spin" size={20} />
+                  <><Loader2 className="animate-spin" size={20} /> Отправляем...</>
                 ) : (
                   <>{formConfig.submitText} <ArrowRight size={20} /></>
                 )}
