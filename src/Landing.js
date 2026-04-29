@@ -218,7 +218,7 @@ export default function Landing({ content, theme, setTheme }) {
             ))}
           </div>
           <div className="flex items-center gap-4">
-            <button onClick={() => setTheme(isLight ? 'dark' : 'light')} className="p-2 rounded-lg border border-[var(--border)] hover:bg-slate-500/10 transition-all" aria-label={isLight ? (interpolate(content.ui?.themeToggleDark, content) || "Переключить на темную тему") : (interpolate(content.ui?.themeToggleLight, content) || "Переключить на светлую тему")}>
+            <button onClick={() => setTheme(isLight ? 'dark' : 'light')} className="ml-6 p-2 rounded-lg border border-[var(--border)] hover:bg-slate-500/10 transition-all" aria-label={isLight ? (interpolate(content.ui?.themeToggleDark, content) || "Переключить на темную тему") : (interpolate(content.ui?.themeToggleLight, content) || "Переключить на светлую тему")}>
               {isLight ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}
             </button>
             <a href={`tel:${content.phone}`} className="hidden lg:flex items-center gap-2 gradient-bg text-white px-6 py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest shadow-xl shadow-blue-900/10 hover:brightness-110 transition-all">
