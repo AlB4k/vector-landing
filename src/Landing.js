@@ -203,17 +203,17 @@ export default function Landing({ content, theme, setTheme }) {
       {/* Navbar */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 py-4 ${isScrolled ? 'backdrop-blur-md border-b border-[var(--border)]' : 'bg-transparent'}`} style={{ backgroundColor: isScrolled ? 'var(--nav-bg)' : 'transparent' }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div style={{cursor:'pointer'}} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="flex flex-col items-start">
-            <Logo light={isLight} customScale={content.logoScaleHeader} tagline={content.companyTagline} text={content.logoText} />
-            {content.regionBadge?.enabled && (
-              <div style={{marginTop: '3px', paddingLeft: '4px'}}>
+          <div style={{display:'flex', flexDirection:'column', cursor:'pointer'}} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="items-start">
+            <div style={{height: '20px', marginBottom: '4px'}}>
+              {content.regionBadge?.enabled && (
                 <RegionBadge
                   text={content.regionBadge.text}
                   style={content.regionBadge.style}
                   isLight={isLight}
                 />
-              </div>
-            )}
+              )}
+            </div>
+            <Logo light={isLight} customScale={content.logoScaleHeader} tagline={content.companyTagline} text={content.logoText} />
           </div>
           <div className="hidden md:flex items-center gap-8 text-[10px] font-bold uppercase tracking-[0.15em] opacity-80">
             {content.sections.filter(s => s.enabled && s.id !== 'hero').map((s) => (
@@ -237,16 +237,16 @@ export default function Landing({ content, theme, setTheme }) {
         <div className="p-8 flex flex-col h-full">
           <div className="flex justify-between items-center mb-16">
             <div onClick={() => { setMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="cursor-pointer flex flex-col items-start">
-              <Logo light={false} variant="small" customScale={content.logoScaleFooter} tagline={interpolate(content.companyTagline, content)} text={interpolate(content.logoText, content)} />
-              {content.regionBadge?.enabled && (
-                <div style={{marginTop: '4px', paddingLeft: '2px'}}>
+              <div style={{height: '20px', marginBottom: '4px'}}>
+                {content.regionBadge?.enabled && (
                   <RegionBadge
                     text={content.regionBadge.text}
                     style={content.regionBadge.style}
                     isLight={false}
                   />
-                </div>
-              )}
+                )}
+              </div>
+              <Logo light={false} variant="small" customScale={content.logoScaleFooter} tagline={interpolate(content.companyTagline, content)} text={interpolate(content.logoText, content)} />
             </div>
             <button onClick={() => setMobileMenuOpen(false)} className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white border border-white/10 active:scale-90 transition-all" aria-label={interpolate(content.ui?.closeMenu, content) || "Закрыть мобильное меню"}>
               <X size={24} aria-hidden="true" />
