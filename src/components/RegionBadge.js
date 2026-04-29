@@ -1,37 +1,62 @@
 import React from 'react';
-import { MapPin } from 'lucide-react';
-import { interpolate } from '../utils/content';
 
-export const RegionBadge = ({ data, fullContent, isLight, position = 'navbar' }) => {
-  if (!data || !data.text) return null;
+export const RegionBadge = ({ text, style = 'badge', isLight }) => {
+  if (!text) return null;
 
-  // Проверка видимости в зависимости от позиции
-  const isVisible =
-    (position === 'navbar' && data.visibleNavbar) ||
-    (position === 'hero' && data.visibleHero) ||
-    (position === 'footer' && data.visibleFooter);
+  if (style === 'text') {
+    return (
+      <span style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '4px',
+        fontSize: '10px',
+        fontWeight: 500,
+        letterSpacing: '0.08em',
+        textTransform: 'uppercase',
+        color: isLight ? '#64748b' : '#94a3b8',
+        opacity: 0.85,
+        userSelect: 'none',
+        pointerEvents: 'none'
+      }}>
+        <svg width="8" height="8" viewBox="0 0 8 8"
+             fill="currentColor" opacity="0.7">
+          <circle cx="4" cy="4" r="3"/>
+        </svg>
+        {text}
+      </span>
+    );
+  }
 
-  if (!isVisible) return null;
-
-  const isSolid = data.style === 'solid';
-
-  const baseClasses = "inline-flex items-center gap-2 px-3 py-1.5 rounded-full transition-all duration-300";
-  const positionClasses = position === 'hero'
-    ? "text-[11px] font-bold py-2 px-4 mb-6"
-    : "text-[9px] font-black uppercase tracking-widest";
-
-  const themeClasses = isSolid
-    ? (isLight
-        ? "bg-blue-600/10 border border-blue-600/20 text-blue-600 shadow-sm"
-        : "bg-blue-500/10 border border-blue-500/20 text-blue-400 shadow-lg shadow-blue-500/5")
-    : (isLight
-        ? "border border-blue-600/30 text-blue-600/80 bg-transparent"
-        : "border border-blue-500/30 text-blue-400 bg-transparent");
-
+  // СТИЛЬ "badge" — по умолчанию
   return (
-    <div className={`${baseClasses} ${positionClasses} ${themeClasses}`}>
-      <MapPin size={position === 'hero' ? 14 : 12} className={isLight ? "text-blue-600" : "text-blue-400"} />
-      <span>{interpolate(data.text, fullContent)}</span>
-    </div>
+    <span style={{
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '5px',
+      padding: '3px 10px',
+      borderRadius: '999px',
+      fontSize: '10px',
+      fontWeight: 500,
+      letterSpacing: '0.06em',
+      textTransform: 'uppercase',
+      color: isLight ? '#475569' : '#94a3b8',
+      background: isLight
+        ? 'rgba(148,163,184,0.12)'
+        : 'rgba(148,163,184,0.08)',
+      border: '1px solid',
+      borderColor: isLight
+        ? 'rgba(148,163,184,0.25)'
+        : 'rgba(148,163,184,0.15)',
+      userSelect: 'none',
+      pointerEvents: 'none',
+      whiteSpace: 'nowrap',
+      lineHeight: 1
+    }}>
+      <svg width="6" height="6" viewBox="0 0 6 6"
+           fill="currentColor" opacity="0.6">
+        <circle cx="3" cy="3" r="2.5"/>
+      </svg>
+      {text}
+    </span>
   );
 };

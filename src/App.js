@@ -645,11 +645,9 @@ const INITIAL_CONTENT = {
     "formSubject": "Новая заявка от"
   },
   "regionBadge": {
-    "text": "📍 Воронеж — головной офис · 🗺 Приём заявок из всех регионов России",
-    "style": "outline",
-    "visibleNavbar": true,
-    "visibleHero": true,
-    "visibleFooter": true
+    "enabled": true,
+    "text": "Воронеж — головной офис · Приём заявок из всех регионов России",
+    "style": "badge"
   },
   "backgroundAnimation": {
     "enabled": true,

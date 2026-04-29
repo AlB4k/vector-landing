@@ -532,34 +532,43 @@ export default function CMS({ content, setContent, onLogout }) {
                       <MapPin size={14} /> Региональный шилдик (RegionBadge)
                     </h4>
                     <div className="space-y-4">
-                      <InputField label="Текст шилдика" value={localContent.regionBadge?.text} onChange={(val) => updateNested('regionBadge.text', val)} />
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="space-y-2">
-                          <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Стиль шилдика</label>
-                          <select
-                            value={localContent.regionBadge?.style || 'outline'}
-                            onChange={(e) => updateNested('regionBadge.style', e.target.value)}
-                            className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-3 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm font-medium"
-                          >
-                            <option value="outline">Контурный (Outline)</option>
-                            <option value="solid">Заливка (Solid)</option>
-                          </select>
+                      <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-xl border border-slate-800/50 mb-4">
+                        <input
+                          type="checkbox"
+                          checked={localContent.regionBadge?.enabled}
+                          onChange={(e) => updateNested('regionBadge.enabled', e.target.checked)}
+                          className="w-5 h-5 rounded bg-slate-800 border-slate-700 text-blue-600"
+                        />
+                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показывать метку региона</label>
+                      </div>
+
+                      <InputField label="Текст региона" value={localContent.regionBadge?.text} onChange={(val) => updateNested('regionBadge.text', val)} />
+
+                      <div className="space-y-3">
+                        <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Стиль отображения</label>
+                        <div className="flex gap-4">
+                          {[
+                            { id: 'text', label: 'Текстовая метка' },
+                            { id: 'badge', label: 'Pill/Badge' }
+                          ].map(s => (
+                            <button
+                              key={s.id}
+                              onClick={() => updateNested('regionBadge.style', s.id)}
+                              className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest border transition-all ${
+                                (localContent.regionBadge?.style || 'badge') === s.id
+                                  ? 'bg-blue-600/10 border-blue-500/50 text-blue-400 shadow-lg'
+                                  : 'bg-slate-900 border-slate-800 text-slate-500 hover:text-slate-300'
+                              }`}
+                            >
+                              {s.label}
+                            </button>
+                          ))}
                         </div>
                       </div>
-                      <div className="grid grid-cols-3 gap-4 pt-2">
-                        <div className="flex items-center gap-2 bg-slate-900/30 p-3 rounded-xl border border-slate-800/50">
-                          <input type="checkbox" checked={localContent.regionBadge?.visibleNavbar} onChange={(e) => updateNested('regionBadge.visibleNavbar', e.target.checked)} className="w-4 h-4 rounded bg-slate-800 text-blue-600" />
-                          <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">В шапке</label>
-                        </div>
-                        <div className="flex items-center gap-2 bg-slate-900/30 p-3 rounded-xl border border-slate-800/50">
-                          <input type="checkbox" checked={localContent.regionBadge?.visibleHero} onChange={(e) => updateNested('regionBadge.visibleHero', e.target.checked)} className="w-4 h-4 rounded bg-slate-800 text-blue-600" />
-                          <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">В Hero</label>
-                        </div>
-                        <div className="flex items-center gap-2 bg-slate-900/30 p-3 rounded-xl border border-slate-800/50">
-                          <input type="checkbox" checked={localContent.regionBadge?.visibleFooter} onChange={(e) => updateNested('regionBadge.visibleFooter', e.target.checked)} className="w-4 h-4 rounded bg-slate-800 text-blue-600" />
-                          <label className="text-[9px] font-black uppercase tracking-widest text-slate-400">В футере</label>
-                        </div>
-                      </div>
+
+                      <p className="text-[9px] text-slate-500 italic leading-relaxed mt-4 bg-slate-900/30 p-3 rounded-lg border border-slate-800/50">
+                        Статичная метка региона отображается под логотипом в шапке и подвале сайта. Используется при адаптации сайта под конкретный регион работы.
+                      </p>
                     </div>
                   </div>
 

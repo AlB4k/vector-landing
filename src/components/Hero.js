@@ -1,12 +1,10 @@
 import React from 'react';
 import { ArrowRight, Phone } from 'lucide-react';
 import { DynamicIcon } from './Shared';
-import { RegionBadge } from './RegionBadge';
 import { interpolate } from '../utils/content';
 
 export const Hero = ({ data, config, isLight, fullContent }) => {
   if (!data) return null;
-  const regionBadgeData = fullContent.regionBadge;
   const isOnline = React.useMemo(() => {
     if (!config || !config.scheduleEnabled) return true;
     const now = new Date();
@@ -30,7 +28,6 @@ export const Hero = ({ data, config, isLight, fullContent }) => {
         <div className="flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-20">
           {/* Левая сторона: Контент */}
           <div className="flex-1 text-center lg:text-left">
-            <RegionBadge data={regionBadgeData} fullContent={fullContent} isLight={isLight} position="hero" />
             <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-md border mb-6 md:mb-8 ${isLight ? 'border-blue-600/20 bg-blue-600/5' : 'border-blue-500/20 bg-blue-500/5'}`}>
               <DynamicIcon name={data.badgeIcon || "ShieldCheck"} size={14} className={isLight ? "text-blue-600" : "text-blue-400"} />
               <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${isLight ? 'text-blue-700' : 'text-blue-300'}`}>{interpolate(data.badge, fullContent)}</span>
