@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { interpolate } from './utils/content';
 import { validateContent } from './utils/security';
 import {
   LayoutDashboard,
@@ -238,7 +239,7 @@ export default function CMS({ content, setContent, onLogout }) {
   };
 
   const handleDiscard = () => {
-    if (window.confirm('Вы уверены, что хотите сбросить все несохраненные изменения?')) {
+    if (window.confirm(interpolate(localContent.ui?.cmsConfirmDiscard, localContent) || 'Вы уверены, что хотите сбросить все несохраненные изменения?')) {
       setLocalContent(content);
     }
   };
@@ -254,7 +255,7 @@ export default function CMS({ content, setContent, onLogout }) {
   };
 
   const handleReset = () => {
-    if (window.confirm('ВНИМАНИЕ: Все ваши изменения будут удалены и сайт вернется к исходному состоянию. Продолжить?')) {
+    if (window.confirm(interpolate(localContent.ui?.cmsConfirmReset, localContent) || 'ВНИМАНИЕ: Все ваши изменения будут удалены и сайт вернется к исходному состоянию. Продолжить?')) {
       localStorage.removeItem('vector_content');
       window.location.reload();
     }
@@ -270,12 +271,12 @@ export default function CMS({ content, setContent, onLogout }) {
         const validated = validateContent(json);
         if (validated) {
           setLocalContent(validated);
-          alert('Контент успешно проверен и загружен! Не забудьте нажать "Сохранить", чтобы применить изменения.');
+          alert(interpolate(localContent.ui?.cmsImportSuccess, localContent) || 'Контент успешно проверен и загружен! Не забудьте нажать "Сохранить", чтобы применить изменения.');
         } else {
-          alert('Ошибка валидации: файл имеет неверную структуру или содержит небезопасные данные.');
+          alert(interpolate(localContent.ui?.cmsValidationError, localContent) || 'Ошибка валидации: файл имеет неверную структуру или содержит небезопасные данные.');
         }
       } catch (err) {
-        alert('Ошибка при чтении файла. Убедитесь, что это корректный JSON.');
+        alert(interpolate(localContent.ui?.cmsParseError, localContent) || 'Ошибка при чтении файла. Убедитесь, что это корректный JSON.');
       }
     };
     reader.readAsText(file);
@@ -308,42 +309,42 @@ export default function CMS({ content, setContent, onLogout }) {
     setLocalContent(updated);
   };
 
-  const tabGroups = [
+  const tabGroups = React.useMemo(() => [
     {
-      title: 'ВНЕШНИЙ ВИД',
+      title: interpolate(localContent.ui?.cmsGroupAppearance, localContent) || 'ВНЕШНИЙ ВИД',
       tabs: [
-        { id: 'theme', label: 'Оформление', icon: <Palette size={18}/> },
-        { id: 'brand', label: 'Бренд', icon: <Settings size={18}/> },
+        { id: 'theme', label: interpolate(localContent.ui?.cmsTabTheme, localContent) || 'Оформление', icon: <Palette size={18}/> },
+        { id: 'brand', label: interpolate(localContent.ui?.cmsTabBrand, localContent) || 'Бренд', icon: <Settings size={18}/> },
       ]
     },
     {
-      title: 'СОДЕРЖИМОЕ',
+      title: interpolate(localContent.ui?.cmsGroupContent, localContent) || 'СОДЕРЖИМОЕ',
       tabs: [
-        { id: 'structure', label: 'Структура', icon: <Layers size={18}/> },
-        { id: 'content', label: 'Контент', icon: <FileText size={18}/> },
+        { id: 'structure', label: interpolate(localContent.ui?.cmsTabStructure, localContent) || 'Структура', icon: <Layers size={18}/> },
+        { id: 'content', label: interpolate(localContent.ui?.cmsTabContent, localContent) || 'Контент', icon: <FileText size={18}/> },
       ]
     },
     {
-      title: 'КОММУНИКАЦИИ',
+      title: interpolate(localContent.ui?.cmsGroupCommunications, localContent) || 'КОММУНИКАЦИИ',
       tabs: [
-        { id: 'contacts', label: 'Контакты', icon: <Mail size={18}/> },
+        { id: 'contacts', label: interpolate(localContent.ui?.cmsTabContacts, localContent) || 'Контакты', icon: <Mail size={18}/> },
       ]
     },
     {
-      title: 'КОМПАНИЯ',
+      title: interpolate(localContent.ui?.cmsGroupCompany, localContent) || 'КОМПАНИЯ',
       tabs: [
-        { id: 'requisites', label: 'Реквизиты', icon: <FileText size={18}/> },
-        { id: 'legal', label: 'Юридика', icon: <Shield size={18}/> },
+        { id: 'requisites', label: interpolate(localContent.ui?.cmsTabRequisites, localContent) || 'Реквизиты', icon: <FileText size={18}/> },
+        { id: 'legal', label: interpolate(localContent.ui?.cmsTabLegal, localContent) || 'Юридика', icon: <Shield size={18}/> },
       ]
     },
     {
-      title: 'СИСТЕМА',
+      title: interpolate(localContent.ui?.cmsGroupSystem, localContent) || 'СИСТЕМА',
       tabs: [
-        { id: 'settings', label: 'Настройки', icon: <Settings size={18}/> },
-        { id: 'analytics', label: 'Интеграции', icon: <BarChart3 size={18}/> },
+        { id: 'settings', label: interpolate(localContent.ui?.cmsTabSettings, localContent) || 'Настройки', icon: <Settings size={18}/> },
+        { id: 'analytics', label: interpolate(localContent.ui?.cmsTabAnalytics, localContent) || 'Интеграции', icon: <BarChart3 size={18}/> },
       ]
     }
-  ];
+  ], [localContent]);
 
   const allTabs = tabGroups.flatMap(g => g.tabs);
   const activeTabLabel = allTabs.find(t => t.id === activeTab)?.label || 'CMS';
@@ -369,7 +370,7 @@ export default function CMS({ content, setContent, onLogout }) {
             {activeTabIcon}
           </div>
           <h2 className="text-xs font-black text-[var(--cms-text-main)] uppercase tracking-[0.4em]">
-            CMS — {activeTabLabel}
+            {interpolate(localContent.ui?.cmsTitle, localContent) || 'CMS'} — {activeTabLabel}
           </h2>
         </div>
         <div className="flex items-center gap-4">
@@ -399,20 +400,20 @@ export default function CMS({ content, setContent, onLogout }) {
             onChange={handleImport}
           />
           <button onClick={() => document.getElementById('import-file').click()} className="flex items-center gap-3 px-5 py-3 rounded-xl border border-[var(--cms-divider)] font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[var(--cms-bg-secondary)] transition-all text-[var(--cms-text-muted)] hover:text-[var(--cms-text-main)] shadow-lg">
-            <Upload size={16} /> Импорт
+            <Upload size={16} /> {interpolate(localContent.ui?.cmsImport, localContent) || 'Импорт'}
           </button>
           <button onClick={handleExport} className="flex items-center gap-3 px-5 py-3 rounded-xl border border-[var(--cms-divider)] font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[var(--cms-bg-secondary)] transition-all text-[var(--cms-text-muted)] hover:text-[var(--cms-text-main)] shadow-lg">
-            <Download size={16} /> Экспорт
+            <Download size={16} /> {interpolate(localContent.ui?.cmsExport, localContent) || 'Экспорт'}
           </button>
           <button onClick={() => window.open('/', '_blank')} className="flex items-center gap-3 px-7 py-3 rounded-xl border border-[var(--cms-divider)] font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[var(--cms-bg-secondary)] transition-all text-[var(--cms-text-muted)] hover:text-[var(--cms-text-main)] shadow-lg">
-            <Eye size={16} /> Просмотр
+            <Eye size={16} /> {interpolate(localContent.ui?.cmsPreview, localContent) || 'Просмотр'}
           </button>
           <button onClick={handleReset} className="flex items-center gap-3 px-5 py-3 rounded-xl border border-red-900/20 text-red-500/40 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-red-500/5 hover:text-red-500 transition-all">
-            <RefreshCcw size={16} /> Сброс
+            <RefreshCcw size={16} /> {interpolate(localContent.ui?.cmsReset, localContent) || 'Сброс'}
           </button>
           {hasChanges && (
             <button onClick={handleDiscard} className="flex items-center gap-3 px-5 py-3 rounded-xl border border-red-900/30 text-red-500/70 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-red-500/5 transition-all">
-              <Trash2 size={16} /> Сбросить
+              <Trash2 size={16} /> {interpolate(localContent.ui?.cmsDiscard, localContent) || 'Сбросить'}
             </button>
           )}
           <button
@@ -420,7 +421,7 @@ export default function CMS({ content, setContent, onLogout }) {
             className={`flex items-center gap-3 px-8 py-3 rounded-xl text-white font-black text-[10px] uppercase tracking-[0.2em] shadow-2xl transition-all ${hasChanges ? 'gradient-bg shadow-blue-900/40 hover:scale-[1.03] active:scale-95' : 'bg-slate-800 opacity-50 cursor-default'}`}
             disabled={!hasChanges}
           >
-            <Save size={16} /> {hasChanges ? 'Сохранить изменения' : 'Сохранено'}
+            <Save size={16} /> {hasChanges ? (interpolate(localContent.ui?.cmsSave, localContent) || 'Сохранить изменения') : (interpolate(localContent.ui?.cmsSaved, localContent) || 'Сохранено')}
           </button>
         </div>
       </header>
@@ -432,7 +433,7 @@ export default function CMS({ content, setContent, onLogout }) {
               <Settings size={22} className="text-white" />
             </div>
             <div className="flex flex-col">
-              <span className="font-black tracking-tighter text-[var(--cms-text-main)] text-xl leading-none">CMS</span>
+              <span className="font-black tracking-tighter text-[var(--cms-text-main)] text-xl leading-none">{interpolate(localContent.ui?.cmsTitle, localContent) || 'CMS'}</span>
               <span className="text-[8px] font-bold text-blue-500 uppercase tracking-widest mt-1">v{localContent.legal?.version || '2.0.0'}</span>
             </div>
           </div>
@@ -485,7 +486,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
           <div className="p-6 border-t border-[var(--cms-divider)]">
             <button onClick={onLogout} className="w-full flex items-center justify-center gap-3 px-5 py-4 text-red-500/60 hover:text-red-400 hover:bg-red-500/5 rounded-2xl transition-all font-black text-[10px] uppercase tracking-widest border border-transparent hover:border-red-500/10">
-              <LogOut size={16} /> Выход из системы
+              <LogOut size={16} /> {interpolate(localContent.ui?.cmsLogout, localContent) || 'Выход из системы'}
             </button>
           </div>
         </aside>
@@ -498,22 +499,22 @@ export default function CMS({ content, setContent, onLogout }) {
               <div className="space-y-4">
                 <div className="grid grid-cols-3 gap-6 mb-12">
                   <div className="bg-blue-600/5 border border-blue-500/20 p-6 rounded-3xl">
-                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">Build Status</p>
+                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">{interpolate(localContent.ui?.cmsBuildStatus, localContent) || 'Build Status'}</p>
                     <p className="text-xl font-black text-[var(--cms-text-main)] leading-none">STABLE</p>
                   </div>
                   <div className="bg-[var(--cms-card-bg)] border border-[var(--cms-card-border)] p-6 rounded-3xl">
-                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-muted)] mb-2">Active Sections</p>
+                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-muted)] mb-2">{interpolate(localContent.ui?.cmsActiveSections, localContent) || 'Active Sections'}</p>
                     <p className="text-xl font-black text-[var(--cms-text-main)] leading-none">{localContent.sections.filter(s => s.enabled).length} / {localContent.sections.length}</p>
                   </div>
                   <div className="bg-[var(--cms-card-bg)] border border-[var(--cms-card-border)] p-6 rounded-3xl">
-                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-muted)] mb-2">Legal Compliance</p>
+                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-muted)] mb-2">{interpolate(localContent.ui?.cmsLegalCompliance, localContent) || 'Legal Compliance'}</p>
                     <p className="text-xl font-black text-green-500 leading-none">100% READY</p>
                   </div>
                 </div>
 
                 <div className="mb-8 ml-2">
-                  <h4 className="text-xl font-black text-[var(--cms-text-main)] mb-2 tracking-tight">Управление секциями</h4>
-                  <p className="text-xs text-[var(--cms-text-muted)] font-medium tracking-wide">Перетаскивайте и скрывайте блоки лендинга</p>
+                  <h4 className="text-xl font-black text-[var(--cms-text-main)] mb-2 tracking-tight">{interpolate(localContent.ui?.cmsSectionManagement, localContent) || 'Управление секциями'}</h4>
+                  <p className="text-xs text-[var(--cms-text-muted)] font-medium tracking-wide">{interpolate(localContent.ui?.cmsSectionHint, localContent) || 'Перетаскивайте и скрывайте блоки лендинга'}</p>
                 </div>
                 {localContent.sections.map((section, idx) => (
                   <div key={section.id} className="bg-[var(--cms-card-bg)] p-5 rounded-2xl border border-[var(--cms-card-border)] flex items-center justify-between group transition-all hover:border-blue-500/40 hover:bg-[var(--cms-input-bg)] shadow-xl">
@@ -545,11 +546,11 @@ export default function CMS({ content, setContent, onLogout }) {
             {activeTab === 'theme' && (
               <div className="space-y-8 animate-slow-fade">
                 <div className="mb-8 ml-2">
-                  <h4 className="text-xl font-black text-white mb-2 tracking-tight">Цветовые схемы</h4>
-                  <p className="text-xs text-slate-500 font-medium tracking-wide">Настройка внешнего вида темной и светлой темы сайта</p>
+                  <h4 className="text-xl font-black text-white mb-2 tracking-tight">{interpolate(localContent.ui?.cmsThemeTitle, localContent) || 'Цветовые схемы'}</h4>
+                  <p className="text-xs text-slate-500 font-medium tracking-wide">{interpolate(localContent.ui?.cmsThemeSubtitle, localContent) || 'Настройка внешнего вида темной и светлой темы сайта'}</p>
                 </div>
 
-                <SectionCard title="Темная тема (Dark Mode)" icon={<Palette size={18}/>} tooltip="Цвета используемые когда на сайте включена темная тема">
+                <SectionCard title={interpolate(localContent.ui?.cmsThemeDark, localContent) || 'Темная тема (Dark Mode)'} icon={<Palette size={18}/>} tooltip="Цвета используемые когда на сайте включена темная тема">
                   <div className="grid grid-cols-2 gap-x-8">
                     <InputField label="Основной фон" value={localContent.theme?.dark?.primary} onChange={(val) => updateNested('theme.dark.primary', val)} />
                     <InputField label="Вторичный фон" value={localContent.theme?.dark?.secondary} onChange={(val) => updateNested('theme.dark.secondary', val)} />
@@ -560,7 +561,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   </div>
                 </SectionCard>
 
-                <SectionCard title="Светлая тема (Light Mode)" icon={<Palette size={18}/>} tooltip="Цвета используемые когда на сайте включена светлая тема">
+                <SectionCard title={interpolate(localContent.ui?.cmsThemeLight, localContent) || 'Светлая тема (Light Mode)'} icon={<Palette size={18}/>} tooltip="Цвета используемые когда на сайте включена светлая тема">
                   <div className="grid grid-cols-2 gap-x-8">
                     <InputField label="Основной фон" value={localContent.theme?.light?.primary} onChange={(val) => updateNested('theme.light.primary', val)} />
                     <InputField label="Вторичный фон" value={localContent.theme?.light?.secondary} onChange={(val) => updateNested('theme.light.secondary', val)} />
@@ -571,7 +572,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   </div>
                 </SectionCard>
 
-                <SectionCard title="Тема по умолчанию" icon={<Settings size={18}/>}>
+                <SectionCard title={interpolate(localContent.ui?.cmsThemeDefault, localContent) || 'Тема по умолчанию'} icon={<Settings size={18}/>}>
                   <div className="mb-4">
                     <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Стартовая тема</label>
                     <select
@@ -579,8 +580,8 @@ export default function CMS({ content, setContent, onLogout }) {
                       onChange={(e) => updateNested('defaultTheme', e.target.value)}
                       className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm font-medium"
                     >
-                      <option value="dark">Темная тема</option>
-                      <option value="light">Светлая тема</option>
+                      <option value="dark">{interpolate(localContent.ui?.cmsThemeDark, localContent) || 'Темная тема'}</option>
+                      <option value="light">{interpolate(localContent.ui?.cmsThemeLight, localContent) || 'Светлая тема'}</option>
                     </select>
                     <p className="text-[9px] text-slate-500 mt-2 ml-1 italic">Тема которую увидит посетитель при первом открытии сайта</p>
                   </div>
@@ -590,7 +591,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
             {activeTab === 'brand' && (
               <div className="space-y-8 animate-slow-fade">
-                <SectionCard title="Логотип и название" icon={<LayoutDashboard size={18}/>} tooltip="Настройка основного брендинга компании">
+                <SectionCard title={interpolate(localContent.ui?.cmsBrandTitle, localContent) || 'Логотип и название'} icon={<LayoutDashboard size={18}/>} tooltip={interpolate(localContent.ui?.cmsBrandSubtitle, localContent) || 'Настройка основного брендинга компании'}>
                   <div className="grid grid-cols-2 gap-x-8">
                     <div>
                       <InputField label="Название (logoText)" value={localContent.logoText} onChange={(val) => updateNested('logoText', val)} />
@@ -604,7 +605,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
                   <div className="grid grid-cols-2 gap-12 pt-4 border-t border-slate-900/50">
                     <div className="space-y-6">
-                      <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 mb-4">Масштаб логотипа (Шапка)</label>
+                      <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 mb-4">{interpolate(localContent.ui?.cmsLogoHeader, localContent) || 'Масштаб логотипа (Шапка)'}</label>
                       <div className="flex items-center gap-6">
                         <input
                           type="range"
@@ -620,7 +621,7 @@ export default function CMS({ content, setContent, onLogout }) {
                     </div>
 
                     <div className="space-y-6">
-                      <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 mb-4">Масштаб логотипа (Подвал)</label>
+                      <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-blue-400 mb-4">{interpolate(localContent.ui?.cmsLogoFooter, localContent) || 'Масштаб логотипа (Подвал)'}</label>
                       <div className="flex items-center gap-6">
                         <input
                           type="range"
@@ -637,7 +638,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   </div>
                 </SectionCard>
 
-                <SectionCard title="Метка региона" icon={<MapPin size={18}/>} tooltip="Статичная метка над логотипом в шапке и подвале">
+                <SectionCard title={interpolate(localContent.ui?.cmsRegionBadge, localContent) || 'Метка региона'} icon={<MapPin size={18}/>} tooltip="Статичная метка над логотипом в шапке и подвале">
                   <div className="space-y-4">
                     <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-xl border border-slate-800/50 mb-4">
                       <input
@@ -646,7 +647,7 @@ export default function CMS({ content, setContent, onLogout }) {
                         onChange={(e) => updateNested('regionBadge.enabled', e.target.checked)}
                         className="w-5 h-5 rounded bg-slate-800 border-slate-700 text-blue-600"
                       />
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показывать метку</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{interpolate(localContent.ui?.cmsShowBadge, localContent) || 'Показывать метку'}</label>
                     </div>
 
                     <InputField label="Текст метки" value={localContent.regionBadge?.text} onChange={(val) => updateNested('regionBadge.text', val)} />
@@ -677,7 +678,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   </div>
                 </SectionCard>
 
-                <SectionCard title="Соцсети" icon={<Send size={18}/>} tooltip="Настройка ссылок на социальные сети компании">
+                <SectionCard title={interpolate(localContent.ui?.cmsSocialsTitle, localContent) || 'Соцсети'} icon={<Send size={18}/>} tooltip="Настройка ссылок на социальные сети компании">
                   <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-xl border border-slate-800/50 mb-8">
                     <input
                       type="checkbox"
@@ -685,7 +686,7 @@ export default function CMS({ content, setContent, onLogout }) {
                       onChange={(e) => updateNested('ui.showSocials', e.target.checked)}
                       className="w-5 h-5 rounded bg-slate-800 border-slate-700 text-blue-600"
                     />
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показывать соцсети</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">{interpolate(localContent.ui?.cmsShowSocials, localContent) || 'Показывать соцсети'}</label>
                   </div>
 
                   <div className="space-y-4">
@@ -716,7 +717,7 @@ export default function CMS({ content, setContent, onLogout }) {
                         }} />
                       </div>
                     ))}
-                    <button onClick={() => updateNested('socialsList', [...(localContent.socialsList || []), { label: 'New', icon: 'Send', url: 'https://' }])} className="w-full py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 transition-all flex items-center justify-center gap-3"><Plus size={20}/> Добавить соцсеть</button>
+                    <button onClick={() => updateNested('socialsList', [...(localContent.socialsList || []), { label: 'New', icon: 'Send', url: 'https://' }])} className="w-full py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 transition-all flex items-center justify-center gap-3"><Plus size={20}/> {interpolate(localContent.ui?.cmsAddSocial, localContent) || 'Добавить соцсеть'}</button>
                   </div>
                 </SectionCard>
               </div>
@@ -726,16 +727,16 @@ export default function CMS({ content, setContent, onLogout }) {
               <div className="space-y-8 animate-slow-fade">
                 <div className="flex gap-2 p-1 bg-slate-900/50 rounded-2xl border border-slate-800/50 mb-8 overflow-x-auto no-scrollbar">
                   {[
-                    { id: 'hero', label: 'Hero' },
-                    { id: 'stats', label: 'Статистика' },
-                    { id: 'features', label: 'Преимущества' },
-                    { id: 'services', label: 'Услуги' },
-                    { id: 'process', label: 'Процесс' },
-                    { id: 'bpo', label: 'БПО' },
-                    { id: 'geography', label: 'Охват' },
-                    { id: 'clients', label: 'Клиенты' },
-                    { id: 'news', label: 'Новости' },
-                    { id: 'faq', label: 'FAQ' },
+                    { id: 'hero', label: interpolate(localContent.ui?.cmsContentHero, localContent) || 'Hero' },
+                    { id: 'stats', label: interpolate(localContent.ui?.cmsContentStats, localContent) || 'Статистика' },
+                    { id: 'features', label: interpolate(localContent.ui?.cmsContentFeatures, localContent) || 'Преимущества' },
+                    { id: 'services', label: interpolate(localContent.ui?.cmsContentServices, localContent) || 'Услуги' },
+                    { id: 'process', label: interpolate(localContent.ui?.cmsContentProcess, localContent) || 'Процесс' },
+                    { id: 'bpo', label: interpolate(localContent.ui?.cmsContentBPO, localContent) || 'БПО' },
+                    { id: 'geography', label: interpolate(localContent.ui?.cmsContentGeography, localContent) || 'Охват' },
+                    { id: 'clients', label: interpolate(localContent.ui?.cmsContentClients, localContent) || 'Клиенты' },
+                    { id: 'news', label: interpolate(localContent.ui?.cmsContentNews, localContent) || 'Новости' },
+                    { id: 'faq', label: interpolate(localContent.ui?.cmsContentFAQ, localContent) || 'FAQ' },
                   ].map(sub => (
                     <button
                       key={sub.id}
@@ -753,7 +754,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
                 {contentSubTab === 'hero' && (
                   <div className="space-y-8 animate-slow-fade">
-                    <SectionCard title="Главный экран (Hero)" icon={<LayoutDashboard size={18}/>} tooltip="Настройка текстов и кнопок первого экрана сайта">
+                    <SectionCard title={interpolate(localContent.ui?.cmsContentHero, localContent) || 'Главный экран (Hero)'} icon={<LayoutDashboard size={18}/>} tooltip="Настройка текстов и кнопок первого экрана сайта">
                       <div className="space-y-2">
                         <InputField label="Верхний бейдж" value={localContent.hero?.badge} onChange={(val) => updateNested('hero.badge', val)} />
                         <InputField label="Lucide Icon (Badge)" value={localContent.hero?.badgeIcon} onChange={(val) => updateNested('hero.badgeIcon', val)} />
@@ -840,13 +841,13 @@ export default function CMS({ content, setContent, onLogout }) {
                       }} />
                       </div>
                     ))}
-                    <button onClick={() => updateNested('stats', [...(localContent.stats || []), { val: 0, prefix: '', suffix: '', label: 'Новый показатель' }])} className="col-span-2 py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 hover:bg-blue-500/5 font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3"><Plus size={20}/> Добавить показатель</button>
+                    <button onClick={() => updateNested('stats', [...(localContent.stats || []), { val: 0, prefix: '', suffix: '', label: 'Новый показатель' }])} className="col-span-2 py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 hover:bg-blue-500/5 font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3"><Plus size={20}/> {interpolate(localContent.ui?.cmsAddStat, localContent) || 'Добавить показатель'}</button>
                   </div>
                 )}
 
                 {contentSubTab === 'features' && (
                   <div className="space-y-6 animate-slow-fade">
-                    <SectionCard title="Заголовки секции" icon={<FileText size={18}/>} tooltip="Настройка текстов и кнопок в блоке преимуществ">
+                    <SectionCard title={interpolate(localContent.ui?.cmsContentFeatures, localContent) || 'Заголовки секции'} icon={<FileText size={18}/>} tooltip="Настройка текстов и кнопок в блоке преимуществ">
                       <div className="grid grid-cols-2 gap-8">
                         <InputField label="Заголовок" value={localContent.features?.title} onChange={(val) => updateNested('features.title', val)} />
                         <InputField label="Акцентное слово" value={localContent.features?.accent} onChange={(val) => updateNested('features.accent', val)} />
@@ -899,13 +900,13 @@ export default function CMS({ content, setContent, onLogout }) {
                         </div>
                       </div>
                     ))}
-                    <button onClick={() => updateNested('features.items', [...(localContent.features?.items || []), { icon: 'Check', title: 'Новое преимущество', desc: 'Описание...' }])} className="w-full py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 hover:bg-blue-500/5 font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3"><Plus size={20}/> Добавить преимущество</button>
+                    <button onClick={() => updateNested('features.items', [...(localContent.features?.items || []), { icon: 'Check', title: 'Новое преимущество', desc: 'Описание...' }])} className="w-full py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 hover:bg-blue-500/5 font-black text-[10px] uppercase tracking-[0.3em] transition-all flex items-center justify-center gap-3"><Plus size={20}/> {interpolate(localContent.ui?.cmsAddFeature, localContent) || 'Добавить преимущество'}</button>
                   </div>
                 )}
 
                 {contentSubTab === 'services' && (
                   <div className="space-y-6 animate-slow-fade">
-                    <SectionCard title="Заголовки секции" icon={<Phone size={18}/>} tooltip="Настройка блока перечня услуг">
+                    <SectionCard title={interpolate(localContent.ui?.cmsContentServices, localContent) || 'Заголовки секции'} icon={<Phone size={18}/>} tooltip="Настройка блока перечня услуг">
                       <div className="grid grid-cols-2 gap-8">
                         <InputField label="Заголовок" value={localContent.services?.title} onChange={(val) => updateNested('services.title', val)} />
                         <InputField label="Акцентное слово" value={localContent.services?.accent} onChange={(val) => updateNested('services.accent', val)} />
@@ -1031,13 +1032,13 @@ export default function CMS({ content, setContent, onLogout }) {
                         </div>
                       </div>
                     ))}
-                    <button onClick={() => updateNested('services.list', [...(localContent.services?.list || []), { title: 'Новая услуга', badge: 'Тариф', features: [], button: 'Заказать', popular: false }])} className="w-full py-6 border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 font-black text-[10px] uppercase tracking-[0.3em] transition-all rounded-3xl flex items-center justify-center gap-3"><Plus size={20}/> Добавить услугу</button>
+                    <button onClick={() => updateNested('services.list', [...(localContent.services?.list || []), { title: 'Новая услуга', badge: 'Тариф', features: [], button: 'Заказать', popular: false }])} className="w-full py-6 border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 font-black text-[10px] uppercase tracking-[0.3em] transition-all rounded-3xl flex items-center justify-center gap-3"><Plus size={20}/> {interpolate(localContent.ui?.cmsAddService, localContent) || 'Добавить услугу'}</button>
                   </div>
                 )}
 
                 {contentSubTab === 'process' && (
                   <div className="space-y-6 animate-slow-fade">
-                    <SectionCard title="Заголовки секции" icon={<Zap size={18}/>} tooltip="Настройка этапов работы компании">
+                    <SectionCard title={interpolate(localContent.ui?.cmsContentProcess, localContent) || 'Заголовки секции'} icon={<Zap size={18}/>} tooltip="Настройка этапов работы компании">
                       <div className="grid grid-cols-2 gap-8">
                         <InputField label="Заголовок" value={localContent.process?.title} onChange={(val) => updateNested('process.title', val)} />
                         <InputField label="Акцентное слово" value={localContent.process?.accent} onChange={(val) => updateNested('process.accent', val)} />
@@ -1088,13 +1089,13 @@ export default function CMS({ content, setContent, onLogout }) {
                         }} className="w-full bg-[var(--cms-input-bg)] border border-[var(--cms-input-border)] rounded-xl px-5 py-4 text-[var(--cms-text-main)] text-sm font-medium h-24 resize-none shadow-inner transition-all focus:ring-2 focus:ring-blue-500/50 outline-none" />
                       </div>
                     ))}
-                    <button onClick={() => updateNested('process.steps', [...localContent.process.steps, { step: '04', title: 'Новый этап', desc: 'Описание...' }])} className="w-full py-6 border-2 border-dashed border-[var(--cms-divider)] text-[var(--cms-text-muted)] hover:text-blue-500 hover:border-blue-500/40 font-black text-[10px] uppercase tracking-[0.3em] transition-all rounded-3xl flex items-center justify-center gap-3"><Plus size={20}/> Добавить этап</button>
+                    <button onClick={() => updateNested('process.steps', [...localContent.process.steps, { step: '04', title: 'Новый этап', desc: 'Описание...' }])} className="w-full py-6 border-2 border-dashed border-[var(--cms-divider)] text-[var(--cms-text-muted)] hover:text-blue-500 hover:border-blue-500/40 font-black text-[10px] uppercase tracking-[0.3em] transition-all rounded-3xl flex items-center justify-center gap-3"><Plus size={20}/> {interpolate(localContent.ui?.cmsAddStep, localContent) || 'Добавить этап'}</button>
                   </div>
                 )}
 
                 {contentSubTab === 'bpo' && (
                   <div className="space-y-6 animate-slow-fade">
-                    <SectionCard title="Бесконвертное Почтовое Отправление (БПО)" icon={<FileText size={18}/>} tooltip="Настройка раздела посвященного технологии БПО">
+                    <SectionCard title={interpolate(localContent.ui?.cmsContentBPO, localContent) || 'Бесконвертное Почтовое Отправление (БПО)'} icon={<FileText size={18}/>} tooltip="Настройка раздела посвященного технологии БПО">
                       <div className="grid grid-cols-2 gap-8">
                         <InputField label="Заголовок" value={localContent.bpo?.title} onChange={(val) => updateNested('bpo.title', val)} />
                         <InputField label="Акцентное слово" value={localContent.bpo?.accent} onChange={(val) => updateNested('bpo.accent', val)} />
@@ -1150,7 +1151,7 @@ export default function CMS({ content, setContent, onLogout }) {
                         }} />
                       </div>
                     ))}
-                    <button onClick={() => updateNested('bpo.steps', [...(localContent.bpo?.steps || []), { num: '0' + ((localContent.bpo?.steps?.length || 0) + 1), title: 'Новый этап', desc: 'Описание этапа БПО...' }])} className="w-full py-6 rounded-3xl border-2 border-dashed border-[var(--cms-divider)] text-[var(--cms-text-muted)] hover:text-blue-500 transition-all flex items-center justify-center gap-3 mb-8 shadow-xl"><Plus size={20}/> Добавить этап БПО</button>
+                    <button onClick={() => updateNested('bpo.steps', [...(localContent.bpo?.steps || []), { num: '0' + ((localContent.bpo?.steps?.length || 0) + 1), title: 'Новый этап', desc: 'Описание этапа БПО...' }])} className="w-full py-6 rounded-3xl border-2 border-dashed border-[var(--cms-divider)] text-[var(--cms-text-muted)] hover:text-blue-500 transition-all flex items-center justify-center gap-3 mb-8 shadow-xl"><Plus size={20}/> {interpolate(localContent.ui?.cmsAddStep, localContent) || 'Добавить этап БПО'}</button>
 
                     <SectionCard title="Преимущества БПО" icon={<Check size={18}/>} tooltip="Короткий список ключевых преимуществ технологии">
                       {(localContent.bpo?.advantages || []).map((adv, idx) => (
@@ -1749,17 +1750,17 @@ export default function CMS({ content, setContent, onLogout }) {
                     </div>
                     <div className="flex items-center gap-3 bg-[var(--cms-bg-secondary)] p-4 rounded-xl border border-[var(--cms-divider)]">
                       <input type="checkbox" checked={localContent.ui?.showBackToTop} onChange={(e) => updateNested('ui.showBackToTop', e.target.checked)} className="w-5 h-5 rounded bg-slate-800 text-blue-600" />
-                      <label className="text-[10px] font-black uppercase tracking-widest text-[var(--cms-text-label)]">Кнопка "Наверх"</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[var(--cms-text-label)]">{interpolate(localContent.ui?.cmsBackToTopLabel, localContent) || 'Кнопка "Наверх"'}</label>
                     </div>
                   </div>
                 </SectionCard>
 
-                <SectionCard title="Подвал (Footer)" icon={<LayoutDashboard size={18}/>}>
+                <SectionCard title={interpolate(localContent.ui?.cmsFooterTitle, localContent) || 'Подвал (Footer)'} icon={<LayoutDashboard size={18}/>}>
                   <textarea value={localContent.footer?.description} onChange={(e) => updateNested('footer.description', e.target.value)} className="w-full bg-[var(--cms-input-bg)] border border-[var(--cms-input-border)] rounded-xl px-5 py-4 text-[var(--cms-text-main)] text-sm font-medium h-24 resize-none shadow-inner" />
                   <div className="grid grid-cols-3 gap-4 mt-4">
-                    <InputField label="Заг. Нав" value={localContent.footer?.headers?.nav} onChange={(val) => updateNested('footer.headers.nav', val)} />
-                    <InputField label="Заг. Юр" value={localContent.footer?.headers?.legal} onChange={(val) => updateNested('footer.headers.legal', val)} />
-                    <InputField label="Заг. Конт" value={localContent.footer?.headers?.contacts} onChange={(val) => updateNested('footer.headers.contacts', val)} />
+                    <InputField label={interpolate(localContent.ui?.cmsFooterNavHeader, localContent) || 'Заг. Нав'} value={localContent.footer?.headers?.nav} onChange={(val) => updateNested('footer.headers.nav', val)} />
+                    <InputField label={interpolate(localContent.ui?.cmsFooterLegalHeader, localContent) || 'Заг. Юр'} value={localContent.footer?.headers?.legal} onChange={(val) => updateNested('footer.headers.legal', val)} />
+                    <InputField label={interpolate(localContent.ui?.cmsFooterContactsHeader, localContent) || 'Заг. Конт'} value={localContent.footer?.headers?.contacts} onChange={(val) => updateNested('footer.headers.contacts', val)} />
                   </div>
                 </SectionCard>
               </div>
@@ -1767,20 +1768,20 @@ export default function CMS({ content, setContent, onLogout }) {
 
             {activeTab === 'analytics' && (
               <div className="space-y-8 animate-slow-fade">
-                <SectionCard title="Интеграции и Аналитика" icon={<BarChart3 size={18}/>}>
+                <SectionCard title={interpolate(localContent.ui?.cmsAnalyticsTitle, localContent) || 'Интеграции и Аналитика'} icon={<BarChart3 size={18}/>}>
                   <div className="space-y-4">
                     <InputField label="Yandex Metrika ID" value={localContent.integrations?.yandexMetrika} onChange={(val) => updateNested('integrations.yandexMetrika', val)} />
                     <InputField label="Google Analytics ID" value={localContent.integrations?.googleAnalytics} onChange={(val) => updateNested('integrations.googleAnalytics', val)} />
                   </div>
                 </SectionCard>
 
-                <SectionCard title="Cookie Баннер" icon={<Shield size={18}/>}>
+                <SectionCard title={interpolate(localContent.ui?.cmsCookieBannerTitle, localContent) || 'Cookie Баннер'} icon={<Shield size={18}/>}>
                    <div className="space-y-4">
-                     <InputField label="Заголовок" value={localContent.cookieBanner?.title} onChange={(val) => updateNested('cookieBanner.title', val)} />
+                     <InputField label={interpolate(localContent.ui?.cmsCookieBannerHeader, localContent) || 'Заголовок'} value={localContent.cookieBanner?.title} onChange={(val) => updateNested('cookieBanner.title', val)} />
                      <textarea value={localContent.cookieBanner?.description} onChange={(e) => updateNested('cookieBanner.description', e.target.value)} className="w-full bg-[var(--cms-input-bg)] border border-[var(--cms-input-border)] rounded-xl px-5 py-4 text-[var(--cms-text-main)] text-sm font-medium h-24 resize-none shadow-inner" />
                      <div className="grid grid-cols-2 gap-8">
-                       <InputField label="Текст кнопки (Все)" value={localContent.cookieBanner?.btnAll} onChange={(val) => updateNested('cookieBanner.btnAll', val)} />
-                       <InputField label="Текст кнопки (Осн)" value={localContent.cookieBanner?.btnEssential} onChange={(val) => updateNested('cookieBanner.btnEssential', val)} />
+                       <InputField label={interpolate(localContent.ui?.cmsCookieBannerBtnAll, localContent) || 'Текст кнопки (Все)'} value={localContent.cookieBanner?.btnAll} onChange={(val) => updateNested('cookieBanner.btnAll', val)} />
+                       <InputField label={interpolate(localContent.ui?.cmsCookieBannerBtnEssential, localContent) || 'Текст кнопки (Осн)'} value={localContent.cookieBanner?.btnEssential} onChange={(val) => updateNested('cookieBanner.btnEssential', val)} />
                      </div>
                    </div>
                 </SectionCard>
