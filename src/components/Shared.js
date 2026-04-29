@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import * as LucideIcons from 'lucide-react';
+import { RegionBadge } from './RegionBadge';
 
 // Dynamic Icon Component
 export const DynamicIcon = ({ name, size = 24, className = "" }) => {
@@ -8,7 +9,7 @@ export const DynamicIcon = ({ name, size = 24, className = "" }) => {
   return <IconComponent size={size} className={className} aria-hidden="true" />;
 };
 
-export const Logo = ({ light, variant = "large", customScale, tagline = "LOGISTIC TECH", text }) => {
+export const Logo = ({ light, variant = "large", customScale, tagline = "LOGISTIC TECH", text, regionBadge }) => {
   const isSmall = variant === "small";
   const scale = customScale || (isSmall ? 1.2 : 1.4);
 
@@ -30,7 +31,30 @@ export const Logo = ({ light, variant = "large", customScale, tagline = "LOGISTI
         />
       </div>
 
-      <div className="flex flex-col leading-tight">
+      <div className="flex flex-col leading-tight justify-center">
+        {/* RegionBadge внутри текстового блока — резервируем 16px высоты в шапке */}
+        {!isSmall ? (
+          <div style={{ height: '16px', marginBottom: '2px', display: 'flex', alignItems: 'center' }}>
+            {regionBadge?.enabled && (
+              <RegionBadge
+                text={regionBadge.text}
+                style={regionBadge.style}
+                isLight={light}
+              />
+            )}
+          </div>
+        ) : (
+          regionBadge?.enabled && (
+            <div className="mb-1">
+              <RegionBadge
+                text={regionBadge.text}
+                style={regionBadge.style}
+                isLight={light}
+              />
+            </div>
+          )
+        )}
+
         <div className={`flex items-center ${isSmall ? 'gap-1 md:gap-1.5' : 'gap-1.5 md:gap-2.5'}`}>
           <span className={`${isSmall ? 'text-sm md:text-base' : 'text-lg md:text-2xl'} font-black tracking-tighter ${light ? 'text-slate-900' : 'text-white'}`}>{text || 'VECTOR'}</span>
           <div className={`${isSmall ? 'w-0.5 h-0.5' : 'w-1 h-1 md:w-1.5 md:h-1.5'} rounded-full bg-blue-500 shadow-lg shadow-blue-500/20`}></div>

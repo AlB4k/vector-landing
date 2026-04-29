@@ -203,17 +203,14 @@ export default function Landing({ content, theme, setTheme }) {
       {/* Navbar */}
       <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 px-6 py-4 ${isScrolled ? 'backdrop-blur-md border-b border-[var(--border)]' : 'bg-transparent'}`} style={{ backgroundColor: isScrolled ? 'var(--nav-bg)' : 'transparent' }}>
         <div className="max-w-7xl mx-auto flex items-center justify-between">
-          <div style={{display:'flex', flexDirection:'column', cursor:'pointer'}} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="items-start">
-            <div style={{height: '20px', marginBottom: '4px'}}>
-              {content.regionBadge?.enabled && (
-                <RegionBadge
-                  text={content.regionBadge.text}
-                  style={content.regionBadge.style}
-                  isLight={isLight}
-                />
-              )}
-            </div>
-            <Logo light={isLight} customScale={content.logoScaleHeader} tagline={content.companyTagline} text={content.logoText} />
+          <div style={{cursor:'pointer'}} onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
+            <Logo
+              light={isLight}
+              customScale={content.logoScaleHeader}
+              tagline={content.companyTagline}
+              text={content.logoText}
+              regionBadge={content.regionBadge}
+            />
           </div>
           <div className="hidden md:flex items-center gap-8 text-[10px] font-bold uppercase tracking-[0.15em] opacity-80">
             {content.sections.filter(s => s.enabled && s.id !== 'hero').map((s) => (
@@ -236,17 +233,15 @@ export default function Landing({ content, theme, setTheme }) {
       <div className={`fixed inset-0 z-[60] bg-[#08080f]/98 backdrop-blur-2xl transition-all duration-500 ${mobileMenuOpen ? 'opacity-100 visible' : 'opacity-0 invisible'}`}>
         <div className="p-8 flex flex-col h-full">
           <div className="flex justify-between items-center mb-16">
-            <div onClick={() => { setMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="cursor-pointer flex flex-col items-start">
-              <div style={{height: '20px', marginBottom: '4px'}}>
-                {content.regionBadge?.enabled && (
-                  <RegionBadge
-                    text={content.regionBadge.text}
-                    style={content.regionBadge.style}
-                    isLight={false}
-                  />
-                )}
-              </div>
-              <Logo light={false} variant="small" customScale={content.logoScaleFooter} tagline={interpolate(content.companyTagline, content)} text={interpolate(content.logoText, content)} />
+            <div onClick={() => { setMobileMenuOpen(false); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="cursor-pointer">
+              <Logo
+                light={false}
+                variant="small"
+                customScale={content.logoScaleFooter}
+                tagline={interpolate(content.companyTagline, content)}
+                text={interpolate(content.logoText, content)}
+                regionBadge={content.regionBadge}
+              />
             </div>
             <button onClick={() => setMobileMenuOpen(false)} className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white border border-white/10 active:scale-90 transition-all" aria-label={interpolate(content.ui?.closeMenu, content) || "Закрыть мобильное меню"}>
               <X size={24} aria-hidden="true" />
