@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { validateContent } from './utils/security';
 import {
   LayoutDashboard,
@@ -28,26 +28,66 @@ import {
   Copy,
   Check,
   Shield,
-  Sparkles
+  Sparkles,
+  Monitor,
+  Sun,
+  Moon
 } from 'lucide-react';
+
+const CMS_THEMES = {
+  dark: {
+    '--cms-bg':           '#020204',
+    '--cms-bg-secondary': '#0a0a0f',
+    '--cms-sidebar-bg':   'rgba(2,2,4,0.95)',
+    '--cms-header-bg':    '#020204',
+    '--cms-card-bg':      '#0f0f18',
+    '--cms-card-border':  '#1e1e2e',
+    '--cms-text-main':    '#f8fafc',
+    '--cms-text-muted':   '#64748b',
+    '--cms-text-label':   '#94a3b8',
+    '--cms-input-bg':     '#1e1e2e',
+    '--cms-input-border': '#2d2d3d',
+    '--cms-accent':       '#2563eb',
+    '--cms-accent-hover': '#1d4ed8',
+    '--cms-divider':      '#1e1e2e',
+    '--cms-active-tab':   'rgba(37,99,235,0.15)',
+  },
+  light: {
+    '--cms-bg':           '#f1f5f9',
+    '--cms-bg-secondary': '#e2e8f0',
+    '--cms-sidebar-bg':   'rgba(248,250,252,0.98)',
+    '--cms-header-bg':    '#ffffff',
+    '--cms-card-bg':      '#ffffff',
+    '--cms-card-border':  '#e2e8f0',
+    '--cms-text-main':    '#0f172a',
+    '--cms-text-muted':   '#475569',
+    '--cms-text-label':   '#64748b',
+    '--cms-input-bg':     '#f8fafc',
+    '--cms-input-border': '#cbd5e1',
+    '--cms-accent':       '#2563eb',
+    '--cms-accent-hover': '#1d4ed8',
+    '--cms-divider':      '#e2e8f0',
+    '--cms-active-tab':   'rgba(37,99,235,0.08)',
+  }
+};
 
 const InputField = ({ label, value, onChange, type = "text" }) => (
   <div className="mb-6">
-    <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">{label}</label>
+    <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-muted)] mb-2.5 ml-1">{label}</label>
     <input
       type={type}
       value={value || ''}
       onChange={(e) => onChange(e.target.value)}
-      className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all text-sm font-medium placeholder-slate-700 shadow-inner"
+      className="w-full bg-[var(--cms-input-bg)] border border-[var(--cms-input-border)] rounded-xl px-5 py-3.5 text-[var(--cms-text-main)] focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all text-sm font-medium placeholder-slate-700 shadow-inner"
     />
   </div>
 );
 
 const SectionCard = ({ title, children, icon, tooltip }) => (
-  <div className="bg-slate-950/40 backdrop-blur-sm p-8 rounded-3xl border border-slate-800/50 mb-8 shadow-2xl relative overflow-hidden group">
+  <div className="bg-[var(--cms-card-bg)] backdrop-blur-sm p-8 rounded-3xl border border-[var(--cms-card-border)] mb-8 shadow-2xl relative overflow-hidden group">
     <div className="absolute top-0 left-0 w-1 h-full bg-blue-600/20 group-hover:bg-blue-600 transition-colors"></div>
-    <h3 className="text-[10px] font-black mb-8 text-slate-400 flex items-center gap-3 uppercase tracking-[0.3em]">
-      <span className="p-2 rounded-lg bg-slate-900 text-blue-400 shadow-lg">{icon}</span>
+    <h3 className="text-[10px] font-black mb-8 text-[var(--cms-text-label)] flex items-center gap-3 uppercase tracking-[0.3em]">
+      <span className="p-2 rounded-lg bg-[var(--cms-bg-secondary)] text-blue-400 shadow-lg">{icon}</span>
       {title}
       {tooltip && (
         <div className="group/tooltip relative inline-block ml-1">
@@ -69,6 +109,38 @@ export default function CMS({ content, setContent, onLogout }) {
   const [legalSubTab, setLegalSubTab] = useState('privacy');
   const [menuScrollEnd, setMenuScrollEnd] = useState(false);
   const [localContent, setLocalContent] = useState(content);
+
+  const [cmsTheme, setCmsTheme] = useState(() => {
+    return localStorage.getItem('cms_theme') || 'auto'
+  });
+
+  const getActiveCmsTheme = () => {
+    if (cmsTheme === 'auto') {
+      return window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark' : 'light'
+    }
+    return cmsTheme
+  };
+
+  const [activeCmsTheme, setActiveCmsTheme] = useState(getActiveCmsTheme());
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handler = () => {
+      if (cmsTheme === 'auto') {
+        setActiveCmsTheme(mediaQuery.matches ? 'dark' : 'light')
+      }
+    }
+    mediaQuery.addEventListener('change', handler)
+    return () => mediaQuery.removeEventListener('change', handler)
+  }, [cmsTheme]);
+
+  useEffect(() => {
+    const active = getActiveCmsTheme()
+    setActiveCmsTheme(active)
+    localStorage.setItem('cms_theme', cmsTheme)
+  }, [cmsTheme]);
+
   const [deliveryConfig, setDeliveryConfig] = useState(() => {
     try {
       const stored = localStorage.getItem('vector_delivery_config');
@@ -210,17 +282,42 @@ export default function CMS({ content, setContent, onLogout }) {
   };
 
   return (
-    <div className="h-screen overflow-hidden bg-[#020204] text-slate-300 flex flex-col font-sans">
-      <header className="h-24 flex-shrink-0 border-b border-slate-900 px-10 flex items-center justify-between bg-[#020204] z-[30]">
+    <div
+      style={{
+        ...CMS_THEMES[activeCmsTheme],
+        backgroundColor: 'var(--cms-bg)',
+        color: 'var(--cms-text-main)'
+      }}
+      className="h-screen overflow-hidden flex flex-col font-sans transition-colors duration-300"
+    >
+      <header className="h-24 flex-shrink-0 border-b border-[var(--cms-divider)] px-10 flex items-center justify-between bg-[var(--cms-header-bg)] z-[30] transition-colors">
         <div className="flex items-center gap-4">
-          <div className="p-2.5 rounded-xl bg-slate-900 text-blue-500 border border-slate-800 shadow-xl">
+          <div className="p-2.5 rounded-xl bg-[var(--cms-bg-secondary)] text-blue-500 border border-[var(--cms-divider)] shadow-xl">
             {activeTabIcon}
           </div>
-          <h2 className="text-xs font-black text-white uppercase tracking-[0.4em]">
+          <h2 className="text-xs font-black text-[var(--cms-text-main)] uppercase tracking-[0.4em]">
             CMS — {activeTabLabel}
           </h2>
         </div>
-        <div className="flex gap-4">
+        <div className="flex items-center gap-4">
+          {/* Theme Switcher */}
+          <div className="flex bg-[var(--cms-bg-secondary)] p-1 rounded-xl border border-[var(--cms-divider)] mr-2">
+            {[
+              { id: 'light', icon: <Sun size={14} />, label: 'Light' },
+              { id: 'auto', icon: <Monitor size={14} />, label: 'Auto' },
+              { id: 'dark', icon: <Moon size={14} />, label: 'Dark' }
+            ].map(t => (
+              <button
+                key={t.id}
+                onClick={() => setCmsTheme(t.id)}
+                className={`p-2 rounded-lg transition-all ${cmsTheme === t.id ? 'bg-blue-600 text-white shadow-lg' : 'text-[var(--cms-text-muted)] hover:text-[var(--cms-text-main)]'}`}
+                title={t.label}
+              >
+                {t.icon}
+              </button>
+            ))}
+          </div>
+
           <input
             type="file"
             id="import-file"
@@ -228,13 +325,13 @@ export default function CMS({ content, setContent, onLogout }) {
             accept=".json"
             onChange={handleImport}
           />
-          <button onClick={() => document.getElementById('import-file').click()} className="flex items-center gap-3 px-5 py-3 rounded-xl border border-slate-800 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-slate-900 hover:border-slate-700 transition-all text-slate-400 hover:text-white shadow-lg">
+          <button onClick={() => document.getElementById('import-file').click()} className="flex items-center gap-3 px-5 py-3 rounded-xl border border-[var(--cms-divider)] font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[var(--cms-bg-secondary)] transition-all text-[var(--cms-text-muted)] hover:text-[var(--cms-text-main)] shadow-lg">
             <Upload size={16} /> Импорт
           </button>
-          <button onClick={handleExport} className="flex items-center gap-3 px-5 py-3 rounded-xl border border-slate-800 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-slate-900 hover:border-slate-700 transition-all text-slate-400 hover:text-white shadow-lg">
+          <button onClick={handleExport} className="flex items-center gap-3 px-5 py-3 rounded-xl border border-[var(--cms-divider)] font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[var(--cms-bg-secondary)] transition-all text-[var(--cms-text-muted)] hover:text-[var(--cms-text-main)] shadow-lg">
             <Download size={16} /> Экспорт
           </button>
-          <button onClick={() => window.open('/', '_blank')} className="flex items-center gap-3 px-7 py-3 rounded-xl border border-slate-800 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-slate-900 hover:border-slate-700 transition-all text-slate-400 hover:text-white shadow-lg">
+          <button onClick={() => window.open('/', '_blank')} className="flex items-center gap-3 px-7 py-3 rounded-xl border border-[var(--cms-divider)] font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[var(--cms-bg-secondary)] transition-all text-[var(--cms-text-muted)] hover:text-[var(--cms-text-main)] shadow-lg">
             <Eye size={16} /> Просмотр
           </button>
           <button onClick={handleReset} className="flex items-center gap-3 px-5 py-3 rounded-xl border border-red-900/20 text-red-500/40 font-black text-[10px] uppercase tracking-[0.2em] hover:bg-red-500/5 hover:text-red-500 transition-all">
@@ -256,13 +353,13 @@ export default function CMS({ content, setContent, onLogout }) {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        <aside className="w-72 border-r border-slate-900 flex flex-col bg-slate-950/80 backdrop-blur-2xl z-20 relative">
-          <div className="p-8 border-b border-slate-900 flex items-center gap-4">
+        <aside className="w-72 border-r border-[var(--cms-divider)] flex flex-col bg-[var(--cms-sidebar-bg)] backdrop-blur-2xl z-20 relative transition-colors">
+          <div className="p-8 border-b border-[var(--cms-divider)] flex items-center gap-4">
             <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center shadow-2xl shadow-blue-900/40">
               <Settings size={22} className="text-white" />
             </div>
             <div className="flex flex-col">
-              <span className="font-black tracking-tighter text-white text-xl leading-none">CMS</span>
+              <span className="font-black tracking-tighter text-[var(--cms-text-main)] text-xl leading-none">CMS</span>
               <span className="text-[8px] font-bold text-blue-500 uppercase tracking-widest mt-1">v{localContent.legal?.version || '2.0.0'}</span>
             </div>
           </div>
@@ -278,7 +375,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   fontWeight: 700,
                   letterSpacing: '0.1em',
                   textTransform: 'uppercase',
-                  color: '#475569',
+                  color: 'var(--cms-text-muted)',
                   userSelect: 'none'
                 }}>
                   {group.title}
@@ -288,9 +385,9 @@ export default function CMS({ content, setContent, onLogout }) {
                     <button
                       key={tab.id}
                       onClick={() => setActiveTab(tab.id)}
-                      className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all duration-300 border ${activeTab === tab.id ? 'bg-blue-600/10 border-blue-500/20 text-blue-400 shadow-lg shadow-blue-900/5' : 'border-transparent text-slate-500 hover:text-slate-300 hover:bg-slate-900/50'}`}
+                      className={`w-full flex items-center gap-4 px-5 py-3.5 rounded-2xl transition-all duration-300 border ${activeTab === tab.id ? 'bg-[var(--cms-active-tab)] border-blue-500/20 text-blue-400 shadow-lg shadow-blue-900/5' : 'border-transparent text-[var(--cms-text-muted)] hover:text-[var(--cms-text-main)] hover:bg-[var(--cms-input-bg)]'}`}
                     >
-                      <span className={`${activeTab === tab.id ? 'text-blue-400' : 'text-slate-600'}`}>{tab.icon}</span>
+                      <span className={`${activeTab === tab.id ? 'text-blue-400' : 'text-[var(--cms-text-muted)]'}`}>{tab.icon}</span>
                       <span className="font-bold text-[10px] uppercase tracking-[0.2em]">{tab.label}</span>
                       {activeTab === tab.id && <div className="ml-auto w-1.5 h-1.5 rounded-full bg-blue-500 animate-pulse"></div>}
                     </button>
@@ -307,13 +404,13 @@ export default function CMS({ content, setContent, onLogout }) {
               left: 0,
               right: 0,
               height: '60px',
-              background: 'linear-gradient(transparent, rgba(2,2,4,0.9))',
+              background: 'linear-gradient(transparent, var(--cms-bg))',
               pointerEvents: 'none',
               zIndex: 10
             }} />
           )}
 
-          <div className="p-6 border-t border-slate-900">
+          <div className="p-6 border-t border-[var(--cms-divider)]">
             <button onClick={onLogout} className="w-full flex items-center justify-center gap-3 px-5 py-4 text-red-500/60 hover:text-red-400 hover:bg-red-500/5 rounded-2xl transition-all font-black text-[10px] uppercase tracking-widest border border-transparent hover:border-red-500/10">
               <LogOut size={16} /> Выход из системы
             </button>
@@ -321,40 +418,40 @@ export default function CMS({ content, setContent, onLogout }) {
         </aside>
 
         <main className="flex-1 flex flex-col overflow-hidden relative">
-          <div className="flex-1 overflow-y-auto p-12 custom-scrollbar relative z-10 min-h-0 bg-[#020204]">
-            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(30,64,175,0.08),transparent)] pointer-events-none"></div>
+          <div className="flex-1 overflow-y-auto p-12 custom-scrollbar relative z-10 min-h-0 bg-[var(--cms-bg)] transition-colors">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.05),transparent)] pointer-events-none"></div>
             <div className="max-w-4xl mx-auto pb-24 relative z-10">
             {activeTab === 'structure' && (
               <div className="space-y-4">
                 <div className="grid grid-cols-3 gap-6 mb-12">
                   <div className="bg-blue-600/5 border border-blue-500/20 p-6 rounded-3xl">
                     <p className="text-[8px] font-black uppercase tracking-[0.2em] text-blue-500 mb-2">Build Status</p>
-                    <p className="text-xl font-black text-white leading-none">STABLE</p>
+                    <p className="text-xl font-black text-[var(--cms-text-main)] leading-none">STABLE</p>
                   </div>
-                  <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-3xl">
-                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2">Active Sections</p>
-                    <p className="text-xl font-black text-white leading-none">{localContent.sections.filter(s => s.enabled).length} / {localContent.sections.length}</p>
+                  <div className="bg-[var(--cms-card-bg)] border border-[var(--cms-card-border)] p-6 rounded-3xl">
+                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-muted)] mb-2">Active Sections</p>
+                    <p className="text-xl font-black text-[var(--cms-text-main)] leading-none">{localContent.sections.filter(s => s.enabled).length} / {localContent.sections.length}</p>
                   </div>
-                  <div className="bg-slate-900/40 border border-slate-800 p-6 rounded-3xl">
-                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2">Legal Compliance</p>
+                  <div className="bg-[var(--cms-card-bg)] border border-[var(--cms-card-border)] p-6 rounded-3xl">
+                    <p className="text-[8px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-muted)] mb-2">Legal Compliance</p>
                     <p className="text-xl font-black text-green-500 leading-none">100% READY</p>
                   </div>
                 </div>
 
                 <div className="mb-8 ml-2">
-                  <h4 className="text-xl font-black text-white mb-2 tracking-tight">Управление секциями</h4>
-                  <p className="text-xs text-slate-500 font-medium tracking-wide">Перетаскивайте и скрывайте блоки лендинга</p>
+                  <h4 className="text-xl font-black text-[var(--cms-text-main)] mb-2 tracking-tight">Управление секциями</h4>
+                  <p className="text-xs text-[var(--cms-text-muted)] font-medium tracking-wide">Перетаскивайте и скрывайте блоки лендинга</p>
                 </div>
                 {localContent.sections.map((section, idx) => (
-                  <div key={section.id} className="bg-slate-950/60 p-5 rounded-2xl border border-slate-800/60 flex items-center justify-between group transition-all hover:border-blue-500/40 hover:bg-slate-900/40 shadow-xl">
+                  <div key={section.id} className="bg-[var(--cms-card-bg)] p-5 rounded-2xl border border-[var(--cms-card-border)] flex items-center justify-between group transition-all hover:border-blue-500/40 hover:bg-[var(--cms-input-bg)] shadow-xl">
                     <div className="flex items-center gap-6">
                       <div className="flex flex-col gap-1.5">
-                        <button onClick={() => moveItem('sections', idx, -1)} className="p-1 text-slate-600 hover:text-blue-400 disabled:opacity-10 transition-colors" title="Перетащите разделы чтобы изменить порядок на сайте и в навигации" disabled={idx === 0}><ArrowUp size={16}/></button>
-                        <button onClick={() => moveItem('sections', idx, 1)} className="p-1 text-slate-600 hover:text-blue-400 disabled:opacity-10 transition-colors" title="Перетащите разделы чтобы изменить порядок на сайте и в навигации" disabled={idx === localContent.sections.length - 1}><ArrowDown size={16}/></button>
+                        <button onClick={() => moveItem('sections', idx, -1)} className="p-1 text-[var(--cms-text-muted)] hover:text-blue-400 disabled:opacity-10 transition-colors" title="Перетащите разделы чтобы изменить порядок на сайте и в навигации" disabled={idx === 0}><ArrowUp size={16}/></button>
+                        <button onClick={() => moveItem('sections', idx, 1)} className="p-1 text-[var(--cms-text-muted)] hover:text-blue-400 disabled:opacity-10 transition-colors" title="Перетащите разделы чтобы изменить порядок на сайте и в навигации" disabled={idx === localContent.sections.length - 1}><ArrowDown size={16}/></button>
                       </div>
                       <div>
-                        <span className="font-black text-[11px] uppercase tracking-[0.2em] text-slate-400 group-hover:text-white transition-colors">{section.label}</span>
-                        <p className="text-[9px] text-slate-600 font-bold uppercase tracking-widest mt-1 opacity-60">ID: {section.id}</p>
+                        <span className="font-black text-[11px] uppercase tracking-[0.2em] text-[var(--cms-text-label)] group-hover:text-[var(--cms-text-main)] transition-colors">{section.label}</span>
+                        <p className="text-[9px] text-[var(--cms-text-muted)] font-bold uppercase tracking-widest mt-1 opacity-60">ID: {section.id}</p>
                       </div>
                     </div>
                     <button
@@ -363,7 +460,7 @@ export default function CMS({ content, setContent, onLogout }) {
                         newSections[idx].enabled = !newSections[idx].enabled;
                         updateNested('sections', newSections);
                       }}
-                      className={`p-3 rounded-xl transition-all border ${section.enabled ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' : 'bg-slate-900/50 border-slate-800 text-slate-700 opacity-50'}`}
+                      className={`p-3 rounded-xl transition-all border ${section.enabled ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' : 'bg-[var(--cms-input-bg)] border-[var(--cms-input-border)] text-[var(--cms-text-muted)] opacity-50'}`}
                     >
                       {section.enabled ? <Eye size={20}/> : <EyeOff size={20}/>}
                     </button>
@@ -911,14 +1008,14 @@ export default function CMS({ content, setContent, onLogout }) {
                             updateNested('process.steps', newS);
                           }} />
                         </div>
-                        <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Описание действия</label>
+                        <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-label)] mb-2.5 ml-1">Описание действия</label>
                         <textarea value={step.desc} onChange={(e) => {
                           const newS = localContent.process.steps.map((s, i) => i === idx ? { ...s, desc: e.target.value } : s);
                           updateNested('process.steps', newS);
-                        }} className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white text-sm font-medium h-24 resize-none shadow-inner transition-all focus:ring-2 focus:ring-blue-500/50 outline-none" />
+                        }} className="w-full bg-[var(--cms-input-bg)] border border-[var(--cms-input-border)] rounded-xl px-5 py-4 text-[var(--cms-text-main)] text-sm font-medium h-24 resize-none shadow-inner transition-all focus:ring-2 focus:ring-blue-500/50 outline-none" />
                       </div>
                     ))}
-                    <button onClick={() => updateNested('process.steps', [...localContent.process.steps, { step: '04', title: 'Новый этап', desc: 'Описание...' }])} className="w-full py-6 border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 font-black text-[10px] uppercase tracking-[0.3em] transition-all rounded-3xl flex items-center justify-center gap-3"><Plus size={20}/> Добавить этап</button>
+                    <button onClick={() => updateNested('process.steps', [...localContent.process.steps, { step: '04', title: 'Новый этап', desc: 'Описание...' }])} className="w-full py-6 border-2 border-dashed border-[var(--cms-divider)] text-[var(--cms-text-muted)] hover:text-blue-500 hover:border-blue-500/40 font-black text-[10px] uppercase tracking-[0.3em] transition-all rounded-3xl flex items-center justify-center gap-3"><Plus size={20}/> Добавить этап</button>
                   </div>
                 )}
 
@@ -931,35 +1028,35 @@ export default function CMS({ content, setContent, onLogout }) {
                       </div>
                       <InputField label="Подзаголовок" value={localContent.bpo?.subtitle} onChange={(val) => updateNested('bpo.subtitle', val)} />
                       <InputField label="Юридическая сноска" value={localContent.bpo?.legalNote} onChange={(val) => updateNested('bpo.legalNote', val)} />
-                      <div className="mt-8 pt-8 border-t border-slate-900/50">
+                      <div className="mt-8 pt-8 border-t border-[var(--cms-divider)]">
                         <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-6 flex items-center gap-2">
                           <Zap size={14} /> Кнопка призыва (CTA)
                         </h4>
                         <div className="grid grid-cols-2 gap-x-8">
                           <InputField label="Текст кнопки" value={localContent.bpo?.ctaText} onChange={(val) => updateNested('bpo.ctaText', val)} />
-                          <div className="flex items-center gap-3 bg-slate-900/30 px-4 py-3 rounded-xl border border-slate-800/50 mb-6">
+                          <div className="flex items-center gap-3 bg-[var(--cms-bg-secondary)] px-4 py-3 rounded-xl border border-[var(--cms-divider)] mb-6">
                             <input
                               type="checkbox"
                               checked={localContent.bpo?.ctaVisible}
                               onChange={(e) => updateNested('bpo.ctaVisible', e.target.checked)}
                               className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
                             />
-                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показать кнопку</label>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-[var(--cms-text-label)]">Показать кнопку</label>
                           </div>
                         </div>
                       </div>
                     </SectionCard>
 
                     <div className="mb-6 ml-2">
-                      <h4 className="text-[10px] font-black text-white uppercase tracking-widest opacity-60">Технологические этапы</h4>
+                      <h4 className="text-[10px] font-black text-[var(--cms-text-main)] uppercase tracking-widest opacity-60">Технологические этапы</h4>
                     </div>
                     {(localContent.bpo?.steps || []).map((step, idx) => (
-                      <div key={idx} className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 relative group mb-4">
+                      <div key={idx} className="bg-[var(--cms-card-bg)] p-8 rounded-3xl border border-[var(--cms-card-border)] relative group mb-4 shadow-xl">
                         <button onClick={() => {
                           const newS = [...(localContent.bpo?.steps || [])];
                           newS.splice(idx, 1);
                           updateNested('bpo.steps', newS);
-                        }} className="absolute top-6 right-6 p-2 text-slate-700 hover:text-red-500 transition-colors"><Trash2 size={18}/></button>
+                        }} className="absolute top-6 right-6 p-2 text-[var(--cms-text-muted)] hover:text-red-500 transition-colors"><Trash2 size={18}/></button>
                         <div className="grid grid-cols-4 gap-8">
                           <div className="col-span-1">
                             <InputField label="№" value={step.num} onChange={(val) => {
@@ -980,7 +1077,7 @@ export default function CMS({ content, setContent, onLogout }) {
                         }} />
                       </div>
                     ))}
-                    <button onClick={() => updateNested('bpo.steps', [...(localContent.bpo?.steps || []), { num: '0' + ((localContent.bpo?.steps?.length || 0) + 1), title: 'Новый этап', desc: 'Описание этапа БПО...' }])} className="w-full py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 transition-all flex items-center justify-center gap-3 mb-8 shadow-xl"><Plus size={20}/> Добавить этап БПО</button>
+                    <button onClick={() => updateNested('bpo.steps', [...(localContent.bpo?.steps || []), { num: '0' + ((localContent.bpo?.steps?.length || 0) + 1), title: 'Новый этап', desc: 'Описание этапа БПО...' }])} className="w-full py-6 rounded-3xl border-2 border-dashed border-[var(--cms-divider)] text-[var(--cms-text-muted)] hover:text-blue-500 transition-all flex items-center justify-center gap-3 mb-8 shadow-xl"><Plus size={20}/> Добавить этап БПО</button>
 
                     <SectionCard title="Преимущества БПО" icon={<Check size={18}/>} tooltip="Короткий список ключевых преимуществ технологии">
                       {(localContent.bpo?.advantages || []).map((adv, idx) => (
@@ -991,12 +1088,12 @@ export default function CMS({ content, setContent, onLogout }) {
                               const newA = localContent.bpo.advantages.map((a, i) => i === idx ? e.target.value : a);
                               updateNested('bpo.advantages', newA);
                             }}
-                            className="flex-1 bg-slate-900/50 border border-slate-800 rounded-xl px-4 py-2.5 text-white text-xs font-medium focus:ring-1 focus:ring-blue-500/30 outline-none transition-all focus:border-blue-500/50"
+                            className="flex-1 bg-[var(--cms-input-bg)] border border-[var(--cms-input-border)] rounded-xl px-4 py-2.5 text-[var(--cms-text-main)] text-xs font-medium focus:ring-1 focus:ring-blue-500/30 outline-none transition-all focus:border-blue-500/50"
                           />
                           <button onClick={() => {
                             const newA = localContent.bpo.advantages.filter((_, i) => i !== idx);
                             updateNested('bpo.advantages', newA);
-                          }} className="p-2 text-slate-700 hover:text-red-500 transition-colors"><Trash2 size={16}/></button>
+                          }} className="p-2 text-[var(--cms-text-muted)] hover:text-red-500 transition-colors"><Trash2 size={16}/></button>
                         </div>
                       ))}
                       <button onClick={() => updateNested('bpo.advantages', [...(localContent.bpo?.advantages || []), 'Новое преимущество БПО']) } className="text-[9px] font-black text-blue-500 uppercase tracking-[0.2em] hover:text-blue-400 transition-colors pt-4 flex items-center gap-2"><Plus size={14} /> Добавить преимущество</button>
@@ -1012,32 +1109,32 @@ export default function CMS({ content, setContent, onLogout }) {
                         <InputField label="Акцент заголовка" value={localContent.serviceArea?.accent} onChange={(val) => updateNested('serviceArea.accent', val)} />
                       </div>
                       <div className="mb-6">
-                        <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Подзаголовок раздела</label>
+                        <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-label)] mb-2.5 ml-1">Подзаголовок раздела</label>
                         <textarea
                           value={localContent.serviceArea?.subtitle}
                           onChange={(e) => updateNested('serviceArea.subtitle', e.target.value)}
-                          className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-sm font-medium h-24 resize-none shadow-inner"
+                          className="w-full bg-[var(--cms-input-bg)] border border-[var(--cms-input-border)] rounded-xl px-5 py-4 text-[var(--cms-text-main)] focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all text-sm font-medium h-24 resize-none shadow-inner"
                         />
                       </div>
                       <InputField label="Заметка о собственной сети" value={localContent.serviceArea?.ownNetworkNote} onChange={(val) => updateNested('serviceArea.ownNetworkNote', val)} />
 
-                      <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50 mb-6">
+                      <div className="flex items-center gap-3 bg-[var(--cms-bg-secondary)] p-4 rounded-2xl border border-[var(--cms-divider)] mb-6">
                         <input
                           type="checkbox"
                           checked={localContent.serviceArea?.randomMapVariant}
                           onChange={(e) => updateNested('serviceArea.randomMapVariant', e.target.checked)}
                           className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600 focus:ring-blue-500/20"
                         />
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Случайный стиль при загрузке страницы</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-[var(--cms-text-label)]">Случайный стиль при загрузке страницы</label>
                       </div>
 
                       {!localContent.serviceArea?.randomMapVariant && (
                         <div className="mb-4 animate-slow-fade">
-                          <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Вариант карты (Визуализация)</label>
+                          <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-label)] mb-2.5 ml-1">Вариант карты (Визуализация)</label>
                           <select
                             value={localContent.serviceArea?.mapVariant || 'default'}
                             onChange={(e) => updateNested('serviceArea.mapVariant', e.target.value)}
-                            className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm font-medium"
+                            className="w-full bg-[var(--cms-input-bg)] border border-[var(--cms-input-border)] rounded-xl px-5 py-3.5 text-[var(--cms-text-main)] focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm font-medium"
                           >
                             <option value="default">Default (Abstract)</option>
                             <option value="radar">Radar Scan (Dark)</option>
@@ -1060,16 +1157,16 @@ export default function CMS({ content, setContent, onLogout }) {
                     </SectionCard>
 
                     <div className="mb-6 ml-2">
-                      <h4 className="text-[10px] font-black text-white uppercase tracking-widest opacity-60">Список населенных пунктов</h4>
+                      <h4 className="text-[10px] font-black text-[var(--cms-text-main)] uppercase tracking-widest opacity-60">Список населенных пунктов</h4>
                     </div>
 
                     <div className="grid grid-cols-2 gap-6">
                       {(localContent.serviceArea?.locations || []).map((loc, idx) => (
-                        <div key={idx} className="bg-slate-950/40 p-6 rounded-2xl border border-slate-800 relative group">
+                        <div key={idx} className="bg-[var(--cms-card-bg)] p-6 rounded-2xl border border-[var(--cms-card-border)] relative group shadow-xl">
                           <button onClick={() => {
                             const newL = localContent.serviceArea.locations.filter((_, i) => i !== idx);
                             updateNested('serviceArea.locations', newL);
-                          }} className="absolute top-4 right-4 p-2 text-slate-700 hover:text-red-500 transition-colors"><Trash2 size={16}/></button>
+                          }} className="absolute top-4 right-4 p-2 text-[var(--cms-text-muted)] hover:text-red-500 transition-colors"><Trash2 size={16}/></button>
                           <InputField label="Название города/района" value={loc.name} onChange={(val) => {
                             const newL = localContent.serviceArea.locations.map((l, i) => i === idx ? { ...l, name: val } : l);
                             updateNested('serviceArea.locations', newL);
@@ -1080,14 +1177,14 @@ export default function CMS({ content, setContent, onLogout }) {
                               updateNested('serviceArea.locations', newL);
                             }} />
                             <div className="mb-6">
-                              <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Статус</label>
+                              <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-label)] mb-2.5 ml-1">Статус</label>
                               <select
                                 value={loc.status || 'works'}
                                 onChange={(e) => {
                                   const newL = localContent.serviceArea.locations.map((l, i) => i === idx ? { ...l, status: e.target.value } : l);
                                   updateNested('serviceArea.locations', newL);
                                 }}
-                                className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-3.5 text-white focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm font-medium shadow-inner"
+                                className="w-full bg-[var(--cms-input-bg)] border border-[var(--cms-input-border)] rounded-xl px-5 py-3.5 text-[var(--cms-text-main)] focus:outline-none focus:ring-2 focus:ring-blue-500/50 text-sm font-medium shadow-inner"
                               >
                                 <option value="works">Работаем</option>
                                 <option value="inProgress">В проработке</option>
@@ -1102,7 +1199,7 @@ export default function CMS({ content, setContent, onLogout }) {
                               const newL = localContent.serviceArea.locations.map((l, i) => i === idx ? { ...l, freq: val } : l);
                               updateNested('serviceArea.locations', newL);
                             }} />
-                            <div className="flex items-center gap-3 bg-slate-900/30 px-4 py-3 rounded-xl border border-slate-800/50 mb-6">
+                            <div className="flex items-center gap-3 bg-[var(--cms-bg-secondary)] px-4 py-3 rounded-xl border border-[var(--cms-divider)] mb-6">
                               <input
                                 type="checkbox"
                                 checked={loc.isVisible !== false}
@@ -1112,12 +1209,12 @@ export default function CMS({ content, setContent, onLogout }) {
                                 }}
                                 className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600 focus:ring-blue-500/20"
                               />
-                              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Виден на сайте</label>
+                              <label className="text-[10px] font-black uppercase tracking-widest text-[var(--cms-text-label)]">Виден на сайте</label>
                             </div>
                           </div>
                         </div>
                       ))}
-                      <button onClick={() => updateNested('serviceArea.locations', [...(localContent.serviceArea?.locations || []), { name: 'Новый город', type: 'Локальная сеть', status: 'works', freq: 'Ежедневно', isVisible: true }])} className="p-6 border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 hover:border-blue-500/40 font-black text-[10px] uppercase tracking-[0.3em] transition-all rounded-2xl flex items-center justify-center gap-3 shadow-xl"><Plus size={20}/> Добавить город</button>
+                      <button onClick={() => updateNested('serviceArea.locations', [...(localContent.serviceArea?.locations || []), { name: 'Новый город', type: 'Локальная сеть', status: 'works', freq: 'Ежедневно', isVisible: true }])} className="p-6 border-2 border-dashed border-[var(--cms-divider)] text-[var(--cms-text-muted)] hover:text-blue-500 hover:border-blue-500/40 font-black text-[10px] uppercase tracking-[0.3em] transition-all rounded-2xl flex items-center justify-center gap-3 shadow-xl"><Plus size={20}/> Добавить город</button>
                     </div>
                   </div>
                 )}
@@ -1129,36 +1226,36 @@ export default function CMS({ content, setContent, onLogout }) {
                         <InputField label="Заголовок" value={localContent.trustedClients?.title} onChange={(val) => updateNested('trustedClients.title', val)} />
                         <InputField label="Подзаголовок" value={localContent.trustedClients?.subtitle} onChange={(val) => updateNested('trustedClients.subtitle', val)} />
                       </div>
-                      <div className="flex items-center gap-3 bg-slate-900/30 px-4 py-3 rounded-xl border border-slate-800/50 mb-6">
+                      <div className="flex items-center gap-3 bg-[var(--cms-bg-secondary)] px-4 py-3 rounded-xl border border-[var(--cms-divider)] mb-6">
                         <input
                           type="checkbox"
                           checked={localContent.trustedClients?.subtitleVisible}
                           onChange={(e) => updateNested('trustedClients.subtitleVisible', e.target.checked)}
                           className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
                         />
-                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показать подзаголовок</label>
+                        <label className="text-[10px] font-black uppercase tracking-widest text-[var(--cms-text-label)]">Показать подзаголовок</label>
                       </div>
-                      <div className="mt-8 pt-8 border-t border-slate-900/50">
+                      <div className="mt-8 pt-8 border-t border-[var(--cms-divider)]">
                         <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-6 flex items-center gap-2">
                           <Zap size={14} /> Кнопка призыва (CTA)
                         </h4>
                         <div className="grid grid-cols-2 gap-x-8">
                           <InputField label="Текст кнопки" value={localContent.trustedClients?.ctaText} onChange={(val) => updateNested('trustedClients.ctaText', val)} />
-                          <div className="flex items-center gap-3 bg-slate-900/30 px-4 py-3 rounded-xl border border-slate-800/50 mb-6">
+                          <div className="flex items-center gap-3 bg-[var(--cms-bg-secondary)] px-4 py-3 rounded-xl border border-[var(--cms-divider)] mb-6">
                             <input
                               type="checkbox"
                               checked={localContent.trustedClients?.ctaVisible}
                               onChange={(e) => updateNested('trustedClients.ctaVisible', e.target.checked)}
                               className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
                             />
-                            <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показать кнопку</label>
+                            <label className="text-[10px] font-black uppercase tracking-widest text-[var(--cms-text-label)]">Показать кнопку</label>
                           </div>
                         </div>
                       </div>
                     </SectionCard>
 
                     <div className="mb-6 ml-2 flex items-center justify-between">
-                      <h4 className="text-[10px] font-black text-white uppercase tracking-widest opacity-60">Список клиентов</h4>
+                      <h4 className="text-[10px] font-black text-[var(--cms-text-main)] uppercase tracking-widest opacity-60">Список клиентов</h4>
                       <button
                         onClick={() => {
                           const newItems = [...(localContent.trustedClients?.items || []), {
@@ -1181,16 +1278,16 @@ export default function CMS({ content, setContent, onLogout }) {
                     </div>
 
                     {(localContent.trustedClients?.items || []).map((client, idx) => (
-                      <div key={client.id || idx} className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 relative group mb-4">
+                      <div key={client.id || idx} className="bg-[var(--cms-card-bg)] p-8 rounded-3xl border border-[var(--cms-card-border)] relative group mb-4 shadow-xl">
                         <div className="absolute top-6 right-6 flex gap-2">
-                          <button onClick={() => moveItem('trustedClients.items', idx, -1)} className="p-2 text-slate-700 hover:text-blue-500 disabled:opacity-10" disabled={idx === 0}><ArrowUp size={16}/></button>
-                          <button onClick={() => moveItem('trustedClients.items', idx, 1)} className="p-2 text-slate-700 hover:text-blue-500 disabled:opacity-10" disabled={idx === (localContent.trustedClients?.items?.length || 0) - 1}><ArrowDown size={16}/></button>
+                          <button onClick={() => moveItem('trustedClients.items', idx, -1)} className="p-2 text-[var(--cms-text-muted)] hover:text-blue-500 disabled:opacity-10" disabled={idx === 0}><ArrowUp size={16}/></button>
+                          <button onClick={() => moveItem('trustedClients.items', idx, 1)} className="p-2 text-[var(--cms-text-muted)] hover:text-blue-500 disabled:opacity-10" disabled={idx === (localContent.trustedClients?.items?.length || 0) - 1}><ArrowDown size={16}/></button>
                           <button
                             onClick={() => {
                               const newItems = localContent.trustedClients.items.filter((_, i) => i !== idx);
                               updateNested('trustedClients.items', newItems);
                             }}
-                            className="p-2 text-slate-700 hover:text-red-500 transition-colors"
+                            className="p-2 text-[var(--cms-text-muted)] hover:text-red-500 transition-colors"
                           >
                             <Trash2 size={18}/>
                           </button>
@@ -1198,12 +1295,12 @@ export default function CMS({ content, setContent, onLogout }) {
 
                         <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-6">
                           <div className="col-span-1">
-                            <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Логотип</label>
-                            <div className="relative group/logo w-full aspect-square bg-slate-900 rounded-2xl border border-slate-800 flex items-center justify-center overflow-hidden">
+                            <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-label)] mb-2.5 ml-1">Логотип</label>
+                            <div className="relative group/logo w-full aspect-square bg-[var(--cms-input-bg)] rounded-2xl border border-[var(--cms-input-border)] flex items-center justify-center overflow-hidden">
                               {client.logoUrl ? (
                                 <img src={client.logoUrl} className="w-full h-full object-contain p-4" alt="" />
                               ) : (
-                                <Upload size={24} className="text-slate-700" />
+                                <Upload size={24} className="text-[var(--cms-text-muted)]" />
                               )}
                               <input
                                 type="file"
@@ -1236,7 +1333,7 @@ export default function CMS({ content, setContent, onLogout }) {
                               }} />
                             </div>
 
-                            <div className="flex items-center gap-3 bg-slate-900/30 px-4 py-3 rounded-xl border border-slate-800/50">
+                            <div className="flex items-center gap-3 bg-[var(--cms-bg-secondary)] px-4 py-3 rounded-xl border border-[var(--cms-divider)]">
                               <input
                                 type="checkbox"
                                 checked={client.isVisible !== false}
@@ -1246,7 +1343,7 @@ export default function CMS({ content, setContent, onLogout }) {
                                 }}
                                 className="w-5 h-5 rounded-md border-slate-700 bg-slate-800 text-blue-600"
                               />
-                              <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показывать на сайте</label>
+                              <label className="text-[10px] font-black uppercase tracking-widest text-[var(--cms-text-label)]">Показывать на сайте</label>
                             </div>
                           </div>
                         </div>
@@ -1265,12 +1362,12 @@ export default function CMS({ content, setContent, onLogout }) {
                     </SectionCard>
 
                     {(localContent.news?.items || []).map((item, idx) => (
-                      <div key={idx} className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 relative group mb-4">
+                      <div key={idx} className="bg-[var(--cms-card-bg)] p-8 rounded-3xl border border-[var(--cms-card-border)] relative group mb-4 shadow-xl">
                         <button onClick={() => {
                           const newI = [...(localContent.news?.items || [])];
                           newI.splice(idx, 1);
                           updateNested('news.items', newI);
-                        }} className="absolute top-6 right-6 p-2 text-slate-700 hover:text-red-500 transition-colors"><Trash2 size={18}/></button>
+                        }} className="absolute top-6 right-6 p-2 text-[var(--cms-text-muted)] hover:text-red-500 transition-colors"><Trash2 size={18}/></button>
                         <div className="grid grid-cols-2 gap-8">
                           <InputField label="Дата" value={item.date} onChange={(val) => {
                             const newI = localContent.news.items.map((it, i) => i === idx ? { ...it, date: val } : it);
@@ -1285,14 +1382,14 @@ export default function CMS({ content, setContent, onLogout }) {
                           const newI = localContent.news.items.map((it, i) => i === idx ? { ...it, title: val } : it);
                           updateNested('news.items', newI);
                         }} />
-                        <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Содержание</label>
+                        <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-label)] mb-2.5 ml-1">Содержание</label>
                         <textarea value={item.desc} onChange={(e) => {
                           const newI = localContent.news.items.map((it, i) => i === idx ? { ...it, desc: e.target.value } : it);
                           updateNested('news.items', newI);
-                        }} className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white text-sm font-medium h-24 resize-none shadow-inner transition-all focus:ring-2 focus:ring-blue-500/50 outline-none" />
+                        }} className="w-full bg-[var(--cms-input-bg)] border border-[var(--cms-input-border)] rounded-xl px-5 py-4 text-[var(--cms-text-main)] text-sm font-medium h-24 resize-none shadow-inner transition-all focus:ring-2 focus:ring-blue-500/50 outline-none" />
                       </div>
                     ))}
-                    <button onClick={() => updateNested('news.items', [{ date: new Date().toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' }), tag: 'СОБЫТИЕ', title: 'Новое событие', desc: 'Описание события...' }, ...(localContent.news?.items || [])])} className="w-full py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 transition-all flex items-center justify-center gap-3 shadow-xl"><Plus size={20}/> Добавить новость</button>
+                    <button onClick={() => updateNested('news.items', [{ date: new Date().toLocaleDateString('ru-RU', { day: '2-digit', month: 'long', year: 'numeric' }), tag: 'СОБЫТИЕ', title: 'Новое событие', desc: 'Описание события...' }, ...(localContent.news?.items || [])])} className="w-full py-6 rounded-3xl border-2 border-dashed border-[var(--cms-divider)] text-[var(--cms-text-muted)] hover:text-blue-500 transition-all flex items-center justify-center gap-3 shadow-xl"><Plus size={20}/> Добавить новость</button>
                   </div>
                 )}
 
@@ -1353,23 +1450,23 @@ export default function CMS({ content, setContent, onLogout }) {
                     <InputField label="Текст (Метка)" value={localContent.hero?.hotlineLabel} onChange={(val) => updateNested('hero.hotlineLabel', val)} />
                   </div>
                   <div className="grid grid-cols-2 gap-8 pt-4">
-                    <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-xl border border-slate-800/50">
+                    <div className="flex items-center gap-3 bg-[var(--cms-bg-secondary)] p-4 rounded-xl border border-[var(--cms-divider)]">
                       <input
                         type="checkbox"
                         checked={localContent.hotlineConfig?.showBadge}
                         onChange={(e) => updateNested('hotlineConfig.showBadge', e.target.checked)}
                         className="w-5 h-5 rounded bg-slate-800 border-slate-700 text-blue-600"
                       />
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Показывать статус</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[var(--cms-text-label)]">Показывать статус</label>
                     </div>
-                    <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-xl border border-slate-800/50">
+                    <div className="flex items-center gap-3 bg-[var(--cms-bg-secondary)] p-4 rounded-xl border border-[var(--cms-divider)]">
                       <input
                         type="checkbox"
                         checked={localContent.hotlineConfig?.scheduleEnabled}
                         onChange={(e) => updateNested('hotlineConfig.scheduleEnabled', e.target.checked)}
                         className="w-5 h-5 rounded bg-slate-800 border-slate-700 text-blue-600"
                       />
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Авто-график</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[var(--cms-text-label)]">Авто-график</label>
                     </div>
                   </div>
                 </SectionCard>
@@ -1377,7 +1474,7 @@ export default function CMS({ content, setContent, onLogout }) {
                 <SectionCard title="Дополнительные телефоны" icon={<Phone size={18}/>} tooltip="Список телефонов отображаемых в футере и мобильном меню">
                   <div className="space-y-4">
                     {(localContent.contact?.phones || []).map((phone, idx) => (
-                      <div key={idx} className="p-5 bg-slate-900/40 rounded-2xl border border-slate-800/50 relative group flex items-end gap-6">
+                      <div key={idx} className="p-5 bg-[var(--cms-card-bg)] rounded-2xl border border-[var(--cms-card-border)] relative group flex items-end gap-6 shadow-xl">
                         <div className="flex-1 grid grid-cols-2 gap-6">
                           <InputField label={`Телефон #${idx + 1}`} value={phone.val} onChange={(val) => {
                             const newPhones = localContent.contact.phones.map((p, i) => i === idx ? { ...p, val } : p);
@@ -1396,11 +1493,11 @@ export default function CMS({ content, setContent, onLogout }) {
                           <button onClick={() => {
                             const newPhones = localContent.contact.phones.filter((_, i) => i !== idx);
                             updateNested('contact.phones', newPhones);
-                          }} className="text-slate-700 hover:text-red-500 transition-colors"><Trash2 size={16}/></button>
+                          }} className="text-[var(--cms-text-muted)] hover:text-red-500 transition-colors"><Trash2 size={16}/></button>
                         </div>
                       </div>
                     ))}
-                    <button onClick={() => updateNested('contact.phones', [...(localContent.contact?.phones || []), { val: '', label: 'Офис', visible: true }])} className="w-full py-4 border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 transition-all rounded-xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest"><Plus size={16}/> Добавить телефон</button>
+                    <button onClick={() => updateNested('contact.phones', [...(localContent.contact?.phones || []), { val: '', label: 'Офис', visible: true }])} className="w-full py-4 border-2 border-dashed border-[var(--cms-divider)] text-[var(--cms-text-muted)] hover:text-blue-500 transition-all rounded-xl flex items-center justify-center gap-2 text-[10px] font-black uppercase tracking-widest"><Plus size={16}/> Добавить телефон</button>
                   </div>
                 </SectionCard>
 
@@ -1413,10 +1510,10 @@ export default function CMS({ content, setContent, onLogout }) {
                 </SectionCard>
 
                 <SectionCard title="Настройка контактной формы" icon={<Send size={18}/>} tooltip="Управление полями, защитой от спама и доставкой заявок">
-                  <div className="p-6 bg-blue-600/5 rounded-2xl border border-blue-500/10 mb-8 flex items-center justify-between">
+                  <div className="p-6 bg-[var(--cms-active-tab)] rounded-2xl border border-blue-500/10 mb-8 flex items-center justify-between">
                     <div>
                       <p className="text-[10px] font-black text-blue-500 uppercase tracking-widest mb-1">Метод доставки</p>
-                      <p className="text-xs text-white font-bold">{deliveryConfig.method?.toUpperCase() || 'НЕ ВЫБРАН'}</p>
+                      <p className="text-xs text-[var(--cms-text-main)] font-bold">{deliveryConfig.method?.toUpperCase() || 'НЕ ВЫБРАН'}</p>
                     </div>
                     <div className="flex gap-2">
                       {['emailjs', 'smtp', 'telegram'].map(m => (
@@ -1424,15 +1521,15 @@ export default function CMS({ content, setContent, onLogout }) {
                           const newC = { ...deliveryConfig, method: m };
                           saveDeliveryConfig(newC);
                           updateNested('contact.form.delivery.method', m);
-                        }} className={`px-3 py-1.5 rounded-lg text-[8px] font-black uppercase tracking-widest border transition-all ${deliveryConfig.method === m ? 'bg-blue-600 border-blue-500 text-white' : 'bg-slate-900 border-slate-800 text-slate-500'}`}>{m}</button>
+                        }} className={`px-3 py-1.5 rounded-lg text-[8px] font-black uppercase tracking-widest border transition-all ${deliveryConfig.method === m ? 'bg-blue-600 border-blue-500 text-white shadow-lg' : 'bg-[var(--cms-input-bg)] border-[var(--cms-input-border)] text-[var(--cms-text-muted)]'}`}>{m}</button>
                       ))}
                     </div>
                   </div>
 
                   <div className="space-y-4">
-                    <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 ml-1">Поля формы</label>
+                    <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-label)] ml-1">Поля формы</label>
                     {(localContent.contact?.form?.fields || []).map((field, idx) => (
-                      <div key={field.id} className="p-4 bg-slate-950/40 rounded-xl border border-slate-800/50 grid grid-cols-3 gap-4 items-center">
+                      <div key={field.id} className="p-4 bg-[var(--cms-card-bg)] rounded-xl border border-[var(--cms-card-border)] grid grid-cols-3 gap-4 items-center shadow-md">
                         <div className="col-span-2">
                           <InputField label={`${field.id} Label`} value={field.label} onChange={(val) => {
                             const newF = localContent.contact.form.fields.map((f, i) => i === idx ? { ...f, label: val } : f);
@@ -1441,14 +1538,14 @@ export default function CMS({ content, setContent, onLogout }) {
                         </div>
                         <div className="flex gap-4 justify-end pr-2">
                           <div className="flex flex-col items-center gap-1">
-                            <span className="text-[7px] font-black text-slate-600 uppercase">Vis</span>
+                            <span className="text-[7px] font-black text-[var(--cms-text-muted)] uppercase">Vis</span>
                             <input type="checkbox" checked={field.visible} onChange={(e) => {
                               const newF = localContent.contact.form.fields.map((f, i) => i === idx ? { ...f, visible: e.target.checked } : f);
                               updateNested('contact.form.fields', newF);
                             }} className="w-4 h-4 rounded bg-slate-800 text-blue-600" />
                           </div>
                           <div className="flex flex-col items-center gap-1">
-                            <span className="text-[7px] font-black text-slate-600 uppercase">Req</span>
+                            <span className="text-[7px] font-black text-[var(--cms-text-muted)] uppercase">Req</span>
                             <input type="checkbox" checked={field.required} onChange={(e) => {
                               const newF = localContent.contact.form.fields.map((f, i) => i === idx ? { ...f, required: e.target.checked } : f);
                               updateNested('contact.form.fields', newF);
@@ -1482,7 +1579,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   </div>
                 </SectionCard>
 
-                <SectionCard title="Банковские реквизиты" icon={<Briefcase size={18}/>}>
+                <SectionCard title="Банковские реквизиты" icon={<FileText size={18}/>}>
                   <div className="grid grid-cols-2 gap-8">
                     <div className="col-span-2">
                       <InputField label="Наименование банка" value={localContent.bank?.name} onChange={(val) => updateNested('bank.name', val)} />
@@ -1507,12 +1604,12 @@ export default function CMS({ content, setContent, onLogout }) {
                   <InputField label="Версия системы (vX.X.X)" value={localContent.legal?.version} onChange={(val) => updateNested('legal.version', val)} />
                 </SectionCard>
 
-                <div className="flex gap-2 p-1 bg-slate-900/50 rounded-2xl border border-slate-800/50 mb-8">
+                <div className="flex gap-2 p-1 bg-[var(--cms-bg-secondary)] rounded-2xl border border-[var(--cms-divider)] mb-8">
                   {['privacy', 'requisites', 'oferta'].map(sub => (
                     <button
                       key={sub}
                       onClick={() => setLegalSubTab(sub)}
-                      className={`flex-1 py-2.5 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all ${legalSubTab === sub ? 'bg-blue-600 text-white shadow-lg' : 'text-slate-500 hover:text-slate-300'}`}
+                      className={`flex-1 py-2.5 rounded-xl font-black text-[9px] uppercase tracking-widest transition-all ${legalSubTab === sub ? 'bg-blue-600 text-white shadow-lg' : 'text-[var(--cms-text-muted)] hover:text-[var(--cms-text-main)]'}`}
                     >
                       {sub === 'privacy' ? 'Политика' : sub === 'requisites' ? 'Реквизиты' : 'Оферта'}
                     </button>
@@ -1525,7 +1622,7 @@ export default function CMS({ content, setContent, onLogout }) {
                       <InputField label="Заголовок страницы" value={localContent.pages?.privacy?.title} onChange={(val) => updateNested('pages.privacy.title', val)} />
                     </SectionCard>
                     {(localContent.pages?.privacy?.sections || []).map((sec, idx) => (
-                      <div key={idx} className="bg-slate-950/40 p-8 rounded-3xl border border-slate-800 relative group mb-4">
+                      <div key={idx} className="bg-[var(--cms-card-bg)] p-8 rounded-3xl border border-[var(--cms-card-border)] relative group mb-4 shadow-xl">
                         <div className="grid grid-cols-2 gap-8 mb-4">
                           <InputField label="ID / Anchor" value={sec.id} onChange={(val) => {
                             const newS = localContent.pages.privacy.sections.map((s, i) => i === idx ? { ...s, id: val } : s);
@@ -1539,7 +1636,7 @@ export default function CMS({ content, setContent, onLogout }) {
                         <textarea value={sec.content} onChange={(e) => {
                           const newS = localContent.pages.privacy.sections.map((s, i) => i === idx ? { ...s, content: e.target.value } : s);
                           updateNested('pages.privacy.sections', newS);
-                        }} className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white text-sm font-medium h-48 resize-none shadow-inner" />
+                        }} className="w-full bg-[var(--cms-input-bg)] border border-[var(--cms-input-border)] rounded-xl px-5 py-4 text-[var(--cms-text-main)] text-sm font-medium h-48 resize-none shadow-inner" />
                       </div>
                     ))}
                   </div>
@@ -1550,14 +1647,14 @@ export default function CMS({ content, setContent, onLogout }) {
             {activeTab === 'settings' && (
               <div className="space-y-8 animate-slow-fade">
                 <SectionCard title="Фоновые анимации" icon={<Sparkles size={18}/>}>
-                  <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-xl border border-slate-800/50 mb-6">
+                  <div className="flex items-center gap-3 bg-[var(--cms-bg-secondary)] p-4 rounded-xl border border-[var(--cms-divider)] mb-6">
                     <input type="checkbox" checked={localContent.backgroundAnimation?.enabled} onChange={(e) => updateNested('backgroundAnimation.enabled', e.target.checked)} className="w-5 h-5 rounded bg-slate-800 text-blue-600" />
-                    <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Включить анимацию фона</label>
+                    <label className="text-[10px] font-black uppercase tracking-widest text-[var(--cms-text-label)]">Включить анимацию фона</label>
                   </div>
                   <div className="grid grid-cols-2 gap-8">
                     <div>
-                      <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Вариант</label>
-                      <select value={localContent.backgroundAnimation?.variant || 'envelopes'} onChange={(e) => updateNested('backgroundAnimation.variant', e.target.value)} className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-4 py-2 text-white text-sm">
+                      <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-label)] mb-2.5 ml-1">Вариант</label>
+                      <select value={localContent.backgroundAnimation?.variant || 'envelopes'} onChange={(e) => updateNested('backgroundAnimation.variant', e.target.value)} className="w-full bg-[var(--cms-input-bg)] border border-[var(--cms-input-border)] rounded-xl px-4 py-2 text-[var(--cms-text-main)] text-sm outline-none focus:ring-2 focus:ring-blue-500/50">
                         <option value="envelopes">Конверты</option>
                         <option value="routes">Маршруты</option>
                         <option value="documents">Документы</option>
@@ -1573,19 +1670,19 @@ export default function CMS({ content, setContent, onLogout }) {
                     <InputField label="Задержка лоадера (мс)" type="number" value={localContent.loaderDelay} onChange={(val) => updateNested('loaderDelay', parseInt(val))} />
                   </div>
                   <div className="grid grid-cols-2 gap-4 mt-6">
-                    <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-xl border border-slate-800/50">
+                    <div className="flex items-center gap-3 bg-[var(--cms-bg-secondary)] p-4 rounded-xl border border-[var(--cms-divider)]">
                       <input type="checkbox" checked={localContent.ui?.showScrollProgress} onChange={(e) => updateNested('ui.showScrollProgress', e.target.checked)} className="w-5 h-5 rounded bg-slate-800 text-blue-600" />
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Прогресс скролла</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[var(--cms-text-label)]">Прогресс скролла</label>
                     </div>
-                    <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-xl border border-slate-800/50">
+                    <div className="flex items-center gap-3 bg-[var(--cms-bg-secondary)] p-4 rounded-xl border border-[var(--cms-divider)]">
                       <input type="checkbox" checked={localContent.ui?.showBackToTop} onChange={(e) => updateNested('ui.showBackToTop', e.target.checked)} className="w-5 h-5 rounded bg-slate-800 text-blue-600" />
-                      <label className="text-[10px] font-black uppercase tracking-widest text-slate-400">Кнопка "Наверх"</label>
+                      <label className="text-[10px] font-black uppercase tracking-widest text-[var(--cms-text-label)]">Кнопка "Наверх"</label>
                     </div>
                   </div>
                 </SectionCard>
 
                 <SectionCard title="Подвал (Footer)" icon={<LayoutDashboard size={18}/>}>
-                  <textarea value={localContent.footer?.description} onChange={(e) => updateNested('footer.description', e.target.value)} className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white text-sm font-medium h-24 resize-none" />
+                  <textarea value={localContent.footer?.description} onChange={(e) => updateNested('footer.description', e.target.value)} className="w-full bg-[var(--cms-input-bg)] border border-[var(--cms-input-border)] rounded-xl px-5 py-4 text-[var(--cms-text-main)] text-sm font-medium h-24 resize-none shadow-inner" />
                   <div className="grid grid-cols-3 gap-4 mt-4">
                     <InputField label="Заг. Нав" value={localContent.footer?.headers?.nav} onChange={(val) => updateNested('footer.headers.nav', val)} />
                     <InputField label="Заг. Юр" value={localContent.footer?.headers?.legal} onChange={(val) => updateNested('footer.headers.legal', val)} />
@@ -1607,7 +1704,7 @@ export default function CMS({ content, setContent, onLogout }) {
                 <SectionCard title="Cookie Баннер" icon={<Shield size={18}/>}>
                    <div className="space-y-4">
                      <InputField label="Заголовок" value={localContent.cookieBanner?.title} onChange={(val) => updateNested('cookieBanner.title', val)} />
-                     <textarea value={localContent.cookieBanner?.description} onChange={(e) => updateNested('cookieBanner.description', e.target.value)} className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white text-sm font-medium h-24 resize-none" />
+                     <textarea value={localContent.cookieBanner?.description} onChange={(e) => updateNested('cookieBanner.description', e.target.value)} className="w-full bg-[var(--cms-input-bg)] border border-[var(--cms-input-border)] rounded-xl px-5 py-4 text-[var(--cms-text-main)] text-sm font-medium h-24 resize-none shadow-inner" />
                      <div className="grid grid-cols-2 gap-8">
                        <InputField label="Текст кнопки (Все)" value={localContent.cookieBanner?.btnAll} onChange={(val) => updateNested('cookieBanner.btnAll', val)} />
                        <InputField label="Текст кнопки (Осн)" value={localContent.cookieBanner?.btnEssential} onChange={(val) => updateNested('cookieBanner.btnEssential', val)} />
@@ -1623,8 +1720,8 @@ export default function CMS({ content, setContent, onLogout }) {
     <style>{`
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: #3b82f6; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: var(--cms-divider); border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: var(--cms-accent); }
       `}</style>
     </div>
   );
