@@ -41,7 +41,7 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
     // 3. Валидация телефона
     const phoneDigits = (fields.phone || '').replace(/\D/g, '');
     if (phoneDigits.length < 10) {
-      setPhoneError('Введите корректный номер телефона');
+      setPhoneError(interpolate(fullContent.ui?.phoneError, fullContent) || 'Введите корректный номер телефона');
       return;
     }
     setPhoneError('');
@@ -70,7 +70,7 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
       setConsent(false);
       formOpenTime.current = Date.now();
     } else {
-      setError(data.form?.errorMessage || 'Ошибка отправки. Пожалуйста, попробуйте позже.');
+      setError(data.form?.errorMessage || interpolate(fullContent.ui?.formErrorDefault, fullContent) || 'Ошибка отправки. Пожалуйста, попробуйте позже.');
     }
   };
 
@@ -190,7 +190,7 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
               <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mb-8 text-green-500 border border-green-500/20">
                 <Send size={40} />
               </div>
-              <h3 className="text-2xl font-black mb-4 text-[var(--text-main)]">Готово!</h3>
+              <h3 className="text-2xl font-black mb-4 text-[var(--text-main)]">{interpolate(fullContent.ui?.formSuccessTitle, fullContent) || 'Готово!'}</h3>
               <p className="text-slate-500 font-medium leading-relaxed">
                 {formConfig.successMessage}
               </p>
@@ -198,7 +198,7 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
                 onClick={() => setSuccess(false)}
                 className="mt-10 px-8 py-3 rounded-xl gradient-bg text-white font-bold text-xs uppercase tracking-widest hover:scale-105 transition-all"
               >
-                Вернуться к форме
+                {interpolate(fullContent.ui?.formReturnBtn, fullContent) || 'Вернуться к форме'}
               </button>
             </div>
           ) : (
@@ -288,7 +288,7 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
                 className={`w-full py-5 rounded-2xl gradient-bg text-white font-black text-sm uppercase tracking-[0.2em] shadow-xl shadow-blue-500/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-3 mt-4 disabled:opacity-30 disabled:grayscale disabled:cursor-not-allowed ${!consent ? 'brightness-75' : ''}`}
               >
                 {loading ? (
-                  <><Loader2 className="animate-spin" size={20} /> Отправляем...</>
+                  <><Loader2 className="animate-spin" size={20} /> {interpolate(fullContent.ui?.formSending, fullContent) || 'Отправляем...'}</>
                 ) : (
                   <>{formConfig.submitText} <ArrowRight size={20} /></>
                 )}

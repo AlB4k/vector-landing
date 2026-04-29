@@ -128,7 +128,22 @@ const INITIAL_CONTENT = {
     "regLabel": "Рег.",
     "orderLabel": "Приказ",
     "showSocials": false,
-    "socialsTitle": "Наши соцсети"
+    "socialsTitle": "Наши соцсети",
+    "phoneError": "Введите корректный номер телефона",
+    "formErrorDefault": "Ошибка отправки. Пожалуйста, попробуйте позже.",
+    "formSuccessTitle": "Готово!",
+    "formReturnBtn": "Вернуться к форме",
+    "formSending": "Отправляем...",
+    "mapSwitchTheme": "Переключить тему карты",
+    "statusWorks": "Работаем",
+    "statusInProgress": "В проработке",
+    "statusSetup": "Настраиваем",
+    "statusPartner": "Ищем партнёров",
+    "statusSoon": "Скоро запуск",
+    "ownNetworkNoteDefault": "Прямой контроль сотрудников без посредников. 100% покрытие во всех районах присутствия.",
+    "recommendedLabel": "РЕКОМЕНДУЕМ",
+    "hotlineOnline": "Линия активна",
+    "hotlineOffline": "Офлайн"
   },
   "cookieBanner": {
     "title": "Управление Cookie",
