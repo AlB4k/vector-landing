@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { validateContent } from './utils/security';
 import {
   LayoutDashboard,
@@ -71,6 +71,83 @@ const CMS_THEMES = {
   }
 };
 
+const Tooltip = ({ text, children }) => {
+  const [show, setShow] = useState(false);
+  const [position, setPosition] = useState('top');
+  const [isRightEdge, setIsRightEdge] = useState(false);
+  const ref = useRef(null);
+
+  const handleMouseEnter = () => {
+    if (ref.current) {
+      const rect = ref.current.getBoundingClientRect();
+      // Если сверху меньше 120px (запас для нескольких строк) — показываем снизу
+      setPosition(rect.top < 120 ? 'bottom' : 'top');
+      // Если до правого края экрана меньше 260px (запас для maxWidth 240px) — смещаем
+      setIsRightEdge(window.innerWidth - rect.left < 260);
+    }
+    setShow(true);
+  };
+
+  return (
+    <div
+      style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}
+      ref={ref}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={() => setShow(false)}
+    >
+      {children}
+      {show && (
+        <div style={{
+          position: 'absolute',
+          left: isRightEdge ? 'auto' : '50%',
+          right: isRightEdge ? '-10px' : 'auto',
+          transform: isRightEdge ? 'none' : 'translateX(-50%)',
+          ...(position === 'top' ? {
+            bottom: 'calc(100% + 10px)',
+          } : {
+            top: 'calc(100% + 10px)',
+          }),
+          zIndex: 9999,
+          background: 'var(--cms-text-main)',
+          color: 'var(--cms-bg)',
+          padding: '8px 12px',
+          borderRadius: '8px',
+          fontSize: '11px',
+          fontWeight: 600,
+          maxWidth: '240px',
+          textWrap: 'wrap',
+          pointerEvents: 'none',
+          boxShadow: '0 10px 25px rgba(0,0,0,0.2), 0 4px 10px rgba(0,0,0,0.1)',
+          lineHeight: 1.4,
+          animation: 'slow-fade 0.2s ease-out'
+        }}>
+          {text}
+          {/* Стрелка */}
+          <div style={{
+            position: 'absolute',
+            left: isRightEdge ? 'auto' : '50%',
+            right: isRightEdge ? '14px' : 'auto',
+            transform: isRightEdge ? 'none' : 'translateX(-50%)',
+            ...(position === 'top' ? {
+              top: '100%',
+              borderTop: '6px solid var(--cms-text-main)',
+              borderLeft: '6px solid transparent',
+              borderRight: '6px solid transparent',
+            } : {
+              bottom: '100%',
+              borderBottom: '6px solid var(--cms-text-main)',
+              borderLeft: '6px solid transparent',
+              borderRight: '6px solid transparent',
+            }),
+            width: 0,
+            height: 0,
+          }} />
+        </div>
+      )}
+    </div>
+  );
+};
+
 const InputField = ({ label, value, onChange, type = "text" }) => (
   <div className="mb-6">
     <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-muted)] mb-2.5 ml-1">{label}</label>
@@ -90,13 +167,9 @@ const SectionCard = ({ title, children, icon, tooltip }) => (
       <span className="p-2 rounded-lg bg-[var(--cms-bg-secondary)] text-blue-400 shadow-lg">{icon}</span>
       {title}
       {tooltip && (
-        <div className="group/tooltip relative inline-block ml-1">
+        <Tooltip text={tooltip}>
           <HelpCircle size={14} className="text-slate-600 hover:text-blue-400 cursor-help transition-colors" />
-          <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 p-3 bg-slate-800 text-[10px] font-bold leading-relaxed text-slate-200 rounded-xl opacity-0 group-hover/tooltip:opacity-100 pointer-events-none transition-all shadow-2xl border border-slate-700 z-50 transform translate-y-2 group-hover/tooltip:translate-y-0">
-            {tooltip}
-            <div className="absolute top-full left-1/2 -translate-x-1/2 border-8 border-transparent border-t-slate-800"></div>
-          </div>
-        </div>
+        </Tooltip>
       )}
     </h3>
     {children}
