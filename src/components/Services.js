@@ -44,7 +44,7 @@ export const Services = ({ data, fullContent, isLight }) => {
                 ? 'gradient-bg text-white shadow-blue-500/20'
                 : isLight ? 'bg-slate-100 text-slate-500 border border-slate-200' : 'bg-slate-800 text-slate-400 border border-slate-700'
             }`}>
-              {isRecommended ? (interpolate(srv.accentBadge, fullContent) || 'РЕКОМЕНДУЕМ') : (isDevelopment ? (interpolate(fullContent.ui?.inDevelopment, fullContent) || 'В РАЗРАБОТКЕ') : interpolate(srv.badge, fullContent))}
+              {isRecommended ? (interpolate(srv.accentBadge, fullContent) || interpolate(fullContent.ui?.recommendedLabel, fullContent) || 'РЕКОМЕНДУЕМ') : (isDevelopment ? (interpolate(fullContent.ui?.inDevelopment, fullContent) || 'В РАЗРАБОТКЕ') : interpolate(srv.badge, fullContent))}
             </div>
           )}
 

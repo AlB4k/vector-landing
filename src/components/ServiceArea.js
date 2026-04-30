@@ -423,11 +423,11 @@ export const ServiceArea = ({ data, fullContent, isLight: globalIsLight }) => {
 
   const getStatusInfo = (status) => {
     switch (status) {
-      case 'works': return { label: 'Работаем', color: 'bg-green-500/10 text-green-600 border-green-600/20', dot: 'bg-green-500' };
-      case 'inProgress': return { label: 'В проработке', color: 'bg-yellow-500/10 text-yellow-600 border-yellow-600/20', dot: 'bg-yellow-500' };
-      case 'setup': return { label: 'Настраиваем', color: 'bg-blue-500/10 text-blue-600 border-blue-600/20', dot: 'bg-blue-500' };
-      case 'partner': return { label: 'Ищем партнёров', color: 'bg-slate-500/10 text-slate-600 border-slate-600/20', dot: 'bg-slate-500' };
-      case 'soon': return { label: 'Скоро запуск', color: 'bg-purple-500/10 text-purple-600 border-purple-600/20', dot: 'bg-purple-500' };
+      case 'works': return { label: interpolate(fullContent.ui?.statusWorks, fullContent) || 'Работаем', color: 'bg-green-500/10 text-green-600 border-green-600/20', dot: 'bg-green-500' };
+      case 'inProgress': return { label: interpolate(fullContent.ui?.statusInProgress, fullContent) || 'В проработке', color: 'bg-yellow-500/10 text-yellow-600 border-yellow-600/20', dot: 'bg-yellow-500' };
+      case 'setup': return { label: interpolate(fullContent.ui?.statusSetup, fullContent) || 'Настраиваем', color: 'bg-blue-500/10 text-blue-600 border-blue-600/20', dot: 'bg-blue-500' };
+      case 'partner': return { label: interpolate(fullContent.ui?.statusPartner, fullContent) || 'Ищем партнёров', color: 'bg-slate-500/10 text-slate-600 border-slate-600/20', dot: 'bg-slate-500' };
+      case 'soon': return { label: interpolate(fullContent.ui?.statusSoon, fullContent) || 'Скоро запуск', color: 'bg-purple-500/10 text-purple-600 border-purple-600/20', dot: 'bg-purple-500' };
       default: return null;
     }
   };
@@ -451,7 +451,7 @@ export const ServiceArea = ({ data, fullContent, isLight: globalIsLight }) => {
                   ? 'bg-white/80 border-slate-200 text-blue-600 hover:bg-white'
                   : 'bg-slate-900/80 border-white/10 text-blue-400 hover:bg-slate-800'
               }`}
-              title="Переключить тему карты"
+              title={interpolate(fullContent.ui?.mapSwitchTheme, fullContent) || "Переключить тему карты"}
             >
               {isLight ? <Moon size={18} /> : <Sun size={18} />}
             </button>
@@ -640,7 +640,7 @@ export const ServiceArea = ({ data, fullContent, isLight: globalIsLight }) => {
                 <div>
                   <p className="text-sm font-bold mb-1 text-[var(--text-main)]">{interpolate(fullContent.ui?.ownNetworkTitle, fullContent) || 'Собственная курьерская сеть'}</p>
                   <p className="text-xs text-[var(--text-muted)] max-w-xs font-medium leading-relaxed">
-                    {interpolate(data.ownNetworkNote, fullContent) || 'Прямой контроль сотрудников без посредников. 100% покрытие во всех районах присутствия.'}
+                    {interpolate(data.ownNetworkNote, fullContent) || interpolate(fullContent.ui?.ownNetworkNoteDefault, fullContent) || 'Прямой контроль сотрудников без посредников. 100% покрытие во всех районах присутствия.'}
                   </p>
                 </div>
              </div>

@@ -78,7 +78,7 @@ export const Hero = ({ data, config, isLight, fullContent }) => {
                   }`}>
                     <div className={`w-1.5 h-1.5 rounded-full ${isOnline ? 'bg-green-500 animate-pulse' : isLight ? 'bg-blue-600' : 'bg-blue-400'}`}></div>
                     <span className="text-[10px] font-black uppercase tracking-widest">
-                      {isOnline ? (interpolate(config.statusOnline, fullContent) || 'Линия активна') : (interpolate(config.statusOffline, fullContent) || 'Офлайн')}
+                      {isOnline ? (interpolate(config.statusOnline, fullContent) || interpolate(fullContent.ui?.hotlineOnline, fullContent) || 'Линия активна') : (interpolate(config.statusOffline, fullContent) || interpolate(fullContent.ui?.hotlineOffline, fullContent) || 'Офлайн')}
                     </span>
                   </div>
                 )}
