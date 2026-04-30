@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { validateContent } from './utils/security';
 import {
   LayoutDashboard,
@@ -43,12 +43,84 @@ const InputField = ({ label, value, onChange, type = "text" }) => (
   </div>
 );
 
-const SectionCard = ({ title, children, icon }) => (
+const Tooltip = ({ text, children }) => {
+  const [show, setShow] = useState(false);
+  const [above, setAbove] = useState(true);
+  const ref = useRef(null);
+
+  const handleMouseEnter = () => {
+    if (ref.current) {
+      const rect = ref.current.getBoundingClientRect();
+      setAbove(rect.top > 120);
+    }
+    setShow(true);
+  };
+
+  return (
+    <div
+      ref={ref}
+      style={{ position: 'relative', display: 'inline-flex', alignItems: 'center' }}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={() => setShow(false)}
+    >
+      {children}
+      {show && (
+        <div style={{
+          position: 'absolute',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          ...(above ? { bottom: 'calc(100% + 8px)' } : { top: 'calc(100% + 8px)' }),
+          zIndex: 99999,
+          background: '#1e293b',
+          color: '#f8fafc',
+          padding: '8px 12px',
+          borderRadius: '8px',
+          fontSize: '11px',
+          fontWeight: 600,
+          width: '200px',
+          whiteSpace: 'normal',
+          wordBreak: 'break-word',
+          pointerEvents: 'none',
+          boxShadow: '0 4px 20px rgba(0,0,0,0.4)',
+          lineHeight: 1.4,
+          textAlign: 'center'
+        }}>
+          {text}
+          <div style={{
+            position: 'absolute',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            ...(above ? {
+              top: '100%',
+              borderTop: '5px solid #1e293b',
+              borderLeft: '5px solid transparent',
+              borderRight: '5px solid transparent',
+            } : {
+              bottom: '100%',
+              borderBottom: '5px solid #1e293b',
+              borderLeft: '5px solid transparent',
+              borderRight: '5px solid transparent',
+            }),
+            width: 0,
+            height: 0,
+          }} />
+        </div>
+      )}
+    </div>
+  );
+};
+
+const SectionCard = ({ title, children, icon, tooltip }) => (
   <div className="bg-slate-950/40 backdrop-blur-sm p-8 rounded-3xl border border-slate-800/50 mb-8 shadow-2xl relative overflow-hidden group">
     <div className="absolute top-0 left-0 w-1 h-full bg-blue-600/20 group-hover:bg-blue-600 transition-colors"></div>
     <h3 className="text-[10px] font-black mb-8 text-slate-400 flex items-center gap-3 uppercase tracking-[0.3em]">
       <span className="p-2 rounded-lg bg-slate-900 text-blue-400 shadow-lg">{icon}</span>
       {title}
+      {tooltip && (
+        <Tooltip text={tooltip}>
+          <HelpCircle size={14} className="text-slate-500 hover:text-blue-400 cursor-help transition-colors ml-1" />
+        </Tooltip>
+      )}
     </h3>
     {children}
   </div>
@@ -177,7 +249,7 @@ export default function CMS({ content, setContent, onLogout }) {
   ];
 
   return (
-    <div className="min-h-screen bg-[#020204] text-slate-300 flex font-sans">
+    <div className="h-screen bg-[#020204] text-slate-300 flex font-sans overflow-hidden">
       <aside className="w-72 border-r border-slate-900 flex flex-col bg-slate-950/80 backdrop-blur-2xl z-20">
         <div className="p-8 border-b border-slate-900 flex items-center gap-4">
           <div className="w-10 h-10 gradient-bg rounded-xl flex items-center justify-center shadow-2xl shadow-blue-900/40">
@@ -208,7 +280,7 @@ export default function CMS({ content, setContent, onLogout }) {
         </div>
       </aside>
 
-      <main className="flex-1 flex flex-col h-screen overflow-hidden relative">
+      <div className="flex-1 flex flex-col h-screen overflow-hidden relative">
         <header className="h-24 border-b border-slate-900 px-10 flex items-center justify-between bg-[#020204] z-20 shrink-0">
           <div className="flex items-center gap-4">
             <div className="p-2.5 rounded-xl bg-slate-900 text-blue-500 border border-slate-800 shadow-xl">
@@ -253,7 +325,7 @@ export default function CMS({ content, setContent, onLogout }) {
           </div>
         </header>
 
-        <div className="flex-1 overflow-y-auto p-12 custom-scrollbar relative z-10 min-h-0 bg-[#020204]">
+        <main className="flex-1 overflow-y-auto p-12 custom-scrollbar relative z-10 min-h-0 bg-[#020204]">
           <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(30,64,175,0.08),transparent)] pointer-events-none"></div>
           <div className="max-w-4xl mx-auto pb-24 relative z-10">
             {activeTab === 'structure' && (
@@ -306,7 +378,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
             {activeTab === 'general' && (
               <div className="space-y-8">
-                <SectionCard title="Юридические реквизиты" icon={<Settings size={18}/>}>
+                <SectionCard title="Юридические реквизиты" icon={<Settings size={18}/>} tooltip="ИНН, КПП, ОГРН используются в карточке организации и документах.">
                   <div className="grid grid-cols-2 gap-x-8">
                     <InputField label="Название организации" value={localContent.companyName} onChange={(val) => updateNested('companyName', val)} />
                     <InputField label="Слоган логотипа (Tagline)" value={localContent.companyTagline} onChange={(val) => updateNested('companyTagline', val)} />
@@ -319,7 +391,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   <InputField label="Юридический адрес" value={localContent.address} onChange={(val) => updateNested('address', val)} />
                 </SectionCard>
 
-                <SectionCard title="Банковские реквизиты" icon={<FileText size={18}/>}>
+                <SectionCard title="Банковские реквизиты" icon={<FileText size={18}/>} tooltip="Отображаются на странице реквизитов по запросу клиентов.">
                   <div className="grid grid-cols-2 gap-x-8">
                     <InputField label="Название банка" value={localContent.bank.name} onChange={(val) => updateNested('bank.name', val)} />
                     <InputField label="БИК" value={localContent.bank.bik} onChange={(val) => updateNested('bank.bik', val)} />
@@ -328,14 +400,14 @@ export default function CMS({ content, setContent, onLogout }) {
                   </div>
                 </SectionCard>
 
-                <SectionCard title="Контакты для связи" icon={<Mail size={18}/>}>
+                <SectionCard title="Контакты для связи" icon={<Mail size={18}/>} tooltip="До 3 телефонов с направлениями в разделе Контакты.">
                   <div className="grid grid-cols-2 gap-x-8">
                     <InputField label="Контактный телефон" value={localContent.phone} onChange={(val) => updateNested('phone', val)} />
                     <InputField label="Рабочий Email" value={localContent.email} onChange={(val) => updateNested('email', val)} />
                   </div>
                 </SectionCard>
 
-                <SectionCard title="Регистрация в Роскомнадзоре" icon={<Shield size={18}/>}>
+                <SectionCard title="Регистрация в Роскомнадзоре" icon={<Shield size={18}/>} tooltip="Номер в реестре Роскомнадзора. Отображается на сайте и в политике конфиденциальности.">
                   <div className="grid grid-cols-2 gap-x-8">
                     <InputField label="ПДн Регистрация №" value={localContent.pdnReg} onChange={(val) => updateNested('pdnReg', val)} />
                     <InputField label="Приказ №" value={localContent.pdnOrder} onChange={(val) => updateNested('pdnOrder', val)} />
@@ -351,7 +423,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   <p className="text-xs text-slate-500 font-medium tracking-wide">Настройка внешнего вида темной и светлой темы сайта</p>
                 </div>
 
-                <SectionCard title="Темная тема (Dark Mode)" icon={<Palette size={18}/>}>
+                <SectionCard title="Темная тема (Dark Mode)" icon={<Palette size={18}/>} tooltip="Настройка цветов и градиентов для ночного режима работы сайта.">
                   <div className="grid grid-cols-2 gap-x-8">
                     <InputField label="Основной фон" value={localContent.theme?.dark?.primary} onChange={(val) => updateNested('theme.dark.primary', val)} />
                     <InputField label="Вторичный фон" value={localContent.theme?.dark?.secondary} onChange={(val) => updateNested('theme.dark.secondary', val)} />
@@ -362,7 +434,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   </div>
                 </SectionCard>
 
-                <SectionCard title="Светлая тема (Light Mode)" icon={<Palette size={18}/>}>
+                <SectionCard title="Светлая тема (Light Mode)" icon={<Palette size={18}/>} tooltip="Цветовая схема для дневного режима. Влияет на читаемость при ярком свете.">
                   <div className="grid grid-cols-2 gap-x-8">
                     <InputField label="Основной фон" value={localContent.theme?.light?.primary} onChange={(val) => updateNested('theme.light.primary', val)} />
                     <InputField label="Вторичный фон" value={localContent.theme?.light?.secondary} onChange={(val) => updateNested('theme.light.secondary', val)} />
@@ -373,7 +445,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   </div>
                 </SectionCard>
 
-                <SectionCard title="Настройки по умолчанию" icon={<Settings size={18}/>}>
+                <SectionCard title="Настройки по умолчанию" icon={<Settings size={18}/>} tooltip="Выбор темы, которая будет активна при первом посещении сайта пользователем.">
                   <div className="mb-4">
                     <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Тема при первом посещении</label>
                     <select
@@ -397,7 +469,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   <p className="text-xs text-slate-500 font-medium tracking-wide">Настройка визуальных эффектов на заднем плане сайта</p>
                 </div>
 
-                <SectionCard title="Фоновая анимация" icon={<Sparkles size={18}/>}>
+                <SectionCard title="Фоновая анимация" icon={<Sparkles size={18}/>} tooltip="Декоративная анимация на фоне сайта. Не влияет на производительность.">
                   <div className="space-y-8">
                     <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50">
                       <input
@@ -446,7 +518,9 @@ export default function CMS({ content, setContent, onLogout }) {
 
                     <div className="p-6 rounded-2xl bg-blue-500/5 border border-blue-500/10">
                       <div className="flex items-start gap-4">
-                        <HelpCircle size={18} className="text-blue-500 mt-0.5 shrink-0" />
+                        <Tooltip text="Здесь вы можете выбрать стиль и интенсивность анимации фона сайта.">
+                          <HelpCircle size={18} className="text-blue-500 mt-0.5 shrink-0 cursor-help" />
+                        </Tooltip>
                         <div>
                           <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-2">Предпросмотр</h4>
                           <p className="text-xs text-slate-400 leading-relaxed">Изменения анимации применяются после сохранения настроек и обновления страницы.</p>
@@ -460,7 +534,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
             {activeTab === 'ui' && (
               <div className="space-y-8">
-                <SectionCard title="Настройки интерфейса" icon={<Layers size={18}/>}>
+                <SectionCard title="Настройки интерфейса" icon={<Layers size={18}/>} tooltip="Название и слоган отображаются в шапке и подвале сайта.">
                   <div className="space-y-6">
                     <InputField label="Текст логотипа (основной)" value={localContent.logoText} onChange={(val) => updateNested('logoText', val)} />
 
@@ -500,7 +574,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
             {activeTab === 'hero' && (
               <div className="space-y-8">
-                <SectionCard title="Главный экран (Hero)" icon={<LayoutDashboard size={18}/>}>
+                <SectionCard title="Главный экран (Hero)" icon={<LayoutDashboard size={18}/>} tooltip="Первый экран, который видит пользователь. Содержит основной оффер и CTA.">
                   <div className="space-y-2">
                     <InputField label="Верхний бейдж" value={localContent.hero?.badge} onChange={(val) => updateNested('hero.badge', val)} />
                     <InputField label="Lucide Icon (Badge)" value={localContent.hero?.badgeIcon} onChange={(val) => updateNested('hero.badgeIcon', val)} />
@@ -526,11 +600,8 @@ export default function CMS({ content, setContent, onLogout }) {
                   </div>
                 </SectionCard>
 
-                <SectionCard title="Настройки горячей линии" icon={<Zap size={18}/>}>
-                  <div className="bg-blue-500/5 p-6 rounded-2xl border border-blue-500/10 mb-8">
-                    <h4 className="text-[10px] font-black text-blue-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-                      <MapPin size={14} /> Региональный шилдик (RegionBadge)
-                    </h4>
+                <SectionCard title="Настройки горячей линии" icon={<Zap size={18}/>} tooltip="Телефон прямой линии на главном экране. Отдельный от контактов.">
+                  <SectionCard title="Метка региона" icon={<MapPin size={14} />} tooltip="Статичная метка над логотипом. Используется при работе в конкретном регионе.">
                     <div className="space-y-4">
                       <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-xl border border-slate-800/50 mb-4">
                         <input
@@ -570,7 +641,7 @@ export default function CMS({ content, setContent, onLogout }) {
                         Статичная метка региона отображается под логотипом в шапке и подвале сайта. Используется при адаптации сайта под конкретный регион работы.
                       </p>
                     </div>
-                  </div>
+                  </SectionCard>
 
                   <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-2xl border border-slate-800/50 mb-6">
                     <input
@@ -622,7 +693,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
             {activeTab === 'features' && (
               <div className="space-y-6">
-                <SectionCard title="Заголовки секции" icon={<FileText size={18}/>}>
+                <SectionCard title="Заголовки секции" icon={<FileText size={18}/>} tooltip="Тексты для блока преимуществ компании (иконки и описания).">
                   <div className="grid grid-cols-2 gap-8">
                     <InputField label="Заголовок" value={localContent.features?.title} onChange={(val) => updateNested('features.title', val)} />
                     <InputField label="Акцентное слово" value={localContent.features?.accent} onChange={(val) => updateNested('features.accent', val)} />
@@ -681,7 +752,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
             {activeTab === 'trustedClients' && (
               <div className="space-y-6">
-                <SectionCard title="Настройки раздела" icon={<Check size={18}/>}>
+                <SectionCard title="Настройки раздела" icon={<Check size={18}/>} tooltip="Управление списком логотипов и названий доверенных клиентов.">
                   <div className="grid grid-cols-2 gap-8">
                     <InputField label="Заголовок" value={localContent.trustedClients?.title} onChange={(val) => updateNested('trustedClients.title', val)} />
                     <InputField label="Подзаголовок" value={localContent.trustedClients?.subtitle} onChange={(val) => updateNested('trustedClients.subtitle', val)} />
@@ -848,7 +919,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
             {activeTab === 'process' && (
               <div className="space-y-6">
-                <SectionCard title="Заголовки секции" icon={<Zap size={18}/>}>
+                <SectionCard title="Заголовки секции" icon={<Zap size={18}/>} tooltip="Тексты для блока с этапами выполнения работ.">
                   <div className="grid grid-cols-2 gap-8">
                     <InputField label="Заголовок" value={localContent.process?.title} onChange={(val) => updateNested('process.title', val)} />
                     <InputField label="Акцентное слово" value={localContent.process?.accent} onChange={(val) => updateNested('process.accent', val)} />
@@ -905,7 +976,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
             {activeTab === 'services' && (
               <div className="space-y-6">
-                <SectionCard title="Заголовки секции" icon={<Phone size={18}/>}>
+                <SectionCard title="Заголовки секции" icon={<Phone size={18}/>} tooltip="Тексты для блока с тарифами и услугами компании.">
                   <div className="grid grid-cols-2 gap-8">
                     <InputField label="Заголовок" value={localContent.services?.title} onChange={(val) => updateNested('services.title', val)} />
                     <InputField label="Акцентное слово" value={localContent.services?.accent} onChange={(val) => updateNested('services.accent', val)} />
@@ -1037,7 +1108,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
             {activeTab === 'geography' && (
               <div className="space-y-6">
-                <SectionCard title="Зона покрытия и Охват" icon={<MapPin size={18}/>}>
+                <SectionCard title="Зона покрытия и Охват" icon={<MapPin size={18}/>} tooltip="Настройка географии присутствия и параметров отображения интерактивной карты.">
                   <div className="grid grid-cols-2 gap-8">
                     <InputField label="Основной заголовок" value={localContent.serviceArea?.title} onChange={(val) => updateNested('serviceArea.title', val)} />
                     <InputField label="Акцент заголовка" value={localContent.serviceArea?.accent} onChange={(val) => updateNested('serviceArea.accent', val)} />
@@ -1155,7 +1226,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
             {activeTab === 'bpo' && (
               <div className="space-y-6">
-                <SectionCard title="Бесконвертное Почтовое Отправление (БПО)" icon={<FileText size={18}/>}>
+                <SectionCard title="Бесконвертное Почтовое Отправление (БПО)" icon={<FileText size={18}/>} tooltip="Тексты и технологические этапы для раздела специализированных почтовых услуг.">
                   <div className="grid grid-cols-2 gap-8">
                     <InputField label="Заголовок" value={localContent.bpo?.title} onChange={(val) => updateNested('bpo.title', val)} />
                     <InputField label="Акцентное слово" value={localContent.bpo?.accent} onChange={(val) => updateNested('bpo.accent', val)} />
@@ -1213,7 +1284,7 @@ export default function CMS({ content, setContent, onLogout }) {
                 ))}
                 <button onClick={() => updateNested('bpo.steps', [...(localContent.bpo?.steps || []), { num: '0' + ((localContent.bpo?.steps?.length || 0) + 1), title: 'Новый этап', desc: 'Описание этапа БПО...' }])} className="w-full py-6 rounded-3xl border-2 border-dashed border-slate-800 text-slate-600 hover:text-blue-500 transition-all flex items-center justify-center gap-3 mb-8"><Plus size={20}/> Добавить этап БПО</button>
 
-                <SectionCard title="Преимущества БПО" icon={<Check size={18}/>}>
+                <SectionCard title="Преимущества БПО" icon={<Check size={18}/>} tooltip="Список ключевых достоинств технологии БПО для потенциальных клиентов.">
                   {(localContent.bpo?.advantages || []).map((adv, idx) => (
                     <div key={idx} className="flex gap-3 mb-3">
                       <input
@@ -1237,7 +1308,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
             {activeTab === 'news' && (
               <div className="space-y-6">
-                <SectionCard title="Новости и события" icon={<Send size={18}/>}>
+                <SectionCard title="Новости и события" icon={<Send size={18}/>} tooltip="Управление лентой последних новостей и актуальных событий компании.">
                   <div className="grid grid-cols-2 gap-8">
                     <InputField label="Заголовок" value={localContent.news?.title} onChange={(val) => updateNested('news.title', val)} />
                     <InputField label="Акцентное слово" value={localContent.news?.accent} onChange={(val) => updateNested('news.accent', val)} />
@@ -1277,7 +1348,7 @@ export default function CMS({ content, setContent, onLogout }) {
             )}
 
             {activeTab === 'contact' && (
-              <SectionCard title="Секция контактов и форма" icon={<Mail size={18}/>}>
+              <SectionCard title="Секция контактов и форма" icon={<Mail size={18}/>} tooltip="Поля формы заявки и метод отправки (EmailJS/SMTP/Telegram). Токены хранятся в браузере администратора.">
                 <div className="grid grid-cols-2 gap-8">
                   <InputField label="Основной заголовок" value={localContent.contact?.title} onChange={(val) => updateNested('contact.title', val)} />
                   <InputField label="Акцент заголовка" value={localContent.contact?.accent} onChange={(val) => updateNested('contact.accent', val)} />
@@ -1344,11 +1415,7 @@ export default function CMS({ content, setContent, onLogout }) {
                     </div>
                   </div>
 
-                  {/* 2. Защита от спама */}
-                  <div className="p-8 bg-slate-900/30 rounded-[2rem] border border-slate-800/50">
-                    <h4 className="text-xs font-black text-slate-400 uppercase tracking-[0.2em] mb-8 flex items-center gap-3">
-                      <Shield size={16} className="text-blue-500" /> Защита от спама
-                    </h4>
+                  <SectionCard title="Антиспам защита" icon={<Shield size={16} />} tooltip="Honeypot и временная метка блокируют ботов без капчи.">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                       <div className="flex items-center gap-4 p-5 bg-slate-900/50 rounded-2xl border border-slate-800">
                         <div className="p-3 rounded-xl bg-blue-500/10 text-blue-400">
@@ -1380,7 +1447,7 @@ export default function CMS({ content, setContent, onLogout }) {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </SectionCard>
 
                   {/* 3. Доставка заявок */}
                   <div className="p-8 bg-blue-500/5 rounded-[2rem] border border-blue-500/10 relative overflow-hidden">
@@ -1595,7 +1662,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
             {activeTab === 'socials' && (
               <div className="space-y-6">
-                <SectionCard title="Список социальных сетей" icon={<Send size={18}/>}>
+                <SectionCard title="Список социальных сетей" icon={<Send size={18}/>} tooltip="Ссылки на соцсети компании. Отображаются в подвале сайта.">
                   <p className="text-[10px] text-slate-500 font-medium mb-6 leading-relaxed">
                     Этот список используется в подвале сайта и в блоке контактов. Вы можете добавлять новые сети, менять их иконки (Lucide) и порядок.
                   </p>
@@ -1649,7 +1716,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
                 {legalSubTab === 'privacy' && (
                   <div className="space-y-6 animate-slow-fade">
-                    <SectionCard title="Настройки политики конфиденциальности" icon={<Shield size={18}/>}>
+                    <SectionCard title="Настройки политики конфиденциальности" icon={<Shield size={18}/>} tooltip="Редактирование текста и структуры политики обработки персональных данных.">
                       <InputField label="Заголовок страницы" value={localContent.pages?.privacy?.title} onChange={(val) => updateNested('pages.privacy.title', val)} />
                     </SectionCard>
 
@@ -1691,7 +1758,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
                 {legalSubTab === 'requisites' && (
                   <div className="space-y-6 animate-slow-fade">
-                    <SectionCard title="Настройки карточки организации" icon={<FileText size={18}/>}>
+                    <SectionCard title="Настройки карточки организации" icon={<FileText size={18}/>} tooltip="Управление данными компании для формирования официальной карточки реквизитов.">
                       <InputField label="Заголовок страницы" value={localContent.pages?.requisites?.title} onChange={(val) => updateNested('pages.requisites.title', val)} />
                       <InputField label="Подзаголовок (Subtitle)" value={localContent.pages?.requisites?.subtitle} onChange={(val) => updateNested('pages.requisites.subtitle', val)} />
                       <InputField label="Полное наименование" value={localContent.pages?.requisites?.fullCompanyName} onChange={(val) => updateNested('pages.requisites.fullCompanyName', val)} />
@@ -1702,7 +1769,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
                 {legalSubTab === 'oferta' && (
                   <div className="space-y-6 animate-slow-fade">
-                    <SectionCard title="Настройки оферты" icon={<FileText size={18}/>}>
+                    <SectionCard title="Настройки оферты" icon={<FileText size={18}/>} tooltip="Редактирование текста и условий публичной оферты.">
                       <InputField label="Заголовок страницы" value={localContent.pages?.oferta?.title} onChange={(val) => updateNested('pages.oferta.title', val)} />
                       <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Текст оферты (HTML/Переносы строк)</label>
                       <textarea value={localContent.pages?.oferta?.content} onChange={(e) => updateNested('pages.oferta.content', e.target.value)} className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-5 py-4 text-white text-sm font-medium h-96 resize-none" />
@@ -1714,12 +1781,12 @@ export default function CMS({ content, setContent, onLogout }) {
 
             {activeTab === 'modals' && (
               <div className="space-y-8">
-                <SectionCard title="Модальное окно: Успех" icon={<Check size={18}/>}>
+                <SectionCard title="Модальное окно: Успех" icon={<Check size={18}/>} tooltip="Настройка сообщения, которое видит пользователь после успешной отправки формы.">
                   <InputField label="Главный заголовок" value={localContent.modals?.success?.title} onChange={(val) => updateNested('modals.success.title', val)} />
                   <InputField label="Подзаголовок / Текст" value={localContent.modals?.success?.subtitle} onChange={(val) => updateNested('modals.success.subtitle', val)} />
                   <InputField label="Текст кнопки закрытия" value={localContent.modals?.success?.button} onChange={(val) => updateNested('modals.success.button', val)} />
                 </SectionCard>
-                <SectionCard title="Юридическая информация" icon={<FileText size={18}/>}>
+                <SectionCard title="Юридическая информация" icon={<FileText size={18}/>} tooltip="Краткие сведения о юридическом статусе (свидетельство, лицензия) для модальных окон.">
                   <div className="grid grid-cols-2 gap-8">
                     <InputField label="Метка статуса (напр. Свидетельство)" value={localContent.legal?.statusLabel} onChange={(val) => updateNested('legal.statusLabel', val)} />
                     <InputField label="Значение статуса" value={localContent.legal?.statusValue} onChange={(val) => updateNested('legal.statusValue', val)} />
@@ -1730,7 +1797,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
             {activeTab === 'footer' && (
               <div className="space-y-8">
-                <SectionCard title="Настройки подвала (Footer)" icon={<MapPin size={18}/>}>
+                <SectionCard title="Настройки подвала (Footer)" icon={<MapPin size={18}/>} tooltip="Управление описанием компании и ссылками на документы в нижней части сайта.">
                   <InputField label="Краткое описание под логотипом" value={localContent.footer?.description} onChange={(val) => updateNested('footer.description', val)} />
                   <div className="grid grid-cols-2 gap-8">
                     <InputField label="Текст ссылки оферты" value={localContent.footer?.offerLabel} onChange={(val) => updateNested('footer.offerLabel', val)} />
@@ -1738,7 +1805,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   </div>
                 </SectionCard>
 
-                <SectionCard title="Заголовки колонок" icon={<Layers size={18}/>}>
+                <SectionCard title="Заголовки колонок" icon={<Layers size={18}/>} tooltip="Названия разделов в футере (Навигация, Правовая информация, Контакты).">
                   <div className="grid grid-cols-3 gap-8">
                     <InputField label="Колонка 1 (Навигация)" value={localContent.footer?.headers?.nav} onChange={(val) => updateNested('footer.headers.nav', val)} />
                     <InputField label="Колонка 2 (Правовая)" value={localContent.footer?.headers?.legal} onChange={(val) => updateNested('footer.headers.legal', val)} />
@@ -1750,7 +1817,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
             {activeTab === 'analytics' && (
               <div className="space-y-8">
-                <SectionCard title="Системные настройки" icon={<Settings size={18}/>}>
+                <SectionCard title="Системные настройки" icon={<Settings size={18}/>} tooltip="Глобальные параметры: версия системы, задержка экрана загрузки и масштабирование логотипа.">
                   <div className="space-y-8">
                     <div className="grid grid-cols-2 gap-8">
                       <div>
@@ -1834,7 +1901,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   </div>
                 </SectionCard>
 
-                <SectionCard title="Формы и уведомления" icon={<Send size={18}/>}>
+                <SectionCard title="Формы и уведомления" icon={<Send size={18}/>} tooltip="Технические параметры уведомлений и интеграции для приема заявок с сайта.">
                   <InputField label="Тема письма (Subject)" value={localContent.integrations?.formSubject} onChange={(val) => updateNested('integrations.formSubject', val)} />
                   <InputField label="Formspree ID (для реальных заявок)" value={localContent.integrations?.formspreeId} onChange={(val) => updateNested('integrations.formspreeId', val)} />
                   <p className="text-[10px] text-slate-500 font-medium leading-relaxed -mt-2 ml-1 max-w-md">
@@ -1842,7 +1909,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   </p>
                 </SectionCard>
 
-                <SectionCard title="Аналитика и пиксели" icon={<BarChart3 size={18}/>}>
+                <SectionCard title="Аналитика и пиксели" icon={<BarChart3 size={18}/>} tooltip="Подключение внешних систем аналитики и рекламных пикселей через соответствующие ID.">
                   <div className="space-y-4">
                     <InputField label="Yandex Metrica ID" value={localContent.analytics?.yandexMetrica} onChange={(val) => updateNested('analytics.yandexMetrica', val)} />
                     <InputField label="Google Analytics ID (G-XXXXX)" value={localContent.analytics?.googleAnalytics} onChange={(val) => updateNested('analytics.googleAnalytics', val)} />
@@ -1856,7 +1923,7 @@ export default function CMS({ content, setContent, onLogout }) {
                   </div>
                 </SectionCard>
 
-                <SectionCard title="Настройки Cookie Banner" icon={<FileText size={18}/>}>
+                <SectionCard title="Настройки Cookie Banner" icon={<FileText size={18}/>} tooltip="Управление уведомлением об использовании файлов cookie и текстами согласия.">
                   <InputField label="Заголовок баннера" value={localContent.cookieBanner?.title} onChange={(val) => updateNested('cookieBanner.title', val)} />
                   <div className="mb-6">
                     <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-slate-500 mb-2.5 ml-1">Описание (Текст согласия)</label>
@@ -1876,7 +1943,7 @@ export default function CMS({ content, setContent, onLogout }) {
 
             {activeTab === 'faq' && (
               <div className="space-y-6">
-                <SectionCard title="Заголовки секции FAQ" icon={<HelpCircle size={18}/>}>
+                <SectionCard title="Заголовки секции FAQ" icon={<HelpCircle size={18}/>} tooltip="Тексты для блока ответов на часто задаваемые вопросы и ссылки призыва к действию.">
                   <div className="grid grid-cols-2 gap-8">
                     <InputField label="Заголовок" value={localContent.faq?.title} onChange={(val) => updateNested('faq.title', val)} />
                     <InputField label="Акцентное слово" value={localContent.faq?.accent} onChange={(val) => updateNested('faq.accent', val)} />
@@ -1921,8 +1988,8 @@ export default function CMS({ content, setContent, onLogout }) {
               </div>
             )}
           </div>
-        </div>
-      </main>
+        </main>
+      </div>
       <style>{`
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
