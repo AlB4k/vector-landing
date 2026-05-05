@@ -26,16 +26,19 @@ const ClientCard = ({ client, isLight, fullContent }) => {
   const renderLogo = () => {
     if (client.logoUrl) {
       return (
-        <img
-          src={client.logoUrl}
-          alt={client.name}
-          className="w-full h-full object-contain"
-        />
+        <div className={`h-12 px-3 py-1 rounded-xl border border-[var(--border)] shrink-0 shadow-inner mb-4 inline-flex items-center justify-center ${isLight ? 'bg-white' : 'bg-slate-200'}`}>
+          <img
+            src={client.logoUrl}
+            alt={client.name}
+            className="h-full w-auto object-contain max-w-[180px]"
+            style={{ mixBlendMode: 'normal' }}
+          />
+        </div>
       );
     }
 
     return (
-      <div className="w-full h-full flex items-center justify-center font-black text-lg bg-blue-600 text-white">
+      <div className="w-12 h-12 rounded-xl overflow-hidden border border-[var(--border)] shrink-0 shadow-inner mb-4 flex items-center justify-center font-black text-lg bg-blue-600 text-white">
         {initials}
       </div>
     );
@@ -53,7 +56,7 @@ const ClientCard = ({ client, isLight, fullContent }) => {
         height: '180px'
       }}
     >
-      <div className="w-12 h-12 rounded-xl overflow-hidden border border-[var(--border)] shrink-0 bg-white/5 shadow-inner mb-4">
+      <div className="flex-shrink-0">
         {renderLogo()}
       </div>
       <div className="flex-1 flex flex-col justify-between min-w-0">

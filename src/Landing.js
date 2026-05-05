@@ -22,6 +22,7 @@ import { Features } from './components/Features';
 import { Stats } from './components/Stats';
 import { Process } from './components/Process';
 import { Services } from './components/Services';
+import { Reviews } from './components/Reviews';
 import { FAQ } from './components/FAQ';
 import { News } from './components/News';
 import { ServiceArea } from './components/ServiceArea';
@@ -146,6 +147,7 @@ export default function Landing({ content, theme, setTheme }) {
       case 'stats': return <Stats key={section.id} data={content.stats} isLight={isLight} fullContent={content} />;
       case 'process': return <Process key={section.id} data={content.process} isLight={isLight} fullContent={content} />;
       case 'services': return <Services key={section.id} data={content.services} isLight={isLight} fullContent={content} />;
+      case 'reviews': return <Reviews key={section.id} data={content.reviews} isLight={isLight} fullContent={content} />;
       case 'bpo': return <BPO key={section.id} data={content.bpo} isLight={isLight} fullContent={content} />;
       case 'geography': return <ServiceArea key={section.id} data={content.serviceArea} isLight={isLight} fullContent={content} />;
       case 'faq': return <FAQ key={section.id} data={content.faq} isLight={isLight} fullContent={content} />;

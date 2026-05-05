@@ -199,6 +199,11 @@ const INITIAL_CONTENT = {
       "label": "Услуги"
     },
     {
+      "id": "reviews",
+      "enabled": false,
+      "label": "Отзывы клиентов"
+    },
+    {
       "id": "geography",
       "enabled": true,
       "label": "ОХВАТ"
@@ -432,6 +437,34 @@ const INITIAL_CONTENT = {
         "button": "Получить консультацию",
         "popular": false,
         "status": "development"
+      }
+    ]
+  },
+  "reviews": {
+    "title": "Реальные",
+    "accent": "отзывы",
+    "subtitle": "Опыт сотрудничества с ведущими управляющими компаниями и РСО региона.",
+    "items": [
+      {
+        "id": "r1",
+        "text": "С переходом на бесконвертные отправления от «ВЕКТОРа» мы сократили ежемесячные расходы на логистику на 18%.",
+        "author": "Иванов И.И.",
+        "company": "УК «Стандарт»",
+        "rating": 5
+      },
+      {
+        "id": "r2",
+        "text": "Благодаря интеграции с ГИС ЖКХ и оперативной печати, процент собираемости платежей вырос на 4% в первый же месяц.",
+        "author": "Петров П.П.",
+        "company": "РСО «ЭнергоСбыт»",
+        "rating": 5
+      },
+      {
+        "id": "r3",
+        "text": "Высокая скорость доставки и прозрачная отчетность. Никаких нареканий к качеству работы курьеров за весь год.",
+        "author": "Смирнова А.В.",
+        "company": "Фонд Капремонта",
+        "rating": 5
       }
     ]
   },
@@ -975,20 +1008,25 @@ export default function App() {
               } else if (Array.isArray(source[key]) && key === 'sections') {
                 const targetSections = target[key] || [];
                 const sourceSections = source[key] || [];
-                const sourceMap = new Map(sourceSections.map(s => [s.id, s]));
 
-                output[key] = targetSections.map(tSec => {
-                  if (sourceMap.has(tSec.id)) {
-                    return { ...tSec, ...sourceMap.get(tSec.id) };
+                const targetMap = new Map(targetSections.map(s => [s.id, s]));
+
+                // 1. Берем секции из source (сохраняя пользовательский порядок)
+                output[key] = sourceSections
+                  .filter(s => s.id !== 'serviceArea')
+                  .map(sSec => {
+                    if (targetMap.has(sSec.id)) {
+                      return { ...targetMap.get(sSec.id), ...sSec };
+                    }
+                    return sSec;
+                  });
+
+                // 2. Добавляем новые секции из кода, которых еще нет в сохраненных настройках
+                const sourceIds = new Set(sourceSections.map(s => s.id));
+                targetSections.forEach(tSec => {
+                  if (!sourceIds.has(tSec.id) && tSec.id !== 'serviceArea') {
+                    output[key].push(tSec);
                   }
-                  return tSec;
-                });
-
-                const targetIds = new Set(targetSections.map(s => s.id));
-                sourceSections.forEach(s => {
-                  // Игнорируем устаревшие ID разделов, чтобы избежать дублирования
-                  if (s.id === 'serviceArea') return;
-                  if (!targetIds.has(s.id)) output[key].push(s);
                 });
               } else if (source[key] !== undefined && source[key] !== null) {
                 output[key] = source[key];
@@ -1026,8 +1064,18 @@ export default function App() {
   }, []);
 
   const handleUpdateContent = (newContent) => {
-    setContent(newContent);
-    localStorage.setItem('vector_content', JSON.stringify(newContent));
+    try {
+      const serialized = JSON.stringify(newContent);
+      localStorage.setItem('vector_content', serialized);
+      setContent(newContent);
+    } catch (error) {
+      if (error.name === 'QuotaExceededError' || error.message.includes('quota')) {
+        alert('Ошибка сохранения: Превышен лимит памяти (5 МБ). Пожалуйста, используйте изображения меньшего размера (загружайте оптимизированные файлы).');
+      } else {
+        console.error('Save error:', error);
+        alert('Произошла непредвиденная ошибка при сохранении данных.');
+      }
+    }
   };
 
   useEffect(() => {

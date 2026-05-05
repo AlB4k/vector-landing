@@ -128,6 +128,42 @@ const SectionCard = ({ title, children, icon, tooltip }) => (
   </div>
 );
 
+const processImageUpload = async (file, maxWidth = 300, maxHeight = 300) => {
+  if (file.type === 'image/svg+xml') {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  }
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const img = new Image();
+      img.onload = () => {
+        let { width, height } = img;
+        if (width > maxWidth || height > maxHeight) {
+          const ratio = Math.min(maxWidth / width, maxHeight / height);
+          width = Math.round(width * ratio);
+          height = Math.round(height * ratio);
+        }
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        // Use JPEG for photographic images, otherwise WebP if available, fallback to PNG
+        const type = file.type === 'image/jpeg' ? 'image/jpeg' : 'image/webp';
+        resolve(canvas.toDataURL(type, 0.85));
+      };
+      img.onerror = reject;
+      img.src = e.target.result;
+    };
+    reader.onerror = reject;
+    reader.readAsDataURL(file);
+  });
+};
 export default function CMS({ content, setContent, onLogout }) {
   const [activeTab, setActiveTab] = useState('structure');
   const mainRef = useRef(null);
@@ -398,8 +434,9 @@ export default function CMS({ content, setContent, onLogout }) {
                     </div>
                     <button
                       onClick={() => {
-                        const newSections = [...localContent.sections];
-                        newSections[idx].enabled = !newSections[idx].enabled;
+                        const newSections = localContent.sections.map((sec, i) =>
+                          i === idx ? { ...sec, enabled: !sec.enabled } : sec
+                        );
                         updateNested('sections', newSections);
                       }}
                       className={`p-3 rounded-xl transition-all border ${section.enabled ? 'bg-blue-500/10 border-blue-500/20 text-blue-400' : 'bg-[var(--cms-card)] border-[var(--cms-border)] text-[var(--cms-text-muted)] opacity-50'}`}
@@ -878,9 +915,9 @@ export default function CMS({ content, setContent, onLogout }) {
                     <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-6">
                       <div className="col-span-1">
                         <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-muted)] mb-2.5 ml-1">Логотип</label>
-                        <div className="relative group/logo w-full aspect-square bg-[var(--cms-card)] rounded-2xl border border-[var(--cms-border)] flex items-center justify-center overflow-hidden">
+                        <div className="relative group/logo w-full h-24 bg-[var(--cms-card)] rounded-2xl border border-[var(--cms-border)] flex items-center justify-center p-3 overflow-hidden">
                           {client.logoUrl ? (
-                            <img src={client.logoUrl} className="w-full h-full object-contain" alt="" />
+                            <img src={client.logoUrl} className="h-full w-auto object-contain max-w-full" alt="" />
                           ) : (
                             <Upload size={24} className="text-[var(--cms-text-muted)]" />
                           )}
@@ -888,16 +925,18 @@ export default function CMS({ content, setContent, onLogout }) {
                             type="file"
                             accept="image/*"
                             className="absolute inset-0 opacity-0 cursor-pointer"
-                            onChange={(e) => {
+                            onChange={async (e) => {
                               const file = e.target.files[0];
                               if (!file) return;
-                              if (file.size > 200 * 1024) alert('Внимание: файл логотипа больше 200 КБ. Рекомендуется использовать оптимизированные изображения.');
-                              const reader = new FileReader();
-                              reader.onload = (event) => {
-                                const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, logoUrl: event.target.result } : item);
+                              if (file.size > 500 * 1024) alert('Внимание: Вы загружаете большое изображение. Оно будет автоматически сжато, чтобы не превышать лимит браузера.');
+                              try {
+                                const optimizedBase64 = await processImageUpload(file, 800, 160); // Логотипы приводятся к единой высоте 160px, ширина не ограничена
+                                const newItems = localContent.trustedClients.items.map((item, i) => i === idx ? { ...item, logoUrl: optimizedBase64 } : item);
                                 updateNested('trustedClients.items', newItems);
-                              };
-                              reader.readAsDataURL(file);
+                              } catch (err) {
+                                console.error('Ошибка обработки изображения', err);
+                                alert('Ошибка при обработке изображения.');
+                              }
                             }}
                           />
                         </div>
@@ -1171,7 +1210,58 @@ export default function CMS({ content, setContent, onLogout }) {
               </div>
             )}
 
+            {activeTab === 'reviews' && (
+              <div className="space-y-6 animate-slow-fade">
+                <div className="mb-8 ml-2">
+                  <h4 className="text-xl font-black text-[var(--cms-text)] mb-2 tracking-tight">Отзывы клиентов</h4>
+                  <p className="text-xs text-[var(--cms-text-muted)] font-medium tracking-wide">Управление слайдером реальных отзывов и оценок</p>
+                </div>
+
+                <SectionCard title="Заголовок секции" icon={<FileText size={18}/>}>
+                  <InputField label="Заголовок" value={localContent.reviews?.title} onChange={(val) => updateNested('reviews.title', val)} />
+                  <InputField label="Акцентное слово" value={localContent.reviews?.accent} onChange={(val) => updateNested('reviews.accent', val)} />
+                  <InputField label="Подзаголовок" value={localContent.reviews?.subtitle} onChange={(val) => updateNested('reviews.subtitle', val)} />
+                </SectionCard>
+
+                <div className="space-y-6">
+                  <h4 className="font-bold text-[10px] uppercase tracking-[0.2em] text-[var(--cms-text-muted)] ml-2 flex items-center gap-2"><Layers size={14}/> Слайды с отзывами</h4>
+                  {(localContent.reviews?.items || []).map((slide, idx) => (
+                    <div key={idx} className="bg-[var(--cms-sidebar)] border border-[var(--cms-border)] p-8 rounded-3xl relative group">
+                      <button onClick={() => {
+                        const newItems = localContent.reviews.items.filter((_, i) => i !== idx);
+                        updateNested('reviews.items', newItems);
+                      }} className="absolute top-6 right-6 p-2 text-red-500/50 hover:bg-red-500/10 hover:text-red-500 rounded-xl transition-all"><Trash2 size={16}/></button>
+
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="col-span-1 md:col-span-2">
+                          <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-muted)] mb-2 ml-1">Текст отзыва</label>
+                          <textarea rows="3" value={slide.text} onChange={(e) => {
+                            const newItems = localContent.reviews.items.map((it, i) => i === idx ? { ...it, text: e.target.value } : it);
+                            updateNested('reviews.items', newItems);
+                          }} className="w-full bg-[var(--cms-card)] border border-[var(--cms-border)] rounded-xl px-4 py-3 text-[var(--cms-text)] text-sm focus:outline-none focus:border-blue-500"></textarea>
+                        </div>
+                        <InputField label="Автор" value={slide.author} onChange={(val) => {
+                          const newItems = localContent.reviews.items.map((it, i) => i === idx ? { ...it, author: val } : it);
+                          updateNested('reviews.items', newItems);
+                        }} />
+                        <InputField label="Компания" value={slide.company} onChange={(val) => {
+                          const newItems = localContent.reviews.items.map((it, i) => i === idx ? { ...it, company: val } : it);
+                          updateNested('reviews.items', newItems);
+                        }} />
+                        <InputField label="Оценка (1-5)" type="number" value={slide.rating} onChange={(val) => {
+                          const newItems = localContent.reviews.items.map((it, i) => i === idx ? { ...it, rating: parseInt(val, 10) || 5 } : it);
+                          updateNested('reviews.items', newItems);
+                        }} />
+                      </div>
+                    </div>
+                  ))}
+                  <button onClick={() => updateNested('reviews.items', [...(localContent.reviews?.items || []), { id: `r${Date.now()}`, text: 'Новый отзыв', author: 'Имя', company: 'Компания', rating: 5 }])} className="w-full py-6 border-2 border-dashed border-[var(--cms-border)] text-[var(--cms-text-muted)] hover:text-blue-500 hover:border-blue-500/40 font-black text-[10px] uppercase tracking-[0.3em] transition-all rounded-3xl flex items-center justify-center gap-3"><Plus size={20}/> Добавить отзыв</button>
+                </div>
+              </div>
+            )}
             {activeTab === 'geography' && (
+
+
               <div className="space-y-6 animate-slow-fade">
                 <div className="mb-8 ml-2">
                   <h4 className="text-xl font-black text-[var(--cms-text)] mb-2 tracking-tight">Зона покрытия (Охват)</h4>
