@@ -4,7 +4,6 @@ import { DynamicIcon } from './Shared';
 import { interpolate } from '../utils/content';
 
 export const Hero = ({ data, config, isLight, fullContent }) => {
-  if (!data) return null;
   const isOnline = React.useMemo(() => {
     if (!config || !config.scheduleEnabled) return true;
     const now = new Date();
@@ -13,6 +12,8 @@ export const Hero = ({ data, config, isLight, fullContent }) => {
     const isWorkDay = Array.isArray(config.workDays) && config.workDays.includes(day);
     return isWorkDay && hour >= (config.startHour || 0) && hour < (config.endHour || 24);
   }, [config]);
+
+  if (!data) return null;
 
   return (
     <section id="hero" /* id="hero" — не менять, используется в навигации */ className="relative pt-24 pb-16 md:pt-48 md:pb-32 px-6 overflow-hidden scroll-mt-24 md:scroll-mt-32">
@@ -29,7 +30,7 @@ export const Hero = ({ data, config, isLight, fullContent }) => {
           {/* Левая сторона: Контент */}
           <div className="flex-1 text-center lg:text-left">
             <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-md border mb-6 md:mb-8 ${isLight ? 'border-blue-600/20 bg-blue-600/5' : 'border-blue-500/20 bg-blue-500/5'}`}>
-              <DynamicIcon name={data.badgeIcon || "ShieldCheck"} size={14} className={isLight ? "text-blue-600" : "text-blue-400"} />
+              <DynamicIcon name={data.badgeIcon || 'ShieldCheck'} size={14} className={isLight ? 'text-blue-600' : 'text-blue-400'} />
               <span className={`text-[10px] font-bold uppercase tracking-[0.2em] ${isLight ? 'text-blue-700' : 'text-blue-300'}`}>{interpolate(data.badge, fullContent)}</span>
             </div>
             <h1 className="text-4xl sm:text-5xl md:text-7xl font-black leading-[1.1] md:leading-[1.05] mb-6 md:mb-8 tracking-tighter text-[var(--text-main)]">
@@ -91,7 +92,7 @@ export const Hero = ({ data, config, isLight, fullContent }) => {
       {/* Индикатор прокрутки */}
       <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-3 opacity-20 hidden md:flex">
         <span className="text-[9px] font-bold uppercase tracking-[0.4em] rotate-180 [writing-mode:vertical-lr] text-[var(--text-muted)]">Scroll</span>
-        <div className={`w-[1px] h-12 bg-gradient-to-b from-blue-500 to-transparent`}></div>
+        <div className={'w-[1px] h-12 bg-gradient-to-b from-blue-500 to-transparent'}></div>
       </div>
     </section>
   );

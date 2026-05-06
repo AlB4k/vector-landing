@@ -25,7 +25,7 @@ if ('serviceWorker' in navigator) {
 // Unregister existing service workers to resolve cache issues
 if ('serviceWorker' in navigator) {
   navigator.serviceWorker.getRegistrations().then((registrations) => {
-    for (let registration of registrations) {
+    for (const registration of registrations) {
       registration.unregister();
     }
   });

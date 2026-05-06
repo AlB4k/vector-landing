@@ -9,7 +9,7 @@ export const Services = ({ data, fullContent, isLight }) => {
   <SectionWrapper id="services" className="max-w-6xl mx-auto" pattern="dots">
     <div className="text-center mb-16">
       <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight text-[var(--text-main)]">
-        {interpolate(data.title, fullContent)} <span className={isLight ? "text-blue-600" : "text-blue-500"}>{interpolate(data.accent, fullContent)}</span>
+        {interpolate(data.title, fullContent)} <span className={isLight ? 'text-blue-600' : 'text-blue-500'}>{interpolate(data.accent, fullContent)}</span>
       </h2>
       <p className="text-[var(--text-muted)] text-sm max-w-xl mx-auto">{interpolate(data.subtitle, fullContent)}</p>
     </div>
@@ -56,7 +56,7 @@ export const Services = ({ data, fullContent, isLight }) => {
           <ul className="space-y-3 sm:space-y-4 mb-8 sm:mb-12 flex-1">
             {srv.features.map((f, idx) => (
               <li key={idx} className="flex items-center gap-3 text-sm text-[var(--text-main)] opacity-90 leading-snug">
-                <Check size={16} className={isLight ? "text-blue-600 shrink-0" : "text-blue-400 shrink-0"} aria-hidden="true" />
+                <Check size={16} className={isLight ? 'text-blue-600 shrink-0' : 'text-blue-400 shrink-0'} aria-hidden="true" />
                 {interpolate(f, fullContent)}
               </li>
             ))}
@@ -64,7 +64,7 @@ export const Services = ({ data, fullContent, isLight }) => {
 
           {/* Кнопка действия */}
           <a
-            href={isDevelopment ? "#" : "#contact"}
+            href={isDevelopment ? '#' : '#contact'}
             onClick={isDevelopment ? (e) => e.preventDefault() : undefined}
             className={`w-full py-3.5 rounded-lg font-bold text-xs uppercase tracking-widest transition-all flex justify-center items-center ${
               isDevelopment

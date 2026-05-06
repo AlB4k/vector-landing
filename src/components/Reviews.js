@@ -25,7 +25,7 @@ export const Reviews = ({ data, fullContent, isLight }) => {
       <div className="text-center mb-16">
         <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight text-[var(--text-main)]">
           {interpolate(data.title, fullContent)}{' '}
-          <span className={isLight ? "text-blue-600" : "text-blue-500"}>
+          <span className={isLight ? 'text-blue-600' : 'text-blue-500'}>
             {interpolate(data.accent, fullContent)}
           </span>
         </h2>
@@ -52,7 +52,7 @@ export const Reviews = ({ data, fullContent, isLight }) => {
                 <Star
                   key={i}
                   size={18}
-                  className={isLight ? "text-blue-600 fill-blue-600" : "text-blue-400 fill-blue-400"}
+                  className={isLight ? 'text-blue-600 fill-blue-600' : 'text-blue-400 fill-blue-400'}
                 />
               ))}
             </div>

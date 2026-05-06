@@ -13,7 +13,7 @@ export const BPO = ({ data, fullContent, isLight }) => {
         <div className="flex-1 space-y-12">
           <div>
             <h2 className="text-3xl md:text-5xl font-black mb-6 tracking-tight leading-tight text-[var(--text-main)]">
-              {interpolate(data.title, fullContent)} <span className={isLight ? "text-blue-600" : "text-blue-500"}>{interpolate(data.accent, fullContent)}</span>
+              {interpolate(data.title, fullContent)} <span className={isLight ? 'text-blue-600' : 'text-blue-500'}>{interpolate(data.accent, fullContent)}</span>
             </h2>
             <p className={`font-bold uppercase text-[10px] tracking-[0.2em] mb-4 ${isLight ? 'text-blue-600' : 'text-blue-400'}`}>
               {interpolate(fullContent.ui?.pressureSealTech, fullContent) || 'Технология Pressure Seal'}

@@ -9,7 +9,7 @@ export const Process = ({ data, fullContent, isLight }) => {
     <SectionWrapper id="process" className="max-w-6xl mx-auto" pattern="grid">
     <div className="mb-20">
       <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight text-[var(--text-main)]">
-        {interpolate(data.title, fullContent)} <span className={isLight ? "text-blue-600" : "text-blue-500"}>{interpolate(data.accent, fullContent)}</span>
+        {interpolate(data.title, fullContent)} <span className={isLight ? 'text-blue-600' : 'text-blue-500'}>{interpolate(data.accent, fullContent)}</span>
       </h2>
       <p className="text-[var(--text-muted)] text-sm max-w-xl">{interpolate(data.subtitle, fullContent)}</p>
     </div>

@@ -6,7 +6,7 @@ export const interpolate = (text, content) => {
   if (!text || typeof text !== 'string') return text;
 
   // 1. Dynamic path interpolation: {content.path.to.key}
-  let interpolated = text.replace(/\{content\.(.*?)\}/g, (match, path) => {
+  const interpolated = text.replace(/\{content\.(.*?)\}/g, (match, path) => {
     const keys = path.split('.');
     let value = content;
     for (const key of keys) {

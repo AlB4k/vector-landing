@@ -1,4 +1,4 @@
-export function InputField({ label, value, onChange, type = "text" }) {
+export function InputField({ label, value, onChange, type = 'text' }) {
   return (
     <div className="mb-6">
       <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-muted)] mb-2.5 ml-1">

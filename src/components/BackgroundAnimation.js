@@ -270,19 +270,19 @@ const BackgroundAnimation = ({ config, isLight }) => {
   if (!config?.enabled) return null;
 
   const variants = config.variants || [
-    { id: "envelopes" },
-    { id: "routes" },
-    { id: "documents" },
-    { id: "network" }
+    { id: 'envelopes' },
+    { id: 'routes' },
+    { id: 'documents' },
+    { id: 'network' }
   ];
 
-  if (config.variant === "random" && !randomVariantRef.current) {
+  if (config.variant === 'random' && !randomVariantRef.current) {
     randomVariantRef.current = variants[Math.floor(Math.random() * variants.length)].id;
   }
 
-  const activeVariant = config.variant === "random"
+  const activeVariant = config.variant === 'random'
     ? randomVariantRef.current
-    : (config.variant || "envelopes");
+    : (config.variant || 'envelopes');
 
   return (
     <div
