@@ -220,13 +220,13 @@ export default function Landing({ content, theme, setTheme }) {
             ))}
           </div>
           <div className="flex items-center gap-4">
-            <button onClick={() => setTheme(isLight ? 'dark' : 'light')} className="ml-6 p-2 rounded-lg border border-[var(--border)] hover:bg-slate-500/10 transition-all" aria-label={isLight ? (interpolate(content.ui?.themeToggleDark, content) || "Переключить на темную тему") : (interpolate(content.ui?.themeToggleLight, content) || "Переключить на светлую тему")}>
+            <button onClick={() => setTheme(isLight ? 'dark' : 'light')} className="ml-6 p-2 rounded-lg border border-[var(--border)] hover:bg-slate-500/10 transition-all" aria-label={isLight ? (interpolate(content.ui?.themeToggleDark, content) || 'Переключить на темную тему') : (interpolate(content.ui?.themeToggleLight, content) || 'Переключить на светлую тему')}>
               {isLight ? <Moon size={18} aria-hidden="true" /> : <Sun size={18} aria-hidden="true" />}
             </button>
             <a href={`tel:${content.phone}`} className="hidden lg:flex items-center gap-2 gradient-bg text-white px-6 py-2.5 rounded-lg font-bold text-xs uppercase tracking-widest shadow-xl shadow-blue-900/10 hover:brightness-110 transition-all">
               <Phone size={14} aria-hidden="true" /> {interpolate(content.hero.btnPrimary, content)}
             </a>
-            <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(true)} aria-label={interpolate(content.ui?.openMenu, content) || "Открыть мобильное меню"}><Menu size={24} aria-hidden="true" /></button>
+            <button className="md:hidden p-2" onClick={() => setMobileMenuOpen(true)} aria-label={interpolate(content.ui?.openMenu, content) || 'Открыть мобильное меню'}><Menu size={24} aria-hidden="true" /></button>
           </div>
         </div>
       </nav>
@@ -245,7 +245,7 @@ export default function Landing({ content, theme, setTheme }) {
                 regionBadge={content.regionBadge}
               />
             </div>
-            <button onClick={() => setMobileMenuOpen(false)} className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white border border-white/10 active:scale-90 transition-all" aria-label={interpolate(content.ui?.closeMenu, content) || "Закрыть мобильное меню"}>
+            <button onClick={() => setMobileMenuOpen(false)} className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white border border-white/10 active:scale-90 transition-all" aria-label={interpolate(content.ui?.closeMenu, content) || 'Закрыть мобильное меню'}>
               <X size={24} aria-hidden="true" />
             </button>
           </div>

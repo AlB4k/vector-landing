@@ -10,7 +10,7 @@ export const Features = ({ data, fullContent, isLight }) => {
     <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
       <div className="max-w-2xl">
         <h2 className="text-3xl md:text-4xl font-bold mb-4 tracking-tight text-[var(--text-main)]">
-          {interpolate(data.title, fullContent)} <span className={isLight ? "text-blue-600" : "text-blue-500"}>{interpolate(data.accent, fullContent)}</span>
+          {interpolate(data.title, fullContent)} <span className={isLight ? 'text-blue-600' : 'text-blue-500'}>{interpolate(data.accent, fullContent)}</span>
         </h2>
         <p className="text-[var(--text-muted)] text-sm md:text-base leading-relaxed">{interpolate(data.subtitle, fullContent)}</p>
       </div>

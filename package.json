@@ -4,17 +4,19 @@
   "private": true,
   "dependencies": {
     "autoprefixer": "^10.4.15",
-    "lucide-react": "^0.263.1",
+    "lucide-react": "^1.14.0",
     "playwright": "^1.59.1",
-    "postcss": "^8.4.28",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.30.3",
-    "tailwindcss": "^3.3.3"
+    "postcss": "^8.5.14",
+    "react": "^19.2.5",
+    "react-dom": "^19.2.5",
+    "react-router-dom": "^7.15.0",
+    "tailwindcss": "^3.4.19"
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build"
+    "build": "react-scripts build",
+    "lint": "eslint src --ext .js,.jsx",
+    "lint:fix": "eslint src --ext .js,.jsx --fix"
   },
   "devDependencies": {
     "react-scripts": "5.0.1"

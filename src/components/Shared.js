@@ -3,14 +3,14 @@ import * as LucideIcons from 'lucide-react';
 import { RegionBadge } from './RegionBadge';
 
 // Dynamic Icon Component
-export const DynamicIcon = ({ name, size = 24, className = "" }) => {
+export const DynamicIcon = ({ name, size = 24, className = '' }) => {
   const IconComponent = LucideIcons[name];
   if (!IconComponent) return <LucideIcons.HelpCircle size={size} className={className} />;
   return <IconComponent size={size} className={className} aria-hidden="true" />;
 };
 
-export const Logo = ({ light, variant = "large", customScale, tagline = "LOGISTIC TECH", text, regionBadge }) => {
-  const isSmall = variant === "small";
+export const Logo = ({ light, variant = 'large', customScale, tagline = 'LOGISTIC TECH', text, regionBadge }) => {
+  const isSmall = variant === 'small';
   const scale = customScale || (isSmall ? 1.2 : 1.4);
 
   return (
@@ -22,7 +22,7 @@ export const Logo = ({ light, variant = "large", customScale, tagline = "LOGISTI
 
         <img
           src="/logo_site.png"
-          alt={text || "Vector Logo"}
+          alt={text || 'Vector Logo'}
           style={{ transform: `scale(${scale})` }}
           className="w-full h-full object-contain relative z-10 transition-transform duration-700"
           loading="eager"
@@ -65,7 +65,7 @@ export const Logo = ({ light, variant = "large", customScale, tagline = "LOGISTI
   );
 };
 
-export const Counter = ({ end, duration = 2000, suffix = "" }) => {
+export const Counter = ({ end, duration = 2000, suffix = '' }) => {
   const [count, setCount] = useState(0);
   const nodeRef = useRef(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -102,7 +102,7 @@ export const Counter = ({ end, duration = 2000, suffix = "" }) => {
   return <span ref={nodeRef}>{displayValue}{suffix}</span>;
 };
 
-export const SectionWrapper = ({ children, className = "", id, pattern = "" }) => {
+export const SectionWrapper = ({ children, className = '', id, pattern = '' }) => {
   const ref = useRef(null);
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => {

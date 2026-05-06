@@ -41,7 +41,7 @@ export const validateContent = (data) => {
   });
 
   if (errors.length > 0) {
-    console.error("Content validation failed. Missing fields:", errors);
+    console.error('Content validation failed. Missing fields:', errors);
     return null;
   }
 

@@ -83,7 +83,7 @@ export const Contact = ({ data, fullContent, companyInfo, socials, integrations,
         <div className="space-y-12">
           <div>
             <h2 className="text-3xl md:text-5xl font-black mb-6 tracking-tight text-[var(--text-main)]">
-              {interpolate(data.title, fullContent)} <span className={isLight ? "text-blue-600" : "text-blue-500"}>{interpolate(data.accent, fullContent)}</span>
+              {interpolate(data.title, fullContent)} <span className={isLight ? 'text-blue-600' : 'text-blue-500'}>{interpolate(data.accent, fullContent)}</span>
             </h2>
             <p className="opacity-70 text-base md:text-lg max-w-md leading-relaxed font-medium text-[var(--text-muted)]">
               {interpolate(data.subtitle, fullContent)}

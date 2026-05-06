@@ -24,7 +24,7 @@ const RadarVariant = ({ isLight }) => (
         fill="url(#radarGradient)"
         opacity={isLight ? 0.4 : 0.6}
       />
-      <line x1="200" y1="200" x2="200" y2="40" stroke="currentColor" strokeWidth={isLight ? 1.2 : 1.5} className={isLight ? "text-blue-600" : "text-blue-400"} />
+      <line x1="200" y1="200" x2="200" y2="40" stroke="currentColor" strokeWidth={isLight ? 1.2 : 1.5} className={isLight ? 'text-blue-600' : 'text-blue-400'} />
     </g>
 
     {/* Мерцающие точки интереса */}
@@ -52,7 +52,7 @@ const MeshVariant = ({ isLight }) => {
   const color = isLight ? 'stroke-blue-700' : 'stroke-blue-400';
 
   return (
-    <g className={isLight ? "opacity-50" : "opacity-30"}>
+    <g className={isLight ? 'opacity-50' : 'opacity-30'}>
       {/* Горизонтальные линии с перспективой */}
       {[...Array(lines)].map((_, i) => {
         const y = 100 + (i * 20);
@@ -69,7 +69,7 @@ const MeshVariant = ({ isLight }) => {
             x2={xEnd}
             y2={y}
             className={`${color} animate-pulse`}
-            strokeWidth={isLight ? "0.8" : "0.5"}
+            strokeWidth={isLight ? '0.8' : '0.5'}
             opacity={0.1 + (i / lines) * 0.4}
             style={{ animationDelay: `${i * 0.1}s`, animationDuration: '3s' }}
           />
@@ -89,7 +89,7 @@ const MeshVariant = ({ isLight }) => {
             x2={xBottom}
             y2={340}
             className={`${color} animate-pulse`}
-            strokeWidth={isLight ? "0.8" : "0.5"}
+            strokeWidth={isLight ? '0.8' : '0.5'}
             opacity={isLight ? 0.3 : 0.2}
             style={{ animationDelay: `${i * 0.1}s`, animationDuration: '3s' }}
           />
@@ -110,7 +110,7 @@ const TopologyVariant = ({ isLight }) => (
         d={`M${80 + i * 5},${160 + i * 5} C${120 - i * 2},${80 - i * 5} ${280 + i * 5},${100 - i * 2} ${320 - i * 5},${180 + i * 5} S${260 + i * 5},${300 + i * 5} ${180 + i * 2},${340 - i * 5} S${80 + i * 5},${260 + i * 5} ${80 + i * 5},${160 + i * 5}`}
         fill="none"
         stroke="currentColor"
-        strokeWidth={isLight ? "1.2" : "0.8"}
+        strokeWidth={isLight ? '1.2' : '0.8'}
         opacity={isLight ? 0.15 + i * 0.03 : 0.15 + i * 0.03}
         className="animate-morph-slow"
         style={{
@@ -140,7 +140,7 @@ const PulseVariant = ({ isLight }) => {
           r="0"
           fill="none"
           stroke="currentColor"
-          strokeWidth={isLight ? "1.5" : "2"}
+          strokeWidth={isLight ? '1.5' : '2'}
           className="animate-ripple"
           style={{ animationDelay: `${i * 1.3}s` }}
         />
@@ -153,10 +153,10 @@ const PulseVariant = ({ isLight }) => {
           d={`M200,200 Q${(200 + node.x) / 2 + 15},${(200 + node.y) / 2 - 15} ${node.x},${node.y}`}
           fill="none"
           stroke="currentColor"
-          strokeWidth={isLight ? "0.8" : "0.5"}
+          strokeWidth={isLight ? '0.8' : '0.5'}
           strokeDasharray="4 4"
           className="animate-pulse-flow"
-          opacity={isLight ? "0.4" : "0.5"}
+          opacity={isLight ? '0.4' : '0.5'}
           style={{ animationDelay: `${i * 0.4}s` }}
         />
       ))}
@@ -175,11 +175,11 @@ const IsometricVariant = ({ isLight }) => {
   return (
     <g transform="translate(20, -20) rotate(15) skewX(-20) scale(0.95)">
       {/* Изометрическая сетка */}
-      <g opacity={isLight ? "0.08" : "0.1"}>
+      <g opacity={isLight ? '0.08' : '0.1'}>
         {[...Array(11)].map((_, i) => (
           <React.Fragment key={i}>
-            <line x1="0" y1={i * 40} x2="400" y2={i * 40} stroke="currentColor" strokeWidth={isLight ? "0.8" : "0.5"} />
-            <line x1={i * 40} y1="0" x2={i * 40} y2="400" stroke="currentColor" strokeWidth={isLight ? "0.8" : "0.5"} />
+            <line x1="0" y1={i * 40} x2="400" y2={i * 40} stroke="currentColor" strokeWidth={isLight ? '0.8' : '0.5'} />
+            <line x1={i * 40} y1="0" x2={i * 40} y2="400" stroke="currentColor" strokeWidth={isLight ? '0.8' : '0.5'} />
           </React.Fragment>
         ))}
       </g>
@@ -267,7 +267,7 @@ const DigitalVariant = ({ isLight }) => {
               d={getHexPath(cx, cy, hexRadius - 2)}
               fill="none"
               stroke="currentColor"
-              strokeWidth={isLight ? "0.8" : "0.5"}
+              strokeWidth={isLight ? '0.8' : '0.5'}
               className={`${isAccent ? accentClass : ''} animate-flicker`}
               style={{
                 animationDelay: `${delay}s`,
@@ -285,7 +285,7 @@ const DigitalVariant = ({ isLight }) => {
 const BlueprintVariant = ({ isLight }) => (
   <g>
     {/* Техническая координатная сетка */}
-    <g opacity={isLight ? "0.1" : "0.15"}>
+    <g opacity={isLight ? '0.1' : '0.15'}>
       {[...Array(21)].map((_, i) => (
         <React.Fragment key={i}>
           <line x1={i * 20} y1="0" x2={i * 20} y2="400" stroke="currentColor" strokeWidth="0.2" />
@@ -295,7 +295,7 @@ const BlueprintVariant = ({ isLight }) => (
     </g>
 
     {/* Оси координат с маркерами */}
-    <g opacity="0.4" className={isLight ? "text-blue-700" : "text-blue-400"}>
+    <g opacity="0.4" className={isLight ? 'text-blue-700' : 'text-blue-400'}>
       <line x1="20" y1="380" x2="380" y2="380" stroke="currentColor" strokeWidth="1" markerEnd="url(#arrowhead)" />
       <line x1="20" y1="380" x2="20" y2="20" stroke="currentColor" strokeWidth="1" markerEnd="url(#arrowhead)" />
       <text x="385" y="384" fontSize="8" fontFamily="monospace" fontWeight="bold">X</text>
@@ -311,7 +311,7 @@ const BlueprintVariant = ({ isLight }) => (
     </g>
 
     {/* Технические аннотации (размеры) */}
-    <g className={`text-[7px] font-mono ${isLight ? "text-blue-800" : "text-blue-300"}`} opacity="0.5">
+    <g className={`text-[7px] font-mono ${isLight ? 'text-blue-800' : 'text-blue-300'}`} opacity="0.5">
       {/* Горизонтальный размер */}
       <path d="M100,140 L100,80 M300,180 L300,80" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2 2" />
       <path d="M100,90 L300,90" stroke="currentColor" strokeWidth="0.5" markerStart="url(#arrowhead-rev)" markerEnd="url(#arrowhead)" />
@@ -366,7 +366,7 @@ const MAP_OPTIONS = [
 
 const BaseLayer = ({ variant, isLight }) => {
   const isIsometric = variant === 'isometric';
-  const transform = isIsometric ? "translate(20, -20) rotate(15) skewX(-20) scale(0.95)" : "";
+  const transform = isIsometric ? 'translate(20, -20) rotate(15) skewX(-20) scale(0.95)' : '';
 
   return (
     <g transform={transform}>
@@ -375,7 +375,7 @@ const BaseLayer = ({ variant, isLight }) => {
         d="M100,150 L150,100 L250,120 L300,180 L280,280 L180,320 L120,280 Z"
         fill={variant === 'blueprint' ? 'url(#mapGradient)' : 'none'}
         stroke="currentColor"
-        strokeWidth={variant === 'blueprint' ? "1" : "2"}
+        strokeWidth={variant === 'blueprint' ? '1' : '2'}
         strokeDasharray={variant === 'blueprint' ? '4 2' : '8 4'}
         className={`${isLight ? 'text-blue-600' : 'text-blue-500'} transition-all duration-1000`}
       />
@@ -389,15 +389,15 @@ const BaseLayer = ({ variant, isLight }) => {
       />
 
       {/* Главная точка города */}
-      <circle cx="200" cy="200" r={isIsometric ? "4" : "6"} className={`${isLight ? 'fill-blue-600' : 'fill-blue-500'} shadow-xl`} />
+      <circle cx="200" cy="200" r={isIsometric ? '4' : '6'} className={`${isLight ? 'fill-blue-600' : 'fill-blue-500'} shadow-xl`} />
       {!isIsometric && (
         <circle cx="200" cy="200" r="12" className={`fill-none animate-ping ${isLight ? 'stroke-blue-600/50' : 'stroke-blue-500/50'}`} />
       )}
 
       {/* Региональные точки */}
-      <circle cx="250" cy="120" r={isIsometric ? "2" : "4"} className={`fill-slate-500 transition-colors ${isLight ? 'group-hover:fill-blue-600' : 'group-hover:fill-blue-400'}`} />
-      <circle cx="300" cy="180" r={isIsometric ? "2" : "4"} className={`fill-slate-500 transition-colors ${isLight ? 'group-hover:fill-blue-600' : 'group-hover:fill-blue-400'}`} />
-      <circle cx="120" cy="280" r={isIsometric ? "2" : "4"} className={`fill-slate-500 transition-colors ${isLight ? 'group-hover:fill-blue-600' : 'group-hover:fill-blue-400'}`} />
+      <circle cx="250" cy="120" r={isIsometric ? '2' : '4'} className={`fill-slate-500 transition-colors ${isLight ? 'group-hover:fill-blue-600' : 'group-hover:fill-blue-400'}`} />
+      <circle cx="300" cy="180" r={isIsometric ? '2' : '4'} className={`fill-slate-500 transition-colors ${isLight ? 'group-hover:fill-blue-600' : 'group-hover:fill-blue-400'}`} />
+      <circle cx="120" cy="280" r={isIsometric ? '2' : '4'} className={`fill-slate-500 transition-colors ${isLight ? 'group-hover:fill-blue-600' : 'group-hover:fill-blue-400'}`} />
     </g>
   );
 };

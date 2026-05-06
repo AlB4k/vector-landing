@@ -10,7 +10,7 @@ export const News = ({ data, fullContent, isLight }) => {
     <SectionWrapper id="news" className="max-w-4xl mx-auto px-4 md:px-6">
       <div className="text-center mb-10 md:mb-16">
         <h2 className="text-3xl md:text-4xl font-black mb-4 tracking-tight leading-tight text-[var(--text-main)] uppercase">
-          {interpolate(data.title, fullContent)} <span className={isLight ? "text-blue-600" : "text-blue-500"}>{interpolate(data.accent, fullContent)}</span>
+          {interpolate(data.title, fullContent)} <span className={isLight ? 'text-blue-600' : 'text-blue-500'}>{interpolate(data.accent, fullContent)}</span>
         </h2>
       </div>
 
@@ -28,7 +28,7 @@ export const News = ({ data, fullContent, isLight }) => {
                   <Newspaper size={20} />
                 </div>
                 <div className="flex items-center gap-2 md:justify-center">
-                  <Calendar size={12} className={isLight ? "text-blue-600/50" : "text-blue-500/50"} />
+                  <Calendar size={12} className={isLight ? 'text-blue-600/50' : 'text-blue-500/50'} />
                   <span className={`text-[10px] md:text-[11px] font-bold uppercase tracking-widest font-mono ${
                     isLight ? 'text-blue-600' : 'text-blue-400'
                   }`}>

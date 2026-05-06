@@ -33,7 +33,7 @@ import {
   Sun
 } from 'lucide-react';
 
-const InputField = ({ label, value, onChange, type = "text" }) => (
+const InputField = ({ label, value, onChange, type = 'text' }) => (
   <div className="mb-6">
     <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-muted)] mb-2.5 ml-1">{label}</label>
     <input
@@ -219,10 +219,10 @@ export default function CMS({ content, setContent, onLogout }) {
   };
 
   const handleExport = () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(localContent, null, 2));
+    const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(localContent, null, 2));
     const downloadAnchorNode = document.createElement('a');
-    downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", `vector_content_${new Date().toISOString().split('T')[0]}.json`);
+    downloadAnchorNode.setAttribute('href', dataStr);
+    downloadAnchorNode.setAttribute('download', `vector_content_${new Date().toISOString().split('T')[0]}.json`);
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
@@ -357,7 +357,7 @@ export default function CMS({ content, setContent, onLogout }) {
                 localStorage.setItem('vector_cms_theme', next);
               }}
               className="flex items-center gap-3 px-5 py-3 rounded-xl border border-[var(--cms-border)] font-black text-[10px] uppercase tracking-[0.2em] hover:bg-[var(--cms-card)] hover:border-[var(--cms-accent)] transition-all text-[var(--cms-text-muted)] hover:text-[var(--cms-text)] shadow-lg"
-              title={isLight ? "Темная тема" : "Светлая тема"}
+              title={isLight ? 'Темная тема' : 'Светлая тема'}
             >
               {isLight ? <Moon size={16} /> : <Sun size={16} />}
             </button>
