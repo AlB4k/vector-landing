@@ -27,7 +27,7 @@ export const Logo = ({ light, variant = 'large', customScale, tagline = 'LOGISTI
           className="w-full h-full object-contain relative z-10 transition-transform duration-700"
           loading="eager"
           decoding="async"
-          fetchpriority="high"
+          fetchPriority="high"
         />
       </div>
 
