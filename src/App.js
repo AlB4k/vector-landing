@@ -4,7 +4,7 @@ import Landing from './Landing';
 import Requisites from './pages/Requisites';
 import Oferta from './pages/Oferta';
 import NotFound from './pages/NotFound';
-import { Lock, LogIn, AlertTriangle, RefreshCcw, Loader2 } from 'lucide-react';
+import { LogIn, AlertTriangle, RefreshCcw, Loader2 } from 'lucide-react';
 import { validateContent } from './utils/security';
 import { Logo } from './components/Shared';
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { ArrowRight, Phone } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { DynamicIcon } from './Shared';
 import { interpolate } from '../utils/content';
 

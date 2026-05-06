@@ -1,23 +1,20 @@
 import React, { useState } from 'react';
 import {
-  LayoutDashboard, Settings, Eye, Save, Trash2, Plus, LogOut,
-  ChevronRight, Phone, Mail, MapPin, FileText, Layers, Palette,
-  BarChart3, Zap, HelpCircle, ArrowUp, ArrowDown, EyeOff,
-  Send, Download, Upload, RefreshCcw, Copy, Check, Shield,
-  Sparkles, Moon, Sun
+  LayoutDashboard, Settings, LogOut,
+  Phone, Mail, MapPin, FileText, Layers, Palette,
+  BarChart3, Zap, HelpCircle,
+  Send, Check, Shield,
+  Sparkles
 } from 'lucide-react';
 import { useCMSContent } from './hooks/useCMSContent';
 import { useTheme } from './hooks/useTheme';
-import InputField from './InputField';
-import Tooltip from './Tooltip';
-import SectionCard from './SectionCard';
 import TabContent from './TabContent';
 import Controls from './Controls';
 import { processImageUpload } from './imageUtils';
 
 export default function CMS({ content, setContent, onLogout }) {
   const [activeTab, setActiveTab] = useState('structure');
-  const { cmsTheme, isLight, toggleTheme, themeVars } = useTheme();
+  const { isLight, toggleTheme, themeVars } = useTheme();
   const {
     localContent,
     hasChanges,

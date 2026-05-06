@@ -8,11 +8,8 @@ import {
   X,
   Sun,
   Moon,
-  Send,
   Lock,
   Check,
-  MessageCircle,
-  ShieldCheck,
   ChevronUp
 } from 'lucide-react';
 import { Logo, DynamicIcon as LogoIcon } from './components/Shared';

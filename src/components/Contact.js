@@ -1,11 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Phone, Mail, MapPin, Send, MessageCircle, ArrowRight, Loader2, ShieldCheck } from 'lucide-react';
+import { Phone, Mail, MapPin, Send, ArrowRight, Loader2, ShieldCheck } from 'lucide-react';
 import { SectionWrapper, DynamicIcon as LogoIcon } from './Shared';
 import { interpolate } from '../utils/content';
 import { sendForm } from '../utils/formSender';
 
-export const Contact = ({ data, fullContent, companyInfo, socials, integrations, handleFormSubmit, emailValue, setEmailValue, isLight }) => {
+export const Contact = ({ data, fullContent, companyInfo, socials, isLight }) => {
   const [fields, setFields] = useState({});
   const [honeypot, setHoneypot] = useState('');
   const [consent, setConsent] = useState(false);

@@ -1,5 +1,5 @@
 import React, { useRef } from 'react';
-import { Save, Download, Upload, RefreshCcw, Moon, Sun, Eye } from 'lucide-react';
+import { Save, Download, Upload, RefreshCcw, Moon, Sun } from 'lucide-react';
 
 export default function Controls({
   activeTab,

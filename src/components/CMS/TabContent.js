@@ -3,7 +3,7 @@ import {
   Eye, EyeOff, Trash2, Plus, ArrowUp, ArrowDown, Upload, Check,
   FileText, Mail, Settings, Shield, Phone, MapPin,
   LayoutDashboard, BarChart3, Send, Zap, HelpCircle,
-  Palette, Sparkles, Layers, Link2, Copy
+  Palette, Sparkles, Layers
 } from 'lucide-react';
 import InputField from './InputField';
 import SectionCard from './SectionCard';

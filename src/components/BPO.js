@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Printer, Package, CheckCircle2, ArrowRight } from 'lucide-react';
+import { ShieldCheck, CheckCircle2, ArrowRight } from 'lucide-react';
 import { SectionWrapper } from './Shared';
 import { interpolate } from '../utils/content';
 

@@ -63,19 +63,27 @@ export const Services = ({ data, fullContent, isLight }) => {
           </ul>
 
           {/* Кнопка действия */}
-          <a
-            href={isDevelopment ? '#' : '#contact'}
-            onClick={isDevelopment ? (e) => e.preventDefault() : undefined}
-            className={`w-full py-3.5 rounded-lg font-bold text-xs uppercase tracking-widest transition-all flex justify-center items-center ${
-              isDevelopment
-                ? isLight ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-slate-800 text-slate-500 cursor-not-allowed'
-                : isRecommended
+          {isDevelopment ? (
+            <button
+              disabled
+              className={`w-full py-3.5 rounded-lg font-bold text-xs uppercase tracking-widest transition-all flex justify-center items-center ${
+                isLight ? 'bg-slate-100 text-slate-400 cursor-not-allowed' : 'bg-slate-800 text-slate-500 cursor-not-allowed'
+              }`}
+            >
+              {interpolate(fullContent.ui?.comingSoon, fullContent) || 'Скоро будет'}
+            </button>
+          ) : (
+            <a
+              href="#contact"
+              className={`w-full py-3.5 rounded-lg font-bold text-xs uppercase tracking-widest transition-all flex justify-center items-center ${
+                isRecommended
                   ? 'gradient-bg text-white shadow-lg'
                   : isLight ? 'border border-slate-200 hover:bg-slate-50 text-slate-600' : 'border border-slate-700 hover:bg-slate-800 text-slate-300'
-            }`}
-          >
-            {isDevelopment ? (interpolate(fullContent.ui?.comingSoon, fullContent) || 'Скоро будет') : interpolate(srv.button, fullContent)}
-          </a>
+              }`}
+            >
+              {interpolate(srv.button, fullContent)}
+            </a>
+          )}
         </div>
       );
     })}
