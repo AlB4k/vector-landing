@@ -690,12 +690,55 @@ export default function CMS({ content, setContent, onLogout }) {
                           <textarea
                             value={localContent.ui?.titleConfig?.dynamicConfig || '{}'}
                             onChange={(e) => updateNested('ui.titleConfig.dynamicConfig', e.target.value)}
-                            className="w-full bg-[var(--cms-card)] border border-[var(--cms-border)] rounded-xl px-5 py-4 text-[var(--cms-text)] focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all text-sm font-medium h-32 resize-none shadow-inner font-mono"
+                            className="w-full bg-[var(--cms-card)] border border-[var(--cms-border)] rounded-xl px-5 py-4 text-[var(--cms-text)] focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all text-sm font-medium h-40 resize-none shadow-inner font-mono"
                             placeholder="{'/': 'title', '/services': 'Services | VECTOR'}"
                           />
                         </div>
+
+                        <div className="mb-6">
+                          <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-muted)] mb-3 ml-1">Шаблоны конфигурации</label>
+                          <div className="space-y-2">
+                            <button
+                              onClick={() => updateNested('ui.titleConfig.dynamicConfig', JSON.stringify({'/': 'VECTOR | Главная', '/privacy': 'Политика конфиденциальности | VECTOR', '/requisites': 'Реквизиты компании | VECTOR', '/oferta': 'Оферта и условия | VECTOR'}))}
+                              className="w-full px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-[var(--cms-border)] bg-[var(--cms-card)] text-[var(--cms-text-muted)] hover:text-blue-400 hover:border-blue-500/50 transition-all"
+                            >
+                              ✓ Основные страницы (Главная + Юридика)
+                            </button>
+                            <button
+                              onClick={() => updateNested('ui.titleConfig.dynamicConfig', JSON.stringify({'/': 'VECTOR | Печать & Доставка платежных документов', '/privacy': 'Приватность | VECTOR', '/requisites': 'Реквизиты | VECTOR', '/oferta': 'Условия сотрудничества | VECTOR'}))}
+                              className="w-full px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-[var(--cms-border)] bg-[var(--cms-card)] text-[var(--cms-text-muted)] hover:text-blue-400 hover:border-blue-500/50 transition-all"
+                            >
+                              ✓ С полными описаниями
+                            </button>
+                            <button
+                              onClick={() => updateNested('ui.titleConfig.dynamicConfig', JSON.stringify({'/': 'VECTOR | Надежный партнер в логистике', '/privacy': 'Защита данных | VECTOR', '/requisites': 'О компании | VECTOR', '/oferta': 'Публичная оферта | VECTOR'}))}
+                              className="w-full px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-[var(--cms-border)] bg-[var(--cms-card)] text-[var(--cms-text-muted)] hover:text-blue-400 hover:border-blue-500/50 transition-all"
+                            >
+                              ✓ Маркетинговые заголовки
+                            </button>
+                            <button
+                              onClick={() => updateNested('ui.titleConfig.dynamicConfig', JSON.stringify({'/': 'Главная - VECTOR', '/privacy': 'Политика конфиденциальности - VECTOR', '/requisites': 'Реквизиты организации - VECTOR', '/oferta': 'Оферта - VECTOR'}))}
+                              className="w-full px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-[var(--cms-border)] bg-[var(--cms-card)] text-[var(--cms-text-muted)] hover:text-blue-400 hover:border-blue-500/50 transition-all"
+                            >
+                              ✓ Простой формат (название - компания)
+                            </button>
+                            <button
+                              onClick={() => updateNested('ui.titleConfig.dynamicConfig', JSON.stringify({'/': 'Индустриальные стандарты логистики | VECTOR', '/privacy': 'Соблюдение ФЗ-152 | VECTOR', '/requisites': 'Реестр Роскомнадзора | VECTOR', '/oferta': 'Условия работы | VECTOR'}))}
+                              className="w-full px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-[var(--cms-border)] bg-[var(--cms-card)] text-[var(--cms-text-muted)] hover:text-blue-400 hover:border-blue-500/50 transition-all"
+                            >
+                              ✓ Компетентностные заголовки
+                            </button>
+                            <button
+                              onClick={() => updateNested('ui.titleConfig.dynamicConfig', JSON.stringify({'/': '[VECTOR] Печать квитанций ЖКХ и доставка', '/privacy': '[VECTOR] Защита персональных данных', '/requisites': '[VECTOR] Официальные реквизиты', '/oferta': '[VECTOR] Публичное предложение'}))}
+                              className="w-full px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest border border-[var(--cms-border)] bg-[var(--cms-card)] text-[var(--cms-text-muted)] hover:text-blue-400 hover:border-blue-500/50 transition-all"
+                            >
+                              ✓ С префиксом компании
+                            </button>
+                          </div>
+                        </div>
+
                         <p className="text-[9px] text-[var(--cms-text-muted)] italic leading-relaxed bg-[var(--cms-card)] p-3 rounded-lg border border-[var(--cms-border)]">
-                          Формат JSON: ключ - путь маршрута, значение - текст титула. Пример: &quot;/&quot;: &quot;Главная&quot;, &quot;/services&quot;: &quot;Услуги&quot;
+                          Формат JSON: ключ - путь маршрута, значение - текст титула. Нажмите на кнопку шаблона чтобы быстро загрузить готовую конфигурацию. Можно редактировать вручную.
                         </p>
                       </div>
                     )}

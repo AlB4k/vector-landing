@@ -158,7 +158,7 @@ const INITIAL_CONTENT = {
     'titleConfig': {
       'mode': 'static',
       'staticTitle': 'VECTOR | Индустриальные стандарты логистики',
-      'dynamicConfig': '{}'
+      'dynamicConfig': '{"/" : "VECTOR | Надежный партнер в логистике", "/privacy" : "Политика конфиденциальности | VECTOR", "/requisites" : "Реквизиты компании | VECTOR", "/oferta" : "Оферта и условия | VECTOR"}'
     }
   },
   'cookieBanner': {
