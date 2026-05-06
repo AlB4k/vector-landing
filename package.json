@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "autoprefixer": "^10.4.15",
-    "lucide-react": "^0.263.1",
+    "lucide-react": "^1.14.0",
     "playwright": "^1.59.1",
     "postcss": "^8.5.14",
     "react": "^18.2.0",
