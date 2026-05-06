@@ -1,7 +1,7 @@
 import { HelpCircle } from 'lucide-react';
-import { Tooltip } from './Tooltip';
+import Tooltip from './Tooltip';
 
-export function SectionCard({ title, children, icon, tooltip }) {
+export default function SectionCard({ title, children, icon, tooltip }) {
   return (
     <div className="bg-[var(--cms-sidebar)] backdrop-blur-sm p-8 rounded-3xl border border-[var(--cms-border)] mb-8 shadow-2xl relative overflow-hidden group">
       <div className="absolute top-0 left-0 w-1 h-full bg-blue-600/20 group-hover:bg-blue-600 transition-colors"></div>

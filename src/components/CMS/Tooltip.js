@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 
-export function Tooltip({ text, children }) {
+export default function Tooltip({ text, children }) {
   const [show, setShow] = useState(false);
   const [above, setAbove] = useState(true);
   const ref = useRef(null);

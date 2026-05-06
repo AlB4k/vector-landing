@@ -8,7 +8,7 @@ import { Lock, LogIn, AlertTriangle, RefreshCcw, Loader2 } from 'lucide-react';
 import { validateContent } from './utils/security';
 import { Logo } from './components/Shared';
 
-const CMS = React.lazy(() => import('./CMS'));
+const CMS = React.lazy(() => import('./components/CMS'));
 const PrivacyPolicy = React.lazy(() => import('./pages/PrivacyPolicy'));
 
 // Loading component for lazy loading
