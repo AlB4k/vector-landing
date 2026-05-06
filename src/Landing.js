@@ -96,6 +96,7 @@ export default function Landing({ content, theme, setTheme }) {
   const [activeModal, setActiveModal] = useState(null);
   const [emailValue, setEmailValue] = useState('');
 
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50);

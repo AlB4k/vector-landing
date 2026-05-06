@@ -68,17 +68,22 @@ export const Logo = ({ light, variant = 'large', customScale, tagline = 'LOGISTI
 export const Counter = ({ end, duration = 2000, suffix = '' }) => {
   const [count, setCount] = useState(0);
   const nodeRef = useRef(null);
-  const [isVisible, setIsVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(true);
 
   // Парсим значение, заменяя запятую на точку для корректных вычислений
   const endValue = typeof end === 'string' ? parseFloat(end.replace(',', '.')) : end;
   const isFloat = typeof end === 'string' && end.includes(',');
 
+
   useEffect(() => {
     const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting) setIsVisible(true);
+      if (entry.isIntersecting) {
+        setIsVisible(true);
+      }
     }, { threshold: 0.1 });
-    if (nodeRef.current) observer.observe(nodeRef.current);
+    if (nodeRef.current) {
+      observer.observe(nodeRef.current);
+    }
     return () => observer.disconnect();
   }, []);
 

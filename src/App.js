@@ -1008,6 +1008,7 @@ export default function App() {
     }
   }, [content.defaultTheme]);
 
+
   useEffect(() => {
     const handleConsentUpdate = () => setConsentVersion(v => v + 1);
     window.addEventListener('cookieConsentUpdated', handleConsentUpdate);
@@ -1079,7 +1080,7 @@ export default function App() {
 
   useEffect(() => {
     const handleStorage = (e) => {
-      if (e.key === 'vector_content' && e.newValue) {
+      if (e.key === 'landingContent' && e.newValue) {
         try {
           const parsed = JSON.parse(e.newValue);
           const validated = validateContent(parsed);
@@ -1098,7 +1099,7 @@ export default function App() {
   const handleUpdateContent = (newContent) => {
     try {
       const serialized = JSON.stringify(newContent);
-      localStorage.setItem('vector_content', serialized);
+      localStorage.setItem('landingContent', serialized);
       setContent(newContent);
     } catch (error) {
       if (error.name === 'QuotaExceededError' || error.message.includes('quota')) {
