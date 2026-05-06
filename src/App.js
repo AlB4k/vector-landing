@@ -61,7 +61,7 @@ class ErrorBoundary extends React.Component {
     super(props);
     this.state = { hasError: false };
   }
-  static getDerivedStateFromError(error) { return { hasError: true }; }
+  static getDerivedStateFromError(_error) { return { hasError: true }; }
   render() {
     if (this.state.hasError) {
       return (
@@ -154,7 +154,6 @@ const INITIAL_CONTENT = {
     'regLabel': 'Рег.',
     'orderLabel': 'Приказ',
     'showSocials': false,
-    'socialsTitle': 'Наши соцсети',
     'titleConfig': {
       'mode': 'static',
       'staticTitle': 'VECTOR | Индустриальные стандарты логистики',
@@ -754,7 +753,6 @@ const INITIAL_CONTENT = {
       'content': 'Настоящий интернет-сайт {content.domain} носит исключительно информационный характер. Информация, представленная на сайте, включая описание услуг, технологические параметры и тарифные решения, не является публичной офертой.\n\n{content.companyName} оставляет за собой право в любое время без уведомления пользователей вносить изменения в информацию на сайте.\n\nВсе цены, условия и параметры оказываемых услуг (печать, логистика, дистрибуция) определяются индивидуально в рамках официального договора, заключаемого с каждым контрагентом в письменной форме.'
     }
   },
-  'logoScaleFooter': 1.2,
   'legal': {
     'statusLabel': 'Статус',
     'statusValue': 'Оператор ПДн (Роскомнадзор), рег. № 36-25-043546',
@@ -994,7 +992,6 @@ function LoginScreen({ onLogin, companyName }) {
 }
 
 export default function App() {
-  const [view, setView] = useState('landing'); // 'landing', 'login', 'cms'
   const [isAuth, setIsAuth] = useState(false);
   const [content, setContent] = useState(INITIAL_CONTENT);
   const [theme, setTheme] = useState('light');
@@ -1018,11 +1015,15 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const saved = localStorage.getItem('vector_content');
+    const saved = localStorage.getItem('landingContent');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
-        const validated = validateContent(parsed);
+        let validated = validateContent(parsed);
+        if (!validated) {
+          // If validation fails, merge with defaults to fill missing fields
+          validated = { ...INITIAL_CONTENT, ...parsed };
+        }
         if (validated) {
           // Deep merge helper to ensure new schema fields exist
           const deepMerge = (target, source) => {
@@ -1121,6 +1122,7 @@ export default function App() {
     }, (content && content.loaderDelay) || 2000);
 
     return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content?.loaderDelay]);
 
   useEffect(() => {
@@ -1177,7 +1179,8 @@ export default function App() {
         console.error('Google Analytics init failed:', err);
       }
     }
-  }, [content.analytics, view, consentVersion]); // Re-run when analytics config, view, or consent status changes
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [content.analytics, consentVersion]); // Re-run when analytics config or consent status changes
 
   useEffect(() => {
     const handleKeyDown = (e) => {
