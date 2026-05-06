@@ -6,7 +6,7 @@
     "autoprefixer": "^10.4.15",
     "lucide-react": "^0.263.1",
     "playwright": "^1.59.1",
-    "postcss": "^8.4.28",
+    "postcss": "^8.5.14",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.30.3",
