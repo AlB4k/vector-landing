@@ -645,6 +645,62 @@ export default function CMS({ content, setContent, onLogout }) {
                     </div>
                   </div>
                 </SectionCard>
+
+                <SectionCard title="Настройки заголовка браузера" icon={<Sparkles size={18}/>} tooltip="Управление названием страницы в браузере (вкладка браузера).">
+                  <div className="space-y-6">
+                    <div className="space-y-3">
+                      <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-muted)] ml-1">Режим отображения титула</label>
+                      <div className="flex gap-4">
+                        {[
+                          { id: 'static', label: 'Статичный титул' },
+                          { id: 'dynamic', label: 'Динамический титул' }
+                        ].map(mode => (
+                          <button
+                            key={mode.id}
+                            onClick={() => updateNested('ui.titleConfig.mode', mode.id)}
+                            className={`flex-1 px-4 py-3 rounded-xl text-[10px] font-bold uppercase tracking-widest border transition-all ${
+                              (localContent.ui?.titleConfig?.mode || 'static') === mode.id
+                                ? 'bg-blue-600/10 border-blue-500/50 text-blue-400 shadow-lg'
+                                : 'bg-[var(--cms-bg)] border-[var(--cms-border)] text-[var(--cms-text-muted)] hover:text-[var(--cms-text)]'
+                            }`}
+                          >
+                            {mode.label}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {(localContent.ui?.titleConfig?.mode || 'static') === 'static' && (
+                      <div className="space-y-4 pt-4 border-t border-[var(--cms-border)]">
+                        <InputField
+                          label="Текст титула (статичный)"
+                          value={localContent.ui?.titleConfig?.staticTitle}
+                          onChange={(val) => updateNested('ui.titleConfig.staticTitle', val)}
+                        />
+                        <p className="text-[9px] text-[var(--cms-text-muted)] italic leading-relaxed bg-[var(--cms-card)] p-3 rounded-lg border border-[var(--cms-border)]">
+                          Этот текст будет использоваться как название вкладки браузера на всех страницах. Например: «VECTOR | Индустриальные стандарты логистики»
+                        </p>
+                      </div>
+                    )}
+
+                    {(localContent.ui?.titleConfig?.mode || 'static') === 'dynamic' && (
+                      <div className="space-y-4 pt-4 border-t border-[var(--cms-border)]">
+                        <div className="mb-6">
+                          <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-muted)] mb-2.5 ml-1">Конфигурация динамических титулов</label>
+                          <textarea
+                            value={localContent.ui?.titleConfig?.dynamicConfig || '{}'}
+                            onChange={(e) => updateNested('ui.titleConfig.dynamicConfig', e.target.value)}
+                            className="w-full bg-[var(--cms-card)] border border-[var(--cms-border)] rounded-xl px-5 py-4 text-[var(--cms-text)] focus:outline-none focus:ring-2 focus:ring-blue-500/50 focus:border-blue-500/50 transition-all text-sm font-medium h-32 resize-none shadow-inner font-mono"
+                            placeholder="{'/': 'title', '/services': 'Services | VECTOR'}"
+                          />
+                        </div>
+                        <p className="text-[9px] text-[var(--cms-text-muted)] italic leading-relaxed bg-[var(--cms-card)] p-3 rounded-lg border border-[var(--cms-border)]">
+                          Формат JSON: ключ - путь маршрута, значение - текст титула. Пример: &quot;/&quot;: &quot;Главная&quot;, &quot;/services&quot;: &quot;Услуги&quot;
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </SectionCard>
               </div>
             )}
 

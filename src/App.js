@@ -30,6 +30,32 @@ function ScrollToTop() {
   return null;
 }
 
+// Manage page title based on configuration
+function TitleManager({ content }) {
+  const { pathname } = useLocation();
+
+  useEffect(() => {
+    if (!content?.ui?.titleConfig) return;
+
+    const { mode, staticTitle, dynamicConfig } = content.ui.titleConfig;
+
+    try {
+      if (mode === 'static') {
+        document.title = staticTitle || 'VECTOR';
+      } else if (mode === 'dynamic') {
+        const config = typeof dynamicConfig === 'string' ? JSON.parse(dynamicConfig) : dynamicConfig;
+        const title = config[pathname] || config['/'] || 'VECTOR';
+        document.title = title;
+      }
+    } catch (err) {
+      console.error('Title configuration error:', err);
+      document.title = staticTitle || 'VECTOR';
+    }
+  }, [pathname, content?.ui?.titleConfig]);
+
+  return null;
+}
+
 class ErrorBoundary extends React.Component {
   constructor(props) {
     super(props);
@@ -128,7 +154,12 @@ const INITIAL_CONTENT = {
     'regLabel': 'Рег.',
     'orderLabel': 'Приказ',
     'showSocials': false,
-    'socialsTitle': 'Наши соцсети'
+    'socialsTitle': 'Наши соцсети',
+    'titleConfig': {
+      'mode': 'static',
+      'staticTitle': 'VECTOR | Индустриальные стандарты логистики',
+      'dynamicConfig': '{}'
+    }
   },
   'cookieBanner': {
     'title': 'Управление Cookie',
@@ -1178,6 +1209,7 @@ export default function App() {
     <ErrorBoundary>
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <ScrollToTop />
+        <TitleManager content={content} />
         <Suspense fallback={<PageLoader />}>
           <Routes>
             <Route path="/" element={<Landing content={content} theme={theme} setTheme={setTheme} />} />
