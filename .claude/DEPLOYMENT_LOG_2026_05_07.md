@@ -60,7 +60,7 @@ Status: 🟡 Building...
 ## 🔗 Deployment Resources
 
 ### Live Site
-- **Production URL:** https://vector-landing.vercel.app
+- **Production URL:** https://vector-landing-roan.vercel.app
 - **Expected Status:** Ready in ~5-10 minutes
 
 ### Monitoring
@@ -76,7 +76,7 @@ After deployment, verify:
 
 ### 1. Site Accessibility
 ```bash
-curl https://vector-landing.vercel.app
+curl https://vector-landing-roan.vercel.app
 # Should return 200 OK
 ```
 

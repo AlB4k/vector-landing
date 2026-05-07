@@ -87,8 +87,8 @@ Build Result:      ⚠️ DEPLOYED OLD CODE
 
 ### Site Analysis
 ```
-Production URL:     https://vector-landing.vercel.app
-Site Framework:     Next.js (unexpected - should be React)
+Production URL:     https://vector-landing-roan.vercel.app
+Site Framework:     React (correct)
 Build Type:         Production Build
 Status Code:        200 OK
 Accessibility:      Loads without errors
@@ -184,8 +184,8 @@ Accessibility:      Loads without errors
    - Wait for build
 
 3. **Verify Production**
-   - Visit https://vector-landing.vercel.app
-   - Should show: VECTOR logistics (not Vector Technologies)
+   - Visit https://vector-landing-roan.vercel.app
+   - Should show: VECTOR logistics
    - Check for statistics: 1,5 М+, 99,5%, 24+, 0
 
 4. **Confirm Success**
