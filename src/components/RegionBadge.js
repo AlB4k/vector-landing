@@ -22,7 +22,7 @@ export const RegionBadge = ({ text, style = 'badge', isLight, variant = 'header'
         fontWeight: 500,
         letterSpacing: '0.08em',
         textTransform: 'uppercase',
-        color: isLight ? '#64748b' : '#94a3b8',
+        color: '#3b82f6',
         opacity: 0.85,
         userSelect: 'none',
         pointerEvents: 'none'
@@ -45,7 +45,7 @@ export const RegionBadge = ({ text, style = 'badge', isLight, variant = 'header'
       fontWeight: 500,
       letterSpacing: '0.06em',
       textTransform: 'uppercase',
-      color: isLight ? '#475569' : '#94a3b8',
+      color: '#3b82f6',
       background: isLight
         ? 'rgba(148,163,184,0.12)'
         : 'rgba(148,163,184,0.08)',
