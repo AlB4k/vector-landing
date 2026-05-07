@@ -290,20 +290,20 @@ const INITIAL_CONTENT = {
       'prefix': ''
     },
     {
-      'val': '99.5',
+      'val': '99,5',
       'suffix': '%',
       'label': 'Индекс доставляемости'
     },
     {
       'val': '24',
-      'suffix': '',
-      'label': 'Довольных клиента',
-      'prefix': 'более'
+      'suffix': '+',
+      'label': 'Услуг',
+      'prefix': ''
     },
     {
       'val': '0',
       'suffix': '',
-      'label': 'Штрафов'
+      'label': 'ШТРАФОВ'
     }
   ],
   'bpo': {
