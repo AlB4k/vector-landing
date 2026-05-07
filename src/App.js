@@ -4,6 +4,7 @@ import Landing from './Landing';
 import Requisites from './pages/Requisites';
 import Oferta from './pages/Oferta';
 import NotFound from './pages/NotFound';
+import BotChallenge from './components/BotChallenge';
 import { LogIn, AlertTriangle, RefreshCcw, Loader2 } from 'lucide-react';
 import { validateContent } from './utils/security';
 import { Logo } from './components/Shared';
@@ -993,6 +994,9 @@ function LoginScreen({ onLogin, companyName }) {
 
 export default function App() {
   const [isAuth, setIsAuth] = useState(false);
+  const [challengePassed, setChallengePassed] = useState(() => {
+    return sessionStorage.getItem('cms_challenge_passed') === 'true';
+  });
   const [content, setContent] = useState(INITIAL_CONTENT);
   const [theme, setTheme] = useState('light');
   const [consentVersion, setConsentVersion] = useState(0);
@@ -1219,7 +1223,9 @@ export default function App() {
             <Routes>
             <Route path="/" element={<Landing content={content} theme={theme} setTheme={setTheme} />} />
             <Route path="/cms" element={
-              isAuth ? (
+              !challengePassed ? (
+                <BotChallenge onSuccess={() => setChallengePassed(true)} companyName={content.companyName} />
+              ) : isAuth ? (
                 <CMS content={content} setContent={handleUpdateContent} onLogout={handleLogout} />
               ) : (
                 <LoginScreen onLogin={handleLogin} companyName={content.companyName} />
