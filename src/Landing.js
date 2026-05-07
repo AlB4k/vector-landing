@@ -210,7 +210,7 @@ export default function Landing({ content, theme, setTheme }) {
               customScale={content.logoScaleHeader}
               tagline={content.companyTagline}
               text={content.logoText}
-              regionBadge={content.regionBadge}
+              regionBadge={content.regionBadge_header || content.regionBadge}
             />
           </div>
           <div className="hidden md:flex items-center gap-8 text-[10px] font-bold uppercase tracking-[0.15em] opacity-80">
@@ -241,7 +241,7 @@ export default function Landing({ content, theme, setTheme }) {
                 customScale={content.logoScaleFooter}
                 tagline={interpolate(content.companyTagline, content)}
                 text={interpolate(content.logoText, content)}
-                regionBadge={content.regionBadge}
+                regionBadge={content.regionBadge_header || content.regionBadge}
               />
             </div>
             <button onClick={() => setMobileMenuOpen(false)} className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-white border border-white/10 active:scale-90 transition-all" aria-label={interpolate(content.ui?.closeMenu, content) || 'Закрыть мобильное меню'}>
@@ -282,12 +282,13 @@ export default function Landing({ content, theme, setTheme }) {
           <div className="col-span-1 text-center md:text-left flex flex-col items-center md:items-start">
             <div onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="cursor-pointer flex flex-col items-center md:items-start">
               <Logo light={isLight} variant="small" customScale={content.logoScaleFooter} tagline={interpolate(content.companyTagline, content)} text={interpolate(content.logoText, content)} />
-              {content.regionBadge?.enabled && (
+              {(content.regionBadge_footer?.enabled ?? content.regionBadge?.enabled) && (
                 <div style={{marginTop: '4px'}}>
                   <RegionBadge
-                    text={content.regionBadge.text}
-                    style={content.regionBadge.style}
+                    text={(content.regionBadge_footer || content.regionBadge)?.text}
+                    style={(content.regionBadge_footer || content.regionBadge)?.style}
                     isLight={isLight}
+                    variant="footer"
                   />
                 </div>
               )}

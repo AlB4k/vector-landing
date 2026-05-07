@@ -420,7 +420,51 @@ export default function TabContent({
                         <label className="text-[10px] font-black uppercase tracking-widest text-[var(--cms-text-muted)]">Показывать метку региона</label>
                       </div>
 
-                      <InputField label="Текст региона" value={localContent.regionBadge?.text} onChange={(val) => updateNested('regionBadge.text', val)} />
+                      <div className="space-y-4">
+                        <div>
+                          <label className="block text-[9px] font-black uppercase tracking-[0.15em] text-[var(--cms-text-muted)] mb-2">Текст для шапки (280px max)</label>
+                          <div className="relative">
+                            <textarea
+                              value={localContent.regionBadge_header?.text || ''}
+                              onChange={(e) => updateNested('regionBadge_header.text', e.target.value)}
+                              placeholder="Воронеж — головной офис"
+                              className="w-full px-3 py-2 text-[11px] bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-lg text-[var(--cms-text)] resize-none font-mono"
+                              rows="2"
+                            />
+                            <div className={`text-[9px] mt-1 ml-1 font-mono ${
+                              (localContent.regionBadge_header?.text || '').length > 80
+                                ? 'text-red-400'
+                                : (localContent.regionBadge_header?.text || '').length > 70
+                                ? 'text-yellow-400'
+                                : 'text-[var(--cms-text-muted)]'
+                            }`}>
+                              {(localContent.regionBadge_header?.text || '').length}/80 символов (идеально 40-70)
+                            </div>
+                          </div>
+                        </div>
+
+                        <div>
+                          <label className="block text-[9px] font-black uppercase tracking-[0.15em] text-[var(--cms-text-muted)] mb-2">Текст для подвала (400px max)</label>
+                          <div className="relative">
+                            <textarea
+                              value={localContent.regionBadge_footer?.text || ''}
+                              onChange={(e) => updateNested('regionBadge_footer.text', e.target.value)}
+                              placeholder="Воронеж — головной офис · Приём заявок из всех регионов России"
+                              className="w-full px-3 py-2 text-[11px] bg-[var(--cms-bg)] border border-[var(--cms-border)] rounded-lg text-[var(--cms-text)] resize-none font-mono"
+                              rows="2"
+                            />
+                            <div className={`text-[9px] mt-1 ml-1 font-mono ${
+                              (localContent.regionBadge_footer?.text || '').length > 120
+                                ? 'text-red-400'
+                                : (localContent.regionBadge_footer?.text || '').length > 100
+                                ? 'text-yellow-400'
+                                : 'text-[var(--cms-text-muted)]'
+                            }`}>
+                              {(localContent.regionBadge_footer?.text || '').length}/120 символов (идеально 60-100)
+                            </div>
+                          </div>
+                        </div>
+                      </div>
 
                       <div className="space-y-3">
                         <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-muted)] ml-1">Стиль отображения</label>
@@ -431,7 +475,11 @@ export default function TabContent({
                           ].map(s => (
                             <button
                               key={s.id}
-                              onClick={() => updateNested('regionBadge.style', s.id)}
+                              onClick={() => {
+                                updateNested('regionBadge.style', s.id);
+                                updateNested('regionBadge_header.style', s.id);
+                                updateNested('regionBadge_footer.style', s.id);
+                              }}
                               className={`px-4 py-2 rounded-xl text-[10px] font-bold uppercase tracking-widest border transition-all ${
                                 (localContent.regionBadge?.style || 'badge') === s.id
                                   ? 'bg-blue-600/10 border-blue-500/50 text-blue-400 shadow-lg'
@@ -445,7 +493,7 @@ export default function TabContent({
                       </div>
 
                       <p className="text-[9px] text-[var(--cms-text-muted)] italic leading-relaxed mt-4 bg-[var(--cms-card)] p-3 rounded-lg border border-[var(--cms-border)]">
-                        Статичная метка региона отображается под логотипом в шапке и подвале сайта. Используется при адаптации сайта под конкретный регион работы.
+                        Метка региона показывается под логотипом в шапке и подвале. Длина текста должна быть оптимизирована для каждого места (шапка 280px, подвал 400px). Красный цвет = текст слишком длинный, жёлтый = близко к лимиту.
                       </p>
                     </div>
                   </SectionCard>

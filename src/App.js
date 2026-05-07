@@ -713,6 +713,16 @@ const INITIAL_CONTENT = {
     'text': 'Воронеж — головной офис · Приём заявок из всех регионов России',
     'style': 'badge'
   },
+  'regionBadge_header': {
+    'enabled': true,
+    'text': 'Воронеж — головной офис',
+    'style': 'badge'
+  },
+  'regionBadge_footer': {
+    'enabled': true,
+    'text': 'Воронеж — головной офис · Приём заявок из всех регионов России',
+    'style': 'badge'
+  },
   'backgroundAnimation': {
     'enabled': true,
     'variant': 'envelopes',

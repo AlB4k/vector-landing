@@ -1,14 +1,23 @@
 import React from 'react';
 
-export const RegionBadge = ({ text, style = 'badge', isLight }) => {
+export const RegionBadge = ({ text, style = 'badge', isLight, variant = 'header' }) => {
   if (!text) return null;
+
+  // Определить max-width в зависимости от варианта (header или footer)
+  const maxWidthByVariant = {
+    header: '280px',    // Оставляет место для навигации
+    footer: '400px'     // В футере больше места
+  };
 
   if (style === 'text') {
     return (
       <span style={{
-        display: 'inline-flex',
-        alignItems: 'center',
-        gap: '4px',
+        display: '-webkit-box',
+        maxWidth: maxWidthByVariant[variant] || '280px',
+        overflow: 'hidden',
+        WebkitLineClamp: 2,
+        WebkitBoxOrient: 'vertical',
+        wordBreak: 'break-word',
         fontSize: '10px',
         fontWeight: 500,
         letterSpacing: '0.08em',
@@ -18,10 +27,6 @@ export const RegionBadge = ({ text, style = 'badge', isLight }) => {
         userSelect: 'none',
         pointerEvents: 'none'
       }}>
-        <svg width="8" height="8" viewBox="0 0 8 8"
-             fill="currentColor" opacity="0.7">
-          <circle cx="4" cy="4" r="3"/>
-        </svg>
         {text}
       </span>
     );
@@ -29,9 +34,10 @@ export const RegionBadge = ({ text, style = 'badge', isLight }) => {
 
   // СТИЛЬ "badge" — по умолчанию
   return (
-    <span style={{
-      display: 'inline-flex',
-      alignItems: 'center',
+    <div style={{
+      maxWidth: maxWidthByVariant[variant] || '280px',
+      display: 'flex',
+      alignItems: 'flex-start',
       gap: '5px',
       padding: '3px 10px',
       borderRadius: '999px',
@@ -49,14 +55,20 @@ export const RegionBadge = ({ text, style = 'badge', isLight }) => {
         : 'rgba(148,163,184,0.15)',
       userSelect: 'none',
       pointerEvents: 'none',
-      whiteSpace: 'nowrap',
-      lineHeight: 1
+      overflow: 'hidden',
+      lineHeight: '1.3'
     }}>
       <svg width="6" height="6" viewBox="0 0 6 6"
-           fill="currentColor" opacity="0.6">
+           fill="currentColor" opacity="0.6" style={{flexShrink: 0, marginTop: '2px'}}>
         <circle cx="3" cy="3" r="2.5"/>
       </svg>
-      {text}
-    </span>
+      <span style={{
+        display: '-webkit-box',
+        WebkitLineClamp: 2,
+        WebkitBoxOrient: 'vertical',
+        overflow: 'hidden',
+        wordBreak: 'break-word'
+      }}>{text}</span>
+    </div>
   );
 };

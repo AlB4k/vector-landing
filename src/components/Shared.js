@@ -40,6 +40,7 @@ export const Logo = ({ light, variant = 'large', customScale, tagline = 'LOGISTI
                 text={regionBadge.text}
                 style={regionBadge.style}
                 isLight={light}
+                variant="header"
               />
             )}
           </div>
@@ -50,6 +51,7 @@ export const Logo = ({ light, variant = 'large', customScale, tagline = 'LOGISTI
                 text={regionBadge.text}
                 style={regionBadge.style}
                 isLight={light}
+                variant="header"
               />
             </div>
           )
