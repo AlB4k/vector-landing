@@ -1776,6 +1776,71 @@ export default function TabContent({
                     <InputField label="Колонка 3 (Контакты)" value={localContent.footer?.headers?.contacts} onChange={(val) => updateNested('footer.headers.contacts', val)} />
                   </div>
                 </SectionCard>
+
+                <SectionCard title="Копирайт & Версия" icon={<FileText size={18}/>} tooltip="Настройка строки копирайта внизу страницы (год, название компании, версия).">
+                  <div className="space-y-8">
+                    <div>
+                      <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-muted)] mb-3 ml-1">Название компании в копирайте</label>
+                      <div className="flex gap-4 mb-4">
+                        <button
+                          onClick={() => updateNested('copyright.companyNameMode', 'link')}
+                          className={`flex-1 py-2.5 px-4 rounded-lg font-bold text-[9px] uppercase tracking-widest transition-all border ${ localContent.copyright?.companyNameMode === 'link' ? 'gradient-bg text-white shadow-md' : 'bg-[var(--cms-card)] text-[var(--cms-text-muted)] border-[var(--cms-border)]' }`}
+                        >
+                          Автоссылка на companyName
+                        </button>
+                        <button
+                          onClick={() => updateNested('copyright.companyNameMode', 'manual')}
+                          className={`flex-1 py-2.5 px-4 rounded-lg font-bold text-[9px] uppercase tracking-widest transition-all border ${ localContent.copyright?.companyNameMode === 'manual' ? 'gradient-bg text-white shadow-md' : 'bg-[var(--cms-card)] text-[var(--cms-text-muted)] border-[var(--cms-border)]' }`}
+                        >
+                          Ручной ввод
+                        </button>
+                      </div>
+                      {localContent.copyright?.companyNameMode === 'manual' && (
+                        <InputField label="Название компании" value={localContent.copyright?.companyNameValue} onChange={(val) => updateNested('copyright.companyNameValue', val)} />
+                      )}
+                      {localContent.copyright?.companyNameMode === 'link' && (
+                        <p className="text-[10px] text-[var(--cms-text-muted)] font-medium leading-relaxed ml-1">
+                          🔗 Используется значение из поля <code className="bg-[var(--cms-sidebar)] px-2 py-1 rounded">content.companyName</code> ({localContent.companyName})
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="border-t border-[var(--cms-border)] pt-8">
+                      <label className="block text-[9px] font-black uppercase tracking-[0.2em] text-[var(--cms-text-muted)] mb-3 ml-1">Год в копирайте</label>
+                      <div className="flex gap-4 mb-4">
+                        <button
+                          onClick={() => updateNested('copyright.yearMode', 'auto')}
+                          className={`flex-1 py-2.5 px-4 rounded-lg font-bold text-[9px] uppercase tracking-widest transition-all border ${ localContent.copyright?.yearMode === 'auto' ? 'gradient-bg text-white shadow-md' : 'bg-[var(--cms-card)] text-[var(--cms-text-muted)] border-[var(--cms-border)]' }`}
+                        >
+                          Текущий год (авто)
+                        </button>
+                        <button
+                          onClick={() => updateNested('copyright.yearMode', 'manual')}
+                          className={`flex-1 py-2.5 px-4 rounded-lg font-bold text-[9px] uppercase tracking-widest transition-all border ${ localContent.copyright?.yearMode === 'manual' ? 'gradient-bg text-white shadow-md' : 'bg-[var(--cms-card)] text-[var(--cms-text-muted)] border-[var(--cms-border)]' }`}
+                        >
+                          Ручной ввод
+                        </button>
+                      </div>
+                      {localContent.copyright?.yearMode === 'manual' && (
+                        <div className="grid grid-cols-2 gap-8">
+                          <InputField label="Год" type="number" value={localContent.copyright?.yearValue} onChange={(val) => updateNested('copyright.yearValue', parseInt(val) || new Date().getFullYear())} />
+                        </div>
+                      )}
+                      {localContent.copyright?.yearMode === 'auto' && (
+                        <p className="text-[10px] text-[var(--cms-text-muted)] font-medium leading-relaxed ml-1">
+                          📅 Автоматически подставляется текущий год: <code className="bg-[var(--cms-sidebar)] px-2 py-1 rounded">{new Date().getFullYear()}</code>
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="border-t border-[var(--cms-border)] pt-8">
+                      <InputField label="Версия сайта" value={localContent.copyright?.version} onChange={(val) => updateNested('copyright.version', val)} />
+                      <p className="text-[10px] text-[var(--cms-text-muted)] font-medium leading-relaxed -mt-2 ml-1">
+                        Отображается в подвале сайта (напр. V2.0).
+                      </p>
+                    </div>
+                  </div>
+                </SectionCard>
               </div>
             )}
 

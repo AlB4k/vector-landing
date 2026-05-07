@@ -334,7 +334,7 @@ export default function Landing({ content, theme, setTheme }) {
           </div>
         </div>
         <div className="max-w-6xl mx-auto pt-8 md:pt-12 border-t border-soft flex flex-col md:flex-row justify-between items-center gap-6 md:gap-8 text-[8px] md:text-[9px] font-bold uppercase tracking-[0.2em] opacity-60 text-center md:text-left">
-          <p>© {new Date().getFullYear()} {interpolate(content.companyName, content)} • v{interpolate(content.legal.version, content)}</p>
+          <p>© {content.copyright?.yearMode === 'auto' ? new Date().getFullYear() : content.copyright?.yearValue} {content.copyright?.companyNameMode === 'link' ? interpolate(content.companyName, content) : content.copyright?.companyNameValue} • {interpolate(content.copyright?.version, content)}</p>
           <div className="flex flex-col md:flex-row gap-4 md:gap-12">
             <p>{interpolate(content.ui?.regLabel, content) || 'Рег.'}: {interpolate(content.pdnReg, content)}</p>
             <p>{interpolate(content.ui?.orderLabel, content) || `Приказ ${interpolate(content.pdnOrder, content)}`}</p>
