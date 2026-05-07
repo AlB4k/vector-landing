@@ -176,10 +176,11 @@ export default function Landing({ content, theme, setTheme }) {
       {content.ui?.showBackToTop && (
         <button
           onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+          aria-label="Вернуться в начало страницы"
           className={`fixed bottom-6 right-6 md:bottom-8 md:right-8 z-[70] p-3 md:p-4 rounded-xl md:rounded-2xl ${isLight ? 'bg-white border-slate-200 text-blue-600 shadow-blue-500/10' : 'bg-slate-900 border-white/10 text-blue-500 shadow-black/40'} backdrop-blur-xl border shadow-2xl transition-all duration-500 hover:scale-110 active:scale-95 ${isScrolled ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'}`}
           style={{ marginBottom: 'env(safe-area-inset-bottom)' }}
         >
-          <ChevronUp size={24} />
+          <ChevronUp size={24} aria-hidden="true" />
         </button>
       )}
 
@@ -187,7 +188,7 @@ export default function Landing({ content, theme, setTheme }) {
       {activeModal && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-6 bg-black/80 backdrop-blur-sm animate-slow-fade">
           <div className={`w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-2xl border border-white/10 p-8 md:p-12 shadow-2xl relative ${isLight ? 'bg-white text-slate-900' : 'bg-slate-900 text-white'}`}>
-            <button onClick={() => setActiveModal(null)} className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors"><X size={24} /></button>
+            <button onClick={() => setActiveModal(null)} className="absolute top-6 right-6 text-slate-400 hover:text-white transition-colors" aria-label="Закрыть окно"><X size={24} aria-hidden="true" /></button>
             {activeModal === 'success' && content.modals?.success && (
               <div className="text-center py-8">
                 <div className="w-20 h-20 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-8 text-white shadow-lg"><Check size={40} /></div>

@@ -1214,8 +1214,9 @@ export default function App() {
       <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
         <ScrollToTop />
         <TitleManager content={content} />
-        <Suspense fallback={<PageLoader />}>
-          <Routes>
+        <main>
+          <Suspense fallback={<PageLoader />}>
+            <Routes>
             <Route path="/" element={<Landing content={content} theme={theme} setTheme={setTheme} />} />
             <Route path="/cms" element={
               isAuth ? (
@@ -1228,8 +1229,9 @@ export default function App() {
             <Route path="/requisites" element={<Requisites content={content} theme={theme} />} />
             <Route path="/oferta" element={<Oferta content={content} theme={theme} />} />
             <Route path="*" element={<NotFound content={content} />} />
-          </Routes>
-        </Suspense>
+            </Routes>
+          </Suspense>
+        </main>
       </Router>
     </ErrorBoundary>
   );
